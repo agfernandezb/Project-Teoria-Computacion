@@ -24,6 +24,7 @@ public class AFD {
 		this.estadoInicial = estadoInicial;
 		this.estadosAceptacion = estadosAceptacion;
 		this.funcionTransicion = funcionTransicion;
+
 	}
 
 	public AFD(String nombre) {
@@ -49,11 +50,11 @@ public class AFD {
 
 		Set<Character> alfabeto = new HashSet<Character>();
 		Set<String> conjuntoEstados = new HashSet<String>();
-		String estadoInicial;
+		String estadoInicial = null;
 		Set<String> estadosAceptacion = new HashSet<String>();
-		String[][] funcionTransicion;
-		HashMap<String, Integer> estadoANumero;
-		HashMap<Character, Integer> simboloANumero;
+		String[][] funcionTransicion = null;
+		HashMap<String, Integer> estadoANumero = null;
+		HashMap<Character, Integer> simboloANumero = null;
 
 		for (int i = 0; i < headers.length; i++) {
 			String encabezado = scanner.nextLine();
@@ -125,10 +126,42 @@ public class AFD {
 			}
 		}
 
+		this.estadoANumero = estadoANumero;
+		this.simboloANumero = simboloANumero;
+		this.alfabeto = alfabeto;
+		this.conjuntoEstados = conjuntoEstados;
+		this.estadoInicial = estadoInicial;
+		this.estadosAceptacion = estadosAceptacion;
+		this.funcionTransicion = funcionTransicion;
+
+	}
+
+	public boolean procesarCadena(String cadena) {
+		String estadoActual = estadoInicial;
+		for (int i = 0; i < cadena.length(); ++i) {
+			estadoActual = funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero.get(cadena.charAt(i))];
+		}
+		return estadosAceptacion.contains(estadoActual);
+	}
+
+	public boolean procesarCadenaConDetalles(String cadena) {
+		String estadoActual = estadoInicial;
+		String procesamiento = "";
+		for (int i = 0; i < cadena.length(); ++i) {
+			procesamiento += "(" + estadoActual + "," + cadena.substring(i) + ")->";
+			estadoActual = funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero.get(cadena.charAt(i))];
+
+		}
+		procesamiento += "(" + estadoActual + "," + "$)>>";
+		boolean resultado = estadosAceptacion.contains(estadoActual);
+		String resultadoProcesamiento = resultado ? "accepted" : "rejected";
+		System.out.println(procesamiento + resultadoProcesamiento);
+		return resultado;
 	}
 
 	public static void main(String[] args) {
-		System.out.println(new AFD("uno"));
+		AFD afd = new AFD("uno");
+		System.out.println(afd.procesarCadenaConDetalles("ACCCC"));
 	}
 
 }
