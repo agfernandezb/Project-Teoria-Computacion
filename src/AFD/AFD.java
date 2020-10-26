@@ -2,8 +2,12 @@ package AFD;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -159,9 +163,56 @@ public class AFD {
 		return resultado;
 	}
 
+	public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
+
+		PrintStream flujo_salida;
+		File archivo = null;
+		if (nombreArchivo != null && nombreArchivo.length() > 0)
+			archivo = new File("src/ProcesamientoCadenas/AFD/" + nombreArchivo + ".dfa");
+		try {
+			flujo_salida = new PrintStream(archivo);
+		} catch (Exception e) {
+			archivo = new File("src/ProcesamientoCadenas/AFD/" + "procesamientoListaCadenas" + ".dfa");
+			try {
+				flujo_salida = new PrintStream(archivo);
+			} catch (FileNotFoundException e1) {
+				System.out.println("Error en el procesamiento de cadenas");
+				return;
+			}
+		}
+
+		for (Iterator<String> iterator = listaCadenas.iterator(); iterator.hasNext();) {
+			String cadena = (String) iterator.next();
+			String estadoActual = estadoInicial;
+			String procesamiento = "";
+			for (int i = 0; i < cadena.length(); ++i) {
+				procesamiento += "(" + estadoActual + "," + cadena.substring(i) + ")->";
+				estadoActual = funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero.get(cadena.charAt(i))];
+
+			}
+			procesamiento += "(" + estadoActual + "," + "$)>>";
+			boolean resultado = estadosAceptacion.contains(estadoActual);
+			String resultadoProcesamiento = resultado ? "accepted" : "rejected";
+			if (imprimirPantalla)
+				System.out.println(procesamiento + resultadoProcesamiento);
+			flujo_salida.print(cadena + "\t");
+			flujo_salida.print(procesamiento + resultadoProcesamiento + "\t");
+			flujo_salida.println(resultado ? "yes" : "no");
+
+		}
+		flujo_salida.flush();
+		flujo_salida.close();
+	}
+
 	public static void main(String[] args) {
 		AFD afd = new AFD("uno");
-		System.out.println(afd.procesarCadenaConDetalles("ACCCC"));
+		List<String> lista = new ArrayList<>();
+		lista.add("AAAAA");
+		lista.add("ACCCC");
+		lista.add("BBBBB");
+		lista.add("CCCCACCC");
+		lista.add("ACCCCAAABBBBAA");
+		afd.procesarListaCadenas(lista, "", true);
 	}
 
 }
