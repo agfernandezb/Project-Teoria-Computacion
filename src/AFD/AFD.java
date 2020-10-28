@@ -3,7 +3,6 @@ package AFD;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -62,10 +61,9 @@ public class AFD {
 
 		for (int i = 0; i < headers.length; i++) {
 			String encabezado = scanner.nextLine();
-			int ultima_linea = i != headers.length - 1 ? headers[i + 1] - headers[i] - 1
-					: Integer.MAX_VALUE; /*
-											 * Si esta leyendo el último encabezado, entonces lee hasta el final.
-											 */
+			int ultima_linea = i != headers.length - 1 ? headers[i + 1] - headers[i] - 1 : Integer.MAX_VALUE; /*
+																												 * Si esta leyendo el último encabezado, entonces lee hasta el final.
+																												 */
 
 			switch (encabezado) {
 			case "#alphabet": {
@@ -141,6 +139,8 @@ public class AFD {
 	}
 
 	public boolean procesarCadena(String cadena) {
+		if (cadena.equals("$"))
+			return estadosAceptacion.contains(estadoInicial);
 		String estadoActual = estadoInicial;
 		for (int i = 0; i < cadena.length(); ++i) {
 			estadoActual = funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero.get(cadena.charAt(i))];
@@ -151,10 +151,12 @@ public class AFD {
 	public boolean procesarCadenaConDetalles(String cadena) {
 		String estadoActual = estadoInicial;
 		String procesamiento = "";
-		for (int i = 0; i < cadena.length(); ++i) {
-			procesamiento += "(" + estadoActual + "," + cadena.substring(i) + ")->";
-			estadoActual = funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero.get(cadena.charAt(i))];
+		if (!cadena.equals("$")) {
+			for (int i = 0; i < cadena.length(); ++i) {
+				procesamiento += "(" + estadoActual + "," + cadena.substring(i) + ")->";
+				estadoActual = funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero.get(cadena.charAt(i))];
 
+			}
 		}
 		procesamiento += "(" + estadoActual + "," + "$)>>";
 		boolean resultado = estadosAceptacion.contains(estadoActual);
@@ -185,10 +187,13 @@ public class AFD {
 			String cadena = (String) iterator.next();
 			String estadoActual = estadoInicial;
 			String procesamiento = "";
-			for (int i = 0; i < cadena.length(); ++i) {
-				procesamiento += "(" + estadoActual + "," + cadena.substring(i) + ")->";
-				estadoActual = funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero.get(cadena.charAt(i))];
+			if (!cadena.equals("$")) {
+				for (int i = 0; i < cadena.length(); ++i) {
+					procesamiento += "(" + estadoActual + "," + cadena.substring(i) + ")->";
+					estadoActual = funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero
+							.get(cadena.charAt(i))];
 
+				}
 			}
 			procesamiento += "(" + estadoActual + "," + "$)>>";
 			boolean resultado = estadosAceptacion.contains(estadoActual);
@@ -202,17 +207,6 @@ public class AFD {
 		}
 		flujo_salida.flush();
 		flujo_salida.close();
-	}
-
-	public static void main(String[] args) {
-		AFD afd = new AFD("uno");
-		List<String> lista = new ArrayList<>();
-		lista.add("AAAAA");
-		lista.add("ACCCC");
-		lista.add("BBBBB");
-		lista.add("CCCCACCC");
-		lista.add("ACCCCAAABBBBAA");
-		afd.procesarListaCadenas(lista, "", true);
 	}
 
 }
