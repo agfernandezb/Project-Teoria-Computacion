@@ -180,7 +180,6 @@ public class AFPD {
 	public boolean procesarCadena(String cadena) {
 		String estadoActual = estadoInicial;
 		char pilaSiguiente;
-		String estadoSiguiente;
 		Vector<Character> pila = new Vector<>();
 		char topePila;
 		if (cadena.equals("$"))
@@ -194,7 +193,7 @@ public class AFPD {
 			configuracionSiguiente = funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
 					.get(cadena.charAt(i))][simboloPilaANumero.get(topePila)];
 			if (topePila != '$' && configuracionSiguiente != null) {
-				estadoSiguiente = configuracionSiguiente.split(":")[0];
+				estadoActual = configuracionSiguiente.split(":")[0];
 				pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
 				if (pilaSiguiente == '$') {// Remover tope
 					pila.remove(pila.size() - 1);
@@ -204,19 +203,46 @@ public class AFPD {
 			} else {
 				configuracionSiguiente = funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
 						.get(cadena.charAt(i))][simboloPilaANumero.get('$')];
-				if (configuracionSiguiente == null) {
-					return false;
-				}
-				estadoSiguiente = configuracionSiguiente.split(":")[0];
-				pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
-				if (pilaSiguiente != '$') {// Agregar tope
-					pila.add(pilaSiguiente);
+
+				if (configuracionSiguiente == null) { // consume Lambda
+					if (topePila != '$' && funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
+							.get('$')][simboloPilaANumero.get(topePila)] != null) {
+						configuracionSiguiente = funcionTransicion[estadoANumero
+								.get(estadoActual)][simboloAlfabetoANumero.get('$')][simboloPilaANumero.get(topePila)];
+						estadoActual = configuracionSiguiente.split(":")[0];
+						pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
+						if (pilaSiguiente == '$') { // Remover tope
+							pila.remove(pila.size() - 1);
+						} else if (pilaSiguiente != '$') {// Reemplazar tope
+							pila.set(pila.size() - 1, pilaSiguiente);
+						}
+
+					} else if (funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
+							.get('$')][simboloPilaANumero.get('$')] != null) { // topePila y simbolo son lambda
+						configuracionSiguiente = funcionTransicion[estadoANumero
+								.get(estadoActual)][simboloAlfabetoANumero.get('$')][simboloPilaANumero.get('$')];
+						estadoActual = configuracionSiguiente.split(":")[0];
+						pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
+						if (pilaSiguiente != '$') {
+							pila.add(pilaSiguiente);
+						}
+					} else {
+						return false;
+					}
+					--i; // Como el simbolo fue Lambda, no se puede mover
+				} else {
+					estadoActual = configuracionSiguiente.split(":")[0];
+					pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
+					if (pilaSiguiente != '$') {// Agregar tope
+						pila.add(pilaSiguiente);
+					}
 				}
 			}
 		}
 		return estadosAceptacion.contains(estadoActual) && pila.isEmpty();
 	}
 
+//Continue;
 	public boolean procesarCadenaConDetalles(String cadena) {
 		String estadoActual = estadoInicial;
 		char pilaSiguiente;
@@ -228,6 +254,12 @@ public class AFPD {
 		// Que pasa si no se termina el procesamiento, e ir añadiendo a resultado
 		if (!cadena.equals("$")) {
 			for (int i = 0; i < cadena.length(); ++i) {
+				pilaString = "";
+				for (int j = pila.size() - 1; j >= 0; --j) {
+					pilaString += pila.get(j);
+				}
+				if (pila.isEmpty())
+					pilaString = "$";
 				String configuracionSiguiente = null;
 				if (pila.isEmpty())
 					topePila = '$';
@@ -236,6 +268,7 @@ public class AFPD {
 				configuracionSiguiente = funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
 						.get(cadena.charAt(i))][simboloPilaANumero.get(topePila)];
 				if (topePila != '$' && configuracionSiguiente != null) {
+					procesamiento += "(" + estadoActual + "," + cadena.substring(i) + "," + pilaString + ")->";
 					estadoSiguiente = configuracionSiguiente.split(":")[0];
 					pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
 					if (pilaSiguiente == '$') {// Remover tope
@@ -243,12 +276,23 @@ public class AFPD {
 					} else if (pilaSiguiente != '$') {// Reemplazar tope
 						pila.set(pila.size() - 1, pilaSiguiente);
 					}
+					estadoActual = estadoSiguiente;
 				} else {
 					configuracionSiguiente = funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
 							.get(cadena.charAt(i))][simboloPilaANumero.get('$')];
 					if (configuracionSiguiente == null) {
-						return false;
+						// ABORTAR PROCESAMIENTO, A NO SER QUE HAYAN TRANSICIONES LAMBDA
+						if (funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
+								.get('$')][simboloPilaANumero.get(topePila)] != null) {
+
+						} else if (funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
+								.get('$')][simboloPilaANumero.get('$')] != null) {
+
+						} else {
+							return false;
+						}
 					}
+					procesamiento += "(" + estadoActual + "," + cadena.substring(i) + "," + pilaString + ")->";
 					estadoSiguiente = configuracionSiguiente.split(":")[0];
 					pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
 					if (pilaSiguiente != '$') {// Agregar tope
@@ -272,22 +316,6 @@ public class AFPD {
 		String resultadoProcesamiento = resultado ? "accepted" : "rejected";
 		System.out.println(procesamiento + resultadoProcesamiento);
 		return resultado;
-		/*
-		String estadoActual = estadoInicial;
-		String procesamiento = "";
-		if (!cadena.equals("$")) {
-			for (int i = 0; i < cadena.length(); ++i) {
-				procesamiento += "(" + estadoActual + "," + cadena.substring(i) + ")->";
-				estadoActual = funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero.get(cadena.charAt(i))];
-		
-			}
-		}
-		
-		boolean resultado = estadosAceptacion.contains(estadoActual);
-		String resultadoProcesamiento = resultado ? "accepted" : "rejected";
-		System.out.println(procesamiento + resultadoProcesamiento);
-		return resultado;
-		*/
 	}
 	/*
 	public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
