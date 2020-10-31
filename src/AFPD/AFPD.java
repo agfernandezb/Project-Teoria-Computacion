@@ -316,13 +316,19 @@ public class AFPD {
 		System.out.println(afpd.procesarCadena("abb"));
 		System.out.println(afpd.procesarCadena("$"));
 		AFD afd = new AFD("uno");
-		List<String> lista = new ArrayList<>();
+		System.out.println("/////////");
+		afd.fullProcesarCadena("$", true);
+		afd.fullProcesarCadena("ACCCC", true);
+		afd.fullProcesarCadena("BBBBB", true);
+		afd.fullProcesarCadena("CCCCACCC", true);
+		afd.fullProcesarCadena("ACCCCAAABBBBAA", true);
+		/*List<String> lista = new ArrayList<>();
 		lista.add("$");
 		lista.add("ACCCC");
 		lista.add("BBBBB");
 		lista.add("CCCCACCC");
 		lista.add("ACCCCAAABBBBAA");
-		afd.procesarListaCadenas(lista, "xd", true);
+		afd.procesarListaCadenas(lista, "xd", true);*/
 	}
 
 }
