@@ -20,9 +20,6 @@ public class AFPD {
 	private Set<Character> alfabetoCinta;
 	private Set<Character> alfabetoPila;
 	private FuncionTransicionAFPD delta;
-	private String[][][] funcionTransicion; // Triple, donde 0 representa lambda y pues debe haber un string el cual se
-											// puede tomar
-											// de hecho solo 1
 	private HashMap<String, Integer> estadoANumero;
 	private HashMap<Character, Integer> simboloAlfabetoANumero;
 	private HashMap<Character, Integer> simboloPilaANumero;
@@ -153,7 +150,6 @@ public class AFPD {
 				}
 				delta = new FuncionTransicionAFPD(conjuntoEstados, alfabetoCinta, alfabetoPila, estadoANumero,
 						simboloAlfabetoANumero, simboloPilaANumero);
-				funcionTransicion = new String[numeroEstado][numeroSimboloCinta][numeroSimboloPila];
 				for (int j = 0; j < ultima_linea && scanner.hasNext(); j++) {
 					String transicion = scanner.nextLine();
 					String estadoActual = transicion.split(">")[0].split(":")[0];
