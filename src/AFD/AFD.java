@@ -15,10 +15,10 @@ public class AFD {
 	private Set<String> conjuntoEstados;
 	private String estadoInicial;
 	private Set<String> estadosAceptacion;
-	private funcionTransicion delta;
+	private FuncionTransicionAFD delta;
 
 	public AFD(Set<Character> alfabeto, Set<String> conjuntoEstados, String estadoInicial,
-			Set<String> estadosAceptacion, funcionTransicion delta) {
+			Set<String> estadosAceptacion, FuncionTransicionAFD delta) {
 		super();
 		this.alfabeto = alfabeto;
 		this.conjuntoEstados = conjuntoEstados;
@@ -52,7 +52,7 @@ public class AFD {
 		Set<String> conjuntoEstados = new HashSet<String>();
 		String estadoInicial = null;
 		Set<String> estadosAceptacion = new HashSet<String>();
-		funcionTransicion delta = null;
+		FuncionTransicionAFD delta = null;
 		HashMap<String, Integer> estadoANumero = null;
 		HashMap<Character, Integer> simboloANumero = null;
 
@@ -112,7 +112,7 @@ public class AFD {
 					++numeroSimbolo;
 				}
 
-				delta = new funcionTransicion(alfabeto, conjuntoEstados, estadoANumero, simboloANumero);
+				delta = new FuncionTransicionAFD(alfabeto, conjuntoEstados, estadoANumero, simboloANumero);
 
 				for (int j = 0; j < ultima_linea && scanner.hasNext(); j++) {
 					String transicion = scanner.nextLine();

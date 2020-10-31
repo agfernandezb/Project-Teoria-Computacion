@@ -13,11 +13,13 @@ import java.util.Vector;
 import AFD.AFD;
 
 public class AFPD {
-	private Set<Character> alfabetoCinta;
-	private Set<Character> alfabetoPila;
+
 	private Set<String> conjuntoEstados;
 	private String estadoInicial;
 	private Set<String> estadosAceptacion;
+	private Set<Character> alfabetoCinta;
+	private Set<Character> alfabetoPila;
+	private FuncionTransicionAFPD delta;
 	private String[][][] funcionTransicion; // Triple, donde 0 representa lambda y pues debe haber un string el cual se
 											// puede tomar
 											// de hecho solo 1
@@ -25,15 +27,15 @@ public class AFPD {
 	private HashMap<Character, Integer> simboloAlfabetoANumero;
 	private HashMap<Character, Integer> simboloPilaANumero;
 
-	public AFPD(Set<Character> alfabetoCinta, Set<Character> alfabetoPila, Set<String> conjuntoEstados,
-			String estadoInicial, Set<String> estadosAceptacion, String[][][] funcionTransicion) {
+	public AFPD(Set<String> conjuntoEstados, String estadoInicial, Set<String> estadosAceptacion,
+			Set<Character> alfabetoCinta, Set<Character> alfabetoPila, FuncionTransicionAFPD delta) {
 		super();
-		this.alfabetoCinta = alfabetoCinta;
-		this.alfabetoPila = alfabetoPila;
 		this.conjuntoEstados = conjuntoEstados;
 		this.estadoInicial = estadoInicial;
 		this.estadosAceptacion = estadosAceptacion;
-		this.funcionTransicion = funcionTransicion;
+		this.alfabetoCinta = alfabetoCinta;
+		this.alfabetoPila = alfabetoPila;
+		this.delta = delta;
 	}
 
 	public AFPD(String nombre) {// Se supone que primero se procesa el alfabeto de cinta luego el de pila
@@ -57,16 +59,16 @@ public class AFPD {
 			System.out.println("Error en la lectura del archivo, no fue encontrado.");
 		}
 
-		Set<Character> alfabetoCinta = new HashSet<Character>();
-		Set<Character> alfabetoPila = new HashSet<Character>();
 		Set<String> conjuntoEstados = new HashSet<String>();
 		String estadoInicial = null;
 		Set<String> estadosAceptacion = new HashSet<String>();
-		String[][][] funcionTransicion = null;
+		Set<Character> alfabetoCinta = new HashSet<Character>();
+		Set<Character> alfabetoPila = new HashSet<Character>();
+		FuncionTransicionAFPD delta = null;
+		boolean procesoAlfabetoCinta = false; // AYUDA EN LA LECTURA PUESTO QUE AMBOS ENCABEZADOS SE LLAMAN ALFABETO.
 		HashMap<String, Integer> estadoANumero = null;
 		HashMap<Character, Integer> simboloAlfabetoANumero = null;
 		HashMap<Character, Integer> simboloPilaANumero = null;
-		boolean procesoAlfabetoCinta = false;
 
 		for (int i = 0; i < headers.length; i++) {
 			String encabezado = scanner.nextLine();
@@ -149,7 +151,8 @@ public class AFPD {
 					simboloPilaANumero.put(simbolo, numeroSimboloPila);
 					++numeroSimboloPila;
 				}
-
+				delta = new FuncionTransicionAFPD(conjuntoEstados, alfabetoCinta, alfabetoPila, estadoANumero,
+						simboloAlfabetoANumero, simboloPilaANumero);
 				funcionTransicion = new String[numeroEstado][numeroSimboloCinta][numeroSimboloPila];
 				for (int j = 0; j < ultima_linea && scanner.hasNext(); j++) {
 					String transicion = scanner.nextLine();
@@ -157,27 +160,23 @@ public class AFPD {
 					char simboloCinta = transicion.split(">")[0].split(":")[1].charAt(0);
 					char simboloPila = transicion.split(">")[0].split(":")[2].charAt(0);
 					String configuracionFinal = transicion.split(">")[1];
-					funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
-							.get(simboloCinta)][simboloPilaANumero.get(simboloPila)] = configuracionFinal;
+					delta.setTransicion(estadoActual, simboloCinta, simboloPila, configuracionFinal);
 				}
 				break;
 			}
 			}
 		}
 
-		this.estadoANumero = estadoANumero;
-		this.simboloAlfabetoANumero = simboloAlfabetoANumero;
-		this.simboloPilaANumero = simboloPilaANumero;
-		this.alfabetoCinta = alfabetoCinta;
-		this.alfabetoPila = alfabetoPila;
 		this.conjuntoEstados = conjuntoEstados;
 		this.estadoInicial = estadoInicial;
 		this.estadosAceptacion = estadosAceptacion;
-		this.funcionTransicion = funcionTransicion;
+		this.alfabetoCinta = alfabetoCinta;
+		this.alfabetoPila = alfabetoPila;
+		this.delta = delta;
 
 	}
 
-	public boolean procesarCadena(String cadena) {
+	public boolean procesarCadena(String cadena, boolean imprimirPantalla) {
 		String estadoActual = estadoInicial;
 		char pilaSiguiente;
 		Vector<Character> pila = new Vector<>();
@@ -240,6 +239,10 @@ public class AFPD {
 			}
 		}
 		return estadosAceptacion.contains(estadoActual) && pila.isEmpty();
+	}
+
+	public boolean procesarCadena(String cadena) {
+		return procesarCadena(cadena, false);
 	}
 
 //Continue; FALTA ESTE BICHO Y HACER PRUEBAS CON LAMBDA TRANSICIONES EN EL DE ARRIBA

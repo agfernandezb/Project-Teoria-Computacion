@@ -3,14 +3,14 @@ package AFD;
 import java.util.HashMap;
 import java.util.Set;
 
-public class funcionTransicion {
+public class FuncionTransicionAFD {
 	private Set<Character> alfabeto;
 	private Set<String> conjuntoEstados;
 	private HashMap<String, Integer> estadoANumero;
 	private HashMap<Character, Integer> simboloANumero;
 	private String[][] transiciones;
 
-	public funcionTransicion(Set<Character> alfabeto, Set<String> conjuntoEstados,
+	public FuncionTransicionAFD(Set<Character> alfabeto, Set<String> conjuntoEstados,
 			HashMap<String, Integer> estadoANumero, HashMap<Character, Integer> simboloANumero) {
 		super();
 		this.alfabeto = alfabeto;
