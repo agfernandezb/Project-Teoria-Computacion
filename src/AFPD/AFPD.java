@@ -315,7 +315,6 @@ public class AFPD {
 		System.out.println(afpd.procesarCadena("aaabb"));
 		System.out.println(afpd.procesarCadena("abb"));
 		System.out.println(afpd.procesarCadena("$"));
-
 		AFD afd = new AFD("uno");
 		List<String> lista = new ArrayList<>();
 		lista.add("$");
