@@ -34,7 +34,7 @@ public class FuncionTransicionAFPD {
 				.get(simboloPila)] = configuracionFinal;
 	}
 
-	public String getTransicion(String estadoActual, char simboloCinta, char simboloPila, String configuracionFinal) {
+	public String getTransicion(String estadoActual, char simboloCinta, char simboloPila) {
 		return transiciones[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
 				.get(simboloCinta)][simboloPilaANumero.get(simboloPila)];
 	}

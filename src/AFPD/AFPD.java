@@ -181,17 +181,24 @@ public class AFPD {
 		char pilaSiguiente;
 		Vector<Character> pila = new Vector<>();
 		char topePila;
+		String procesamiento = "";
+		String pilaString = "";
 		if (cadena.equals("$"))
 			return estadosAceptacion.contains(estadoActual);
 		for (int i = 0; i < cadena.length(); ++i) {
 			String configuracionSiguiente = null;
+			char simboloCinta = cadena.charAt(i);
 			if (pila.isEmpty())
 				topePila = '$';
 			else
 				topePila = pila.get(pila.size() - 1);
-			configuracionSiguiente = funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
-					.get(cadena.charAt(i))][simboloPilaANumero.get(topePila)];
-			if (topePila != '$' && configuracionSiguiente != null) {
+			configuracionSiguiente = delta.getTransicion(estadoActual, simboloCinta, topePila); // Tomamos la
+																								// transicion con el
+																								// tope de
+																								// pila y el simbolo
+																								// actual
+			if (topePila != '$' && configuracionSiguiente != null) { // Como topePila no es Lambda, solo se hace
+																		// reemplazo o eliminar
 				estadoActual = configuracionSiguiente.split(":")[0];
 				pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
 				if (pilaSiguiente == '$') {// Remover tope
@@ -200,14 +207,20 @@ public class AFPD {
 					pila.set(pila.size() - 1, pilaSiguiente);
 				}
 			} else {
-				configuracionSiguiente = funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
-						.get(cadena.charAt(i))][simboloPilaANumero.get('$')];
-
-				if (configuracionSiguiente == null) { // consume Lambda
-					if (topePila != '$' && funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
-							.get('$')][simboloPilaANumero.get(topePila)] != null) {
-						configuracionSiguiente = funcionTransicion[estadoANumero
-								.get(estadoActual)][simboloAlfabetoANumero.get('$')][simboloPilaANumero.get(topePila)];
+				configuracionSiguiente = delta.getTransicion(estadoActual, simboloCinta, '$'); // Tomamos como simbolo
+																								// de pila a Lambda
+				if (configuracionSiguiente != null) { // Consumimos unicamente un simbolo de cinta, y agregamos algo o
+														// no hacemos nada en la pila
+					estadoActual = configuracionSiguiente.split(":")[0];
+					pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
+					if (pilaSiguiente != '$') {// Agregar tope
+						pila.add(pilaSiguiente);
+					}
+				} else { // La unica posibilidad es que el simbolo de cinta sea Lambda
+					if (topePila != '$' && delta.getTransicion(estadoActual, '$', topePila) != null) { // Tope de pila
+																										// no es
+																										// lambda.
+						configuracionSiguiente = delta.getTransicion(estadoActual, '$', topePila);
 						estadoActual = configuracionSiguiente.split(":")[0];
 						pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
 						if (pilaSiguiente == '$') { // Remover tope
@@ -216,94 +229,21 @@ public class AFPD {
 							pila.set(pila.size() - 1, pilaSiguiente);
 						}
 
-					} else if (funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
-							.get('$')][simboloPilaANumero.get('$')] != null) { // topePila y simbolo son lambda
-						configuracionSiguiente = funcionTransicion[estadoANumero
-								.get(estadoActual)][simboloAlfabetoANumero.get('$')][simboloPilaANumero.get('$')];
+					} else if (delta.getTransicion(estadoActual, '$', '$') != null) { // Tope de pila y simbolo de
+																						// cinta
+																						// son ambos lambda.
+						configuracionSiguiente = delta.getTransicion(estadoActual, '$', '$');
 						estadoActual = configuracionSiguiente.split(":")[0];
 						pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
-						if (pilaSiguiente != '$') {
+						if (pilaSiguiente != '$') {// Agregar algo a la pila
 							pila.add(pilaSiguiente);
 						}
-					} else {
+					} else {// Ningun caso hizo funciono, se aborta el procesamiento de la cadena.
 						return false;
 					}
 					--i; // Como el simbolo fue Lambda, no se puede mover
-				} else {
-					estadoActual = configuracionSiguiente.split(":")[0];
-					pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
-					if (pilaSiguiente != '$') {// Agregar tope
-						pila.add(pilaSiguiente);
-					}
 				}
 			}
-		}
-		return estadosAceptacion.contains(estadoActual) && pila.isEmpty();
-	}
-
-	public boolean procesarCadena(String cadena) {
-		return procesarCadena(cadena, false);
-	}
-
-//Continue; FALTA ESTE BICHO Y HACER PRUEBAS CON LAMBDA TRANSICIONES EN EL DE ARRIBA
-	public boolean procesarCadenaConDetalles(String cadena) {
-		String estadoActual = estadoInicial;
-		char pilaSiguiente;
-		String estadoSiguiente;
-		Vector<Character> pila = new Vector<>();
-		char topePila;
-		String procesamiento = "";
-		String pilaString = "";
-		// Que pasa si no se termina el procesamiento, e ir añadiendo a resultado
-		if (!cadena.equals("$")) {
-			for (int i = 0; i < cadena.length(); ++i) {
-				pilaString = "";
-				for (int j = pila.size() - 1; j >= 0; --j) {
-					pilaString += pila.get(j);
-				}
-				if (pila.isEmpty())
-					pilaString = "$";
-				String configuracionSiguiente = null;
-				if (pila.isEmpty())
-					topePila = '$';
-				else
-					topePila = pila.get(pila.size() - 1);
-				configuracionSiguiente = funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
-						.get(cadena.charAt(i))][simboloPilaANumero.get(topePila)];
-				if (topePila != '$' && configuracionSiguiente != null) {
-					procesamiento += "(" + estadoActual + "," + cadena.substring(i) + "," + pilaString + ")->";
-					estadoSiguiente = configuracionSiguiente.split(":")[0];
-					pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
-					if (pilaSiguiente == '$') {// Remover tope
-						pila.remove(pila.size() - 1);
-					} else if (pilaSiguiente != '$') {// Reemplazar tope
-						pila.set(pila.size() - 1, pilaSiguiente);
-					}
-					estadoActual = estadoSiguiente;
-				} else {
-					configuracionSiguiente = funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
-							.get(cadena.charAt(i))][simboloPilaANumero.get('$')];
-					if (configuracionSiguiente == null) {
-						// ABORTAR PROCESAMIENTO, A NO SER QUE HAYAN TRANSICIONES LAMBDA
-						if (funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
-								.get('$')][simboloPilaANumero.get(topePila)] != null) {
-
-						} else if (funcionTransicion[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
-								.get('$')][simboloPilaANumero.get('$')] != null) {
-
-						} else {
-							return false;
-						}
-					}
-					procesamiento += "(" + estadoActual + "," + cadena.substring(i) + "," + pilaString + ")->";
-					estadoSiguiente = configuracionSiguiente.split(":")[0];
-					pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
-					if (pilaSiguiente != '$') {// Agregar tope
-						pila.add(pilaSiguiente);
-					}
-				}
-			}
-
 		}
 		// Se pudo procesar completamente la cadena
 		if (pila.isEmpty())
@@ -317,8 +257,17 @@ public class AFPD {
 		procesamiento += "(" + estadoActual + ",$," + pilaString + ")>>";
 		boolean resultado = estadosAceptacion.contains(estadoActual) && pila.isEmpty();
 		String resultadoProcesamiento = resultado ? "accepted" : "rejected";
-		System.out.println(procesamiento + resultadoProcesamiento);
+		if (imprimirPantalla)
+			System.out.println(procesamiento + resultadoProcesamiento);
 		return resultado;
+	}
+
+	public boolean procesarCadena(String cadena) {
+		return procesarCadena(cadena, false);
+	}
+
+	public boolean procesarCadenaConDetalles(String cadena) {
+		return procesarCadena(cadena, true);
 	}
 	/*
 	public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
