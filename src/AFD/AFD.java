@@ -15,19 +15,16 @@ public class AFD {
 	private Set<String> conjuntoEstados;
 	private String estadoInicial;
 	private Set<String> estadosAceptacion;
-	private String[][] funcionTransicion;
-	private HashMap<String, Integer> estadoANumero;
-	private HashMap<Character, Integer> simboloANumero;
+	private funcionTransicion delta;
 
 	public AFD(Set<Character> alfabeto, Set<String> conjuntoEstados, String estadoInicial,
-			Set<String> estadosAceptacion, String[][] funcionTransicion) {
+			Set<String> estadosAceptacion, funcionTransicion delta) {
 		super();
 		this.alfabeto = alfabeto;
 		this.conjuntoEstados = conjuntoEstados;
 		this.estadoInicial = estadoInicial;
 		this.estadosAceptacion = estadosAceptacion;
-		this.funcionTransicion = funcionTransicion;
-
+		this.delta = delta;
 	}
 
 	public AFD(String nombre) {
@@ -55,7 +52,7 @@ public class AFD {
 		Set<String> conjuntoEstados = new HashSet<String>();
 		String estadoInicial = null;
 		Set<String> estadosAceptacion = new HashSet<String>();
-		String[][] funcionTransicion = null;
+		funcionTransicion delta = null;
 		HashMap<String, Integer> estadoANumero = null;
 		HashMap<Character, Integer> simboloANumero = null;
 
@@ -115,26 +112,25 @@ public class AFD {
 					++numeroSimbolo;
 				}
 
-				funcionTransicion = new String[numeroEstado][alfabeto.size()];
+				delta = new funcionTransicion(alfabeto, conjuntoEstados, estadoANumero, simboloANumero);
+
 				for (int j = 0; j < ultima_linea && scanner.hasNext(); j++) {
 					String transicion = scanner.nextLine();
 					String estadoActual = transicion.split(":")[0];
 					char simbolo = transicion.split(":")[1].split(">")[0].charAt(0);
 					String estadoFinal = transicion.split(":")[1].split(">")[1];
-					funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero.get(simbolo)] = estadoFinal;
+					delta.setTransicion(estadoActual, simbolo, estadoFinal);
 				}
 				break;
 			}
 			}
 		}
 
-		this.estadoANumero = estadoANumero;
-		this.simboloANumero = simboloANumero;
 		this.alfabeto = alfabeto;
 		this.conjuntoEstados = conjuntoEstados;
 		this.estadoInicial = estadoInicial;
 		this.estadosAceptacion = estadosAceptacion;
-		this.funcionTransicion = funcionTransicion;
+		this.delta = delta;
 
 	}
 
@@ -143,7 +139,7 @@ public class AFD {
 			return estadosAceptacion.contains(estadoInicial);
 		String estadoActual = estadoInicial;
 		for (int i = 0; i < cadena.length(); ++i) {
-			estadoActual = funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero.get(cadena.charAt(i))];
+			estadoActual = delta.getTransicion(estadoActual, cadena.charAt(i));
 		}
 		return estadosAceptacion.contains(estadoActual);
 	}
@@ -154,7 +150,7 @@ public class AFD {
 		if (!cadena.equals("$")) {
 			for (int i = 0; i < cadena.length(); ++i) {
 				procesamiento += "(" + estadoActual + "," + cadena.substring(i) + ")->";
-				estadoActual = funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero.get(cadena.charAt(i))];
+				estadoActual = delta.getTransicion(estadoActual, cadena.charAt(i));
 
 			}
 		}
@@ -190,8 +186,7 @@ public class AFD {
 			if (!cadena.equals("$")) {
 				for (int i = 0; i < cadena.length(); ++i) {
 					procesamiento += "(" + estadoActual + "," + cadena.substring(i) + ")->";
-					estadoActual = funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero
-							.get(cadena.charAt(i))];
+					estadoActual = delta.getTransicion(estadoActual, cadena.charAt(i));
 
 				}
 			}

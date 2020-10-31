@@ -242,7 +242,7 @@ public class AFPD {
 		return estadosAceptacion.contains(estadoActual) && pila.isEmpty();
 	}
 
-//Continue;
+//Continue; FALTA ESTE BICHO Y HACER PRUEBAS CON LAMBDA TRANSICIONES EN EL DE ARRIBA
 	public boolean procesarCadenaConDetalles(String cadena) {
 		String estadoActual = estadoInicial;
 		char pilaSiguiente;
