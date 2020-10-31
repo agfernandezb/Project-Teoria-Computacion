@@ -322,6 +322,7 @@ public class AFPD {
 		afd.fullProcesarCadena("BBBBB", true);
 		afd.fullProcesarCadena("CCCCACCC", true);
 		afd.fullProcesarCadena("ACCCCAAABBBBAA", true);
+		System.out.println("/////////>:D");
 		/*List<String> lista = new ArrayList<>();
 		lista.add("$");
 		lista.add("ACCCC");
