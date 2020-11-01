@@ -179,9 +179,24 @@ public class AFPD {
 		char topePila;
 		String procesamiento = "";
 		String pilaString = "";
-		if (cadena.equals("$"))
-			return estadosAceptacion.contains(estadoActual);
+		if (cadena.equals("$")) {
+			procesamiento += "(" + estadoInicial + ",$,$" + ")>>";
+			boolean resultado = estadosAceptacion.contains(estadoInicial);
+			String resultadoProcesamiento = resultado ? "accepted" : "rejected";
+			if (imprimirPantalla)
+				System.out.println(procesamiento + resultadoProcesamiento);
+			return resultado;
+		}
 		for (int i = 0; i < cadena.length(); ++i) {
+			if (pila.isEmpty())
+				pilaString = "$";
+			else {
+				pilaString = "";
+				for (int j = pila.size() - 1; j >= 0; --j) {
+					pilaString += pila.get(j);
+				}
+			}
+			procesamiento += "(" + estadoActual + "," + cadena.substring(i) + "," + pilaString + ")->";
 			String configuracionSiguiente = null;
 			char simboloCinta = cadena.charAt(i);
 			if (pila.isEmpty())
@@ -235,6 +250,8 @@ public class AFPD {
 							pila.add(pilaSiguiente);
 						}
 					} else {// Ningun caso hizo funciono, se aborta el procesamiento de la cadena.
+						procesamiento += ">>rejected";
+						if(imprimirPantalla) System.out.println(procesamiento);
 						return false;
 					}
 					--i; // Como el simbolo fue Lambda, no se puede mover
@@ -309,12 +326,12 @@ public class AFPD {
 
 	public static void main(String[] args) {
 		AFPD afpd = new AFPD("uno");
-		System.out.println(afpd.procesarCadena("aaabbba"));
-		System.out.println(afpd.procesarCadena("aaabbb"));
-		System.out.println(afpd.procesarCadena("bbbaaa"));
-		System.out.println(afpd.procesarCadena("aaabb"));
-		System.out.println(afpd.procesarCadena("abb"));
-		System.out.println(afpd.procesarCadena("$"));
+		System.out.println(afpd.procesarCadenaConDetalles("aaabbba"));
+		System.out.println(afpd.procesarCadenaConDetalles("aaabbb"));
+		System.out.println(afpd.procesarCadenaConDetalles("bbbaaa"));
+		System.out.println(afpd.procesarCadenaConDetalles("aaabb"));
+		System.out.println(afpd.procesarCadenaConDetalles("abb"));
+		System.out.println(afpd.procesarCadenaConDetalles("$"));
 		AFD afd = new AFD("uno");
 		System.out.println("/////////");
 		afd.fullProcesarCadena("$", true);
