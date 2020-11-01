@@ -2,9 +2,11 @@ package AFPD;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -172,7 +174,7 @@ public class AFPD {
 
 	}
 
-	public boolean procesarCadena(String cadena, boolean imprimirPantalla) {
+	public String procesarCadena(String cadena, boolean retornarProcesamiento) {
 		String estadoActual = estadoInicial;
 		char pilaSiguiente;
 		Vector<Character> pila = new Vector<>();
@@ -183,9 +185,9 @@ public class AFPD {
 			procesamiento += "(" + estadoInicial + ",$,$" + ")>>";
 			boolean resultado = estadosAceptacion.contains(estadoInicial);
 			String resultadoProcesamiento = resultado ? "accepted" : "rejected";
-			if (imprimirPantalla)
-				System.out.println(procesamiento + resultadoProcesamiento);
-			return resultado;
+			if (retornarProcesamiento)
+				return procesamiento + resultadoProcesamiento;
+			return resultadoProcesamiento;
 		}
 		for (int i = 0; i < cadena.length(); ++i) {
 			if (pila.isEmpty())
@@ -196,7 +198,7 @@ public class AFPD {
 					pilaString += pila.get(j);
 				}
 			}
-			procesamiento += "(" + estadoActual + "," + cadena.substring(i) + "," + pilaString + ")->";
+			procesamiento += "(" + estadoActual + "," + cadena.substring(i) + "," + pilaString + ")";
 			String configuracionSiguiente = null;
 			char simboloCinta = cadena.charAt(i);
 			if (pila.isEmpty())
@@ -251,12 +253,13 @@ public class AFPD {
 						}
 					} else {// Ningun caso hizo funciono, se aborta el procesamiento de la cadena.
 						procesamiento += ">>rejected";
-						if(imprimirPantalla) System.out.println(procesamiento);
-						return false;
+						if(retornarProcesamiento) return procesamiento;
+						return "rejected";
 					}
 					--i; // Como el simbolo fue Lambda, no se puede mover
 				}
 			}
+			procesamiento += "->";
 		}
 		// Se pudo procesar completamente la cadena
 		if (pila.isEmpty())
@@ -270,29 +273,31 @@ public class AFPD {
 		procesamiento += "(" + estadoActual + ",$," + pilaString + ")>>";
 		boolean resultado = estadosAceptacion.contains(estadoActual) && pila.isEmpty();
 		String resultadoProcesamiento = resultado ? "accepted" : "rejected";
-		if (imprimirPantalla)
-			System.out.println(procesamiento + resultadoProcesamiento);
-		return resultado;
+		if (retornarProcesamiento)
+			return procesamiento + resultadoProcesamiento;
+		return resultadoProcesamiento;
 	}
 
 	public boolean procesarCadena(String cadena) {
-		return procesarCadena(cadena, false);
+		return procesarCadena(cadena, false).equals("accepted");
 	}
 
 	public boolean procesarCadenaConDetalles(String cadena) {
-		return procesarCadena(cadena, true);
+		String procesamiento = procesarCadena(cadena, true);
+		System.out.println(procesamiento);
+		return procesamiento.split(">>")[1].equals("accepted");
 	}
-	/*
+	
 	public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
 	
 		PrintStream flujo_salida;
 		File archivo = null;
 		if (nombreArchivo != null && nombreArchivo.length() > 0)
-			archivo = new File("src/ProcesamientoCadenas/AFD/" + nombreArchivo + ".dfa");
+			archivo = new File("src/ProcesamientoCadenas/AFPD/" + nombreArchivo + ".dpda");
 		try {
 			flujo_salida = new PrintStream(archivo);
 		} catch (Exception e) {
-			archivo = new File("src/ProcesamientoCadenas/AFD/" + "procesamientoListaCadenas" + ".dfa");
+			archivo = new File("src/ProcesamientoCadenas/AFPD/" + "procesamientoListaCadenas" + ".dpda");
 			try {
 				flujo_salida = new PrintStream(archivo);
 			} catch (FileNotFoundException e1) {
@@ -303,26 +308,18 @@ public class AFPD {
 	
 		for (Iterator<String> iterator = listaCadenas.iterator(); iterator.hasNext();) {
 			String cadena = (String) iterator.next();
-			String estadoActual = estadoInicial;
-			String procesamiento = "";
-			for (int i = 0; i < cadena.length(); ++i) {
-				procesamiento += "(" + estadoActual + "," + cadena.substring(i) + ")->";
-				estadoActual = funcionTransicion[estadoANumero.get(estadoActual)][simboloANumero.get(cadena.charAt(i))];
-	
-			}
-			procesamiento += "(" + estadoActual + "," + "$)>>";
-			boolean resultado = estadosAceptacion.contains(estadoActual);
-			String resultadoProcesamiento = resultado ? "accepted" : "rejected";
+			String procesamiento = procesarCadena(cadena, true);
+			boolean resultado = procesamiento.split(">>")[1].equals("accepted");
 			if (imprimirPantalla)
-				System.out.println(procesamiento + resultadoProcesamiento);
+				System.out.println(procesamiento);
 			flujo_salida.print(cadena + "\t");
-			flujo_salida.print(procesamiento + resultadoProcesamiento + "\t");
+			flujo_salida.print(procesamiento +"\t");
 			flujo_salida.println(resultado ? "yes" : "no");
 	
 		}
 		flujo_salida.flush();
 		flujo_salida.close();
-	}*/
+	}
 
 	public static void main(String[] args) {
 		AFPD afpd = new AFPD("uno");
