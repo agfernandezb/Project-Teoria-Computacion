@@ -1,9 +1,10 @@
-package AFPD;
+package AFPN;
 
 import java.util.HashMap;
 import java.util.Set;
+import java.util.Vector;
 
-public class FuncionTransicionAFPD {
+public class FuncionTransicionAFPN {
 	private Set<String> conjuntoEstados;
 	private Set<Character> alfabetoCinta;
 	private Set<Character> alfabetoPila;
@@ -14,7 +15,7 @@ public class FuncionTransicionAFPD {
 										// puede tomar
 										// de hecho solo 1
 
-	public FuncionTransicionAFPD(Set<String> conjuntoEstados, Set<Character> alfabetoCinta, Set<Character> alfabetoPila,
+	public FuncionTransicionAFPN(Set<String> conjuntoEstados, Set<Character> alfabetoCinta, Set<Character> alfabetoPila,
 			HashMap<String, Integer> estadoANumero, HashMap<Character, Integer> simboloAlfabetoANumero,
 			HashMap<Character, Integer> simboloPilaANumero) {
 		super();
@@ -34,9 +35,21 @@ public class FuncionTransicionAFPD {
 				.get(simboloPila)] = configuracionFinal;
 	}
 
-	public String getTransicion(String estadoActual, char simboloCinta, char simboloPila) {
-		return transiciones[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
+	public Vector<String> getTransicion(String estadoActual, char simboloCinta, char simboloPila) {
+		
+		String transicion = transiciones[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
 				.get(simboloCinta)][simboloPilaANumero.get(simboloPila)];
+		if(transicion == null) return null;
+		else
+		{
+			Vector<String> posiblesTransiciones = new Vector<>();
+			String[] transiciones = transicion.split(";");
+			for(int i = 0; i < transiciones.length; ++i)
+			{
+				posiblesTransiciones.add(transiciones[i]);
+			}
+			return posiblesTransiciones;
+		}
 	}
 
 }

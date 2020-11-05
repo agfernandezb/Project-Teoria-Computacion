@@ -192,7 +192,7 @@ public class AFPD {
 		}
 	}
 	
-	public String procesarCadena(String cadena, boolean retornarProcesamiento) {
+	private String procesarCadena(String cadena, boolean retornarProcesamiento) {
 		String estadoActual = estadoInicial;
 		char pilaSiguiente;
 		Vector<Character> pila = new Vector<>();

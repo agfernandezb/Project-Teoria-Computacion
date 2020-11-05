@@ -40,7 +40,7 @@ public class AFPN {
 	public AFPN(String nombre) {// Se supone que primero se procesa el alfabeto de cinta luego el de pila
 		Scanner scanner = null;
 		int[] headers = new int[6]; // Encabezados como #alphabet, guarda sus posiciones
-		File archivo = new File("src/Pruebas/AFPD/" + nombre + ".pda");
+		File archivo = new File("src/Pruebas/AFPN/" + nombre + ".pda");
 
 		try {
 			scanner = new Scanner(archivo);
@@ -63,7 +63,7 @@ public class AFPN {
 		Set<String> estadosAceptacion = new HashSet<String>();
 		Set<Character> alfabetoCinta = new HashSet<Character>();
 		Set<Character> alfabetoPila = new HashSet<Character>();
-		FuncionTransicionAFPD delta = null;
+		FuncionTransicionAFPN delta = null;
 		boolean procesoAlfabetoCinta = false; // AYUDA EN LA LECTURA PUESTO QUE AMBOS ENCABEZADOS SE LLAMAN ALFABETO.
 		HashMap<String, Integer> estadoANumero = null;
 		HashMap<Character, Integer> simboloAlfabetoANumero = null;
@@ -150,7 +150,7 @@ public class AFPN {
 					simboloPilaANumero.put(simbolo, numeroSimboloPila);
 					++numeroSimboloPila;
 				}
-				delta = new FuncionTransicionAFPD(conjuntoEstados, alfabetoCinta, alfabetoPila, estadoANumero,
+				delta = new FuncionTransicionAFPN(conjuntoEstados, alfabetoCinta, alfabetoPila, estadoANumero,
 						simboloAlfabetoANumero, simboloPilaANumero);
 				for (int j = 0; j < ultima_linea && scanner.hasNext(); j++) {
 					String transicion = scanner.nextLine();
@@ -174,8 +174,16 @@ public class AFPN {
 
 	}
 
+	public Vector<String> procesamientosCadena(String cadena){
+		Vector<String> procesamientos;
+		return null;
+	}
+	public void procesarConfiguracionInstantanea()
+	{
+		
+	}
 	public String procesarCadena(String cadena, boolean retornarProcesamiento) {
-		String estadoActual = estadoInicial;
+		/*String estadoActual = estadoInicial;
 		char pilaSiguiente;
 		Vector<Character> pila = new Vector<>();
 		char topePila;
@@ -275,9 +283,10 @@ public class AFPN {
 		String resultadoProcesamiento = resultado ? "accepted" : "rejected";
 		if (retornarProcesamiento)
 			return procesamiento + resultadoProcesamiento;
-		return resultadoProcesamiento;
+		return resultadoProcesamiento;*/
+		return null;///////////
 	}
-
+/*
 	public boolean procesarCadena(String cadena) {
 		return procesarCadena(cadena, false).equals("accepted");
 	}
@@ -322,7 +331,7 @@ public class AFPN {
 	}
 
 	public static void main(String[] args) {
-		AFPN afpd = new AFPN("uno");
+		AFPD afpd = new AFPD("uno");
 		System.out.println(afpd.procesarCadenaConDetalles("aaabbba"));
 		System.out.println(afpd.procesarCadenaConDetalles("aaabbb"));
 		System.out.println(afpd.procesarCadenaConDetalles("bbbaaa"));
@@ -337,13 +346,14 @@ public class AFPN {
 		afd.fullProcesarCadena("CCCCACCC", true);
 		afd.fullProcesarCadena("ACCCCAAABBBBAA", true);
 		System.out.println("/////////>:D");
-		/*List<String> lista = new ArrayList<>();
+		List<String> lista = new ArrayList<>();
 		lista.add("$");
 		lista.add("ACCCC");
 		lista.add("BBBBB");
 		lista.add("CCCCACCC");
 		lista.add("ACCCCAAABBBBAA");
-		afd.procesarListaCadenas(lista, "xd", true);*/
+		afd.procesarListaCadenas(lista, "xd", true);
 	}
+*/
 
 }
