@@ -174,6 +174,24 @@ public class AFPD {
 
 	}
 
+	public void modificarPila(Vector<Character> pila, String operacion, char parametro)
+	{
+		switch (operacion) {
+		case "Reemplazo": {
+			pila.set(pila.size() - 1, parametro);
+			break;
+		}
+		case "Insertar": {
+			pila.add(parametro);
+			break;
+		}
+		case "Remover": {
+			pila.remove(pila.size() - 1);
+			break;
+		}			
+		}
+	}
+	
 	public String procesarCadena(String cadena, boolean retornarProcesamiento) {
 		String estadoActual = estadoInicial;
 		char pilaSiguiente;
@@ -215,9 +233,9 @@ public class AFPD {
 				estadoActual = configuracionSiguiente.split(":")[0];
 				pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
 				if (pilaSiguiente == '$') {// Remover tope
-					pila.remove(pila.size() - 1);
+					modificarPila(pila, "Remover", '$');
 				} else if (pilaSiguiente != '$') {// Reemplazar tope
-					pila.set(pila.size() - 1, pilaSiguiente);
+					modificarPila(pila, "Reemplazo", pilaSiguiente);
 				}
 			} else {
 				configuracionSiguiente = delta.getTransicion(estadoActual, simboloCinta, '$'); // Tomamos como simbolo
@@ -227,7 +245,7 @@ public class AFPD {
 					estadoActual = configuracionSiguiente.split(":")[0];
 					pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
 					if (pilaSiguiente != '$') {// Agregar tope
-						pila.add(pilaSiguiente);
+						modificarPila(pila, "Insertar", pilaSiguiente);
 					}
 				} else { // La unica posibilidad es que el simbolo de cinta sea Lambda
 					if (topePila != '$' && delta.getTransicion(estadoActual, '$', topePila) != null) { // Tope de pila
@@ -237,9 +255,9 @@ public class AFPD {
 						estadoActual = configuracionSiguiente.split(":")[0];
 						pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
 						if (pilaSiguiente == '$') { // Remover tope
-							pila.remove(pila.size() - 1);
+							modificarPila(pila, "Remover", '$');
 						} else if (pilaSiguiente != '$') {// Reemplazar tope
-							pila.set(pila.size() - 1, pilaSiguiente);
+							modificarPila(pila, "Reemplazo", pilaSiguiente);
 						}
 
 					} else if (delta.getTransicion(estadoActual, '$', '$') != null) { // Tope de pila y simbolo de
@@ -249,7 +267,7 @@ public class AFPD {
 						estadoActual = configuracionSiguiente.split(":")[0];
 						pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
 						if (pilaSiguiente != '$') {// Agregar algo a la pila
-							pila.add(pilaSiguiente);
+							modificarPila(pila, "Insertar", pilaSiguiente);
 						}
 					} else {// Ningun caso hizo funciono, se aborta el procesamiento de la cadena.
 						procesamiento += ">>rejected";
