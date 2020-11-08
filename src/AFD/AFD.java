@@ -133,13 +133,14 @@ public class AFD {
 		this.delta = delta;
 
 	}
+
 	public boolean fullProcesarCadena(String cadena, boolean mostrarProceso) {
 		String estadoActual = estadoInicial;
 		String procesamiento = "";
-		
+
 		if (cadena.equals("$"))
 			return estadosAceptacion.contains(estadoInicial);
-		
+
 		for (int i = 0; i < cadena.length(); ++i) {
 			procesamiento += "(" + estadoActual + "," + cadena.substring(i) + ")->";
 			estadoActual = delta.getTransicion(estadoActual, cadena.charAt(i));
@@ -147,12 +148,13 @@ public class AFD {
 		procesamiento += "(" + estadoActual + "," + "$)>>";
 		boolean resultado = estadosAceptacion.contains(estadoActual);
 		String resultadoProcesamiento = resultado ? "accepted" : "rejected";
-		
-		if(mostrarProceso) System.out.println(procesamiento + resultadoProcesamiento);
-		
+
+		if (mostrarProceso)
+			System.out.println(procesamiento + resultadoProcesamiento);
+
 		return resultado;
 	}
-	
+
 	public boolean procesarCadena(String cadena) {
 		if (cadena.equals("$"))
 			return estadosAceptacion.contains(estadoInicial);

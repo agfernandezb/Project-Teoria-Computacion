@@ -3,7 +3,6 @@ package AFPD;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -174,8 +173,7 @@ public class AFPD {
 
 	}
 
-	public void modificarPila(Vector<Character> pila, String operacion, char parametro)
-	{
+	public void modificarPila(Vector<Character> pila, String operacion, char parametro) {
 		switch (operacion) {
 		case "Reemplazo": {
 			pila.set(pila.size() - 1, parametro);
@@ -188,10 +186,10 @@ public class AFPD {
 		case "Remover": {
 			pila.remove(pila.size() - 1);
 			break;
-		}			
+		}
 		}
 	}
-	
+
 	private String procesarCadena(String cadena, boolean retornarProcesamiento) {
 		String estadoActual = estadoInicial;
 		char pilaSiguiente;
@@ -271,7 +269,8 @@ public class AFPD {
 						}
 					} else {// Ningun caso hizo funciono, se aborta el procesamiento de la cadena.
 						procesamiento += ">>rejected";
-						if(retornarProcesamiento) return procesamiento;
+						if (retornarProcesamiento)
+							return procesamiento;
 						return "rejected";
 					}
 					--i; // Como el simbolo fue Lambda, no se puede mover
@@ -305,9 +304,9 @@ public class AFPD {
 		System.out.println(procesamiento);
 		return procesamiento.split(">>")[1].equals("accepted");
 	}
-	
+
 	public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
-	
+
 		PrintStream flujo_salida;
 		File archivo = null;
 		if (nombreArchivo != null && nombreArchivo.length() > 0)
@@ -323,7 +322,7 @@ public class AFPD {
 				return;
 			}
 		}
-	
+
 		for (Iterator<String> iterator = listaCadenas.iterator(); iterator.hasNext();) {
 			String cadena = (String) iterator.next();
 			String procesamiento = procesarCadena(cadena, true);
@@ -331,9 +330,9 @@ public class AFPD {
 			if (imprimirPantalla)
 				System.out.println(procesamiento);
 			flujo_salida.print(cadena + "\t");
-			flujo_salida.print(procesamiento +"\t");
+			flujo_salida.print(procesamiento + "\t");
 			flujo_salida.println(resultado ? "yes" : "no");
-	
+
 		}
 		flujo_salida.flush();
 		flujo_salida.close();
@@ -354,7 +353,6 @@ public class AFPD {
 		afd.fullProcesarCadena("BBBBB", true);
 		afd.fullProcesarCadena("CCCCACCC", true);
 		afd.fullProcesarCadena("ACCCCAAABBBBAA", true);
-		System.out.println("/////////>:D");
 		/*List<String> lista = new ArrayList<>();
 		lista.add("$");
 		lista.add("ACCCC");

@@ -36,16 +36,15 @@ public class FuncionTransicionAFPN {
 	}
 
 	public Vector<String> getTransicion(String estadoActual, char simboloCinta, char simboloPila) {
-		
+
 		String transicion = transiciones[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
 				.get(simboloCinta)][simboloPilaANumero.get(simboloPila)];
-		if(transicion == null) return null;
-		else
-		{
+		if (transicion == null)
+			return null;
+		else {
 			Vector<String> posiblesTransiciones = new Vector<>();
 			String[] transiciones = transicion.split(";");
-			for(int i = 0; i < transiciones.length; ++i)
-			{
+			for (int i = 0; i < transiciones.length; ++i) {
 				posiblesTransiciones.add(transiciones[i]);
 			}
 			return posiblesTransiciones;

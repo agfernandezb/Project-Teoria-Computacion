@@ -2,17 +2,11 @@ package AFPN;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
-
-import AFD.AFD;
 
 public class AFPN {
 
@@ -174,16 +168,66 @@ public class AFPN {
 
 	}
 
-	public Vector<String> procesamientosCadena(String cadena){
-		Vector<String> procesamientos;
-		return null;
+	public Vector<String> procesamientosCadena(String cadena) {
+
+		String configuracion = estadoInicial + "," + cadena + "," + "$";
+		ArbolConfiguraciones arbol = new ArbolConfiguraciones(configuracion);
+		procesarConfiguracionInstantanea(configuracion, arbol.getRaiz());
+		return arbol.getProcesamientos();
+
 	}
-	public void procesarConfiguracionInstantanea()
-	{
-		
+
+	public String modificarPila(String pila, String operacion, char parametro) {
+		switch (operacion) {
+		case "Reemplazo": {
+			pila = pila.substring(1, pila.length());
+			pila = String.valueOf(parametro) + pila;
+			break;
+		}
+		case "Insertar": {
+			pila = String.valueOf(parametro) + pila;
+			break;
+		}
+		case "Remover": {
+			pila = pila.substring(1, pila.length());
+			break;
+		}
+		}
+		return pila;
 	}
+
+	public String siguienteConfiguracion(String estado, String cinta, String pila) {
+		return estado + "," + cinta + "," + pila;
+	}
+
+	public void procesarConfiguracionInstantanea(String configuracionInstantanea, Nodo_CI nodo) {
+		String estadoActual = configuracionInstantanea.split(",")[0];
+		String cadena = configuracionInstantanea.split(",")[1];
+		String pila = configuracionInstantanea.split(",")[2];
+		char simboloPila = pila.charAt(0);
+
+		if (simboloPila != '$' && delta.getTransicion(estadoActual, '$', simboloPila) != null) {
+			Vector<String> transiciones = delta.getTransicion(estadoActual, '$', simboloPila);
+			for (String transicion : transiciones) {
+				String siguienteEstado = transicion.split(";")[0];
+				String operacion = transicion.split(";")[1].equals("$") ? "Reemplazo" : "Remover";
+				String pilaModificada = modificarPila(pila, operacion, transicion.split(";")[1].charAt(0));
+				String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, "$", pilaModificada);
+			}
+
+		}
+		if (delta.getTransicion(estadoActual, '$', '$') != null) {
+
+		}
+		if (!cadena.equals("$")) // probar con lambda y con el simbolo, en cada uno de esos se prueba con el simbolo de pila o lambda..., 4 casos
+		{
+
+		}
+
+	}
+
 	public String procesarCadena(String cadena, boolean retornarProcesamiento) {
-		/*String estadoActual = estadoInicial;
+		/*String estadoActual = estadoInicial;  
 		char pilaSiguiente;
 		Vector<Character> pila = new Vector<>();
 		char topePila;
@@ -216,7 +260,7 @@ public class AFPN {
 			configuracionSiguiente = delta.getTransicion(estadoActual, simboloCinta, topePila); // Tomamos la
 																								// transicion con el
 																								// tope de
-																								// pila y el simbolo
+						 																		// pila y el simbolo
 																								// actual
 			if (topePila != '$' && configuracionSiguiente != null) { // Como topePila no es Lambda, solo se hace
 																		// reemplazo o eliminar
@@ -249,7 +293,7 @@ public class AFPN {
 						} else if (pilaSiguiente != '$') {// Reemplazar tope
 							pila.set(pila.size() - 1, pilaSiguiente);
 						}
-
+		
 					} else if (delta.getTransicion(estadoActual, '$', '$') != null) { // Tope de pila y simbolo de
 																						// cinta
 																						// son ambos lambda.
@@ -286,74 +330,74 @@ public class AFPN {
 		return resultadoProcesamiento;*/
 		return null;///////////
 	}
-/*
-	public boolean procesarCadena(String cadena) {
-		return procesarCadena(cadena, false).equals("accepted");
-	}
-
-	public boolean procesarCadenaConDetalles(String cadena) {
-		String procesamiento = procesarCadena(cadena, true);
-		System.out.println(procesamiento);
-		return procesamiento.split(">>")[1].equals("accepted");
-	}
+	/*
+		public boolean procesarCadena(String cadena) {
+			return procesarCadena(cadena, false).equals("accepted");
+		}
 	
-	public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
-	
-		PrintStream flujo_salida;
-		File archivo = null;
-		if (nombreArchivo != null && nombreArchivo.length() > 0)
-			archivo = new File("src/ProcesamientoCadenas/AFPD/" + nombreArchivo + ".dpda");
-		try {
-			flujo_salida = new PrintStream(archivo);
-		} catch (Exception e) {
-			archivo = new File("src/ProcesamientoCadenas/AFPD/" + "procesamientoListaCadenas" + ".dpda");
+		public boolean procesarCadenaConDetalles(String cadena) {
+			String procesamiento = procesarCadena(cadena, true);
+			System.out.println(procesamiento);
+			return procesamiento.split(">>")[1].equals("accepted");
+		}
+		
+		public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
+		
+			PrintStream flujo_salida;
+			File archivo = null;
+			if (nombreArchivo != null && nombreArchivo.length() > 0)
+				archivo = new File("src/ProcesamientoCadenas/AFPD/" + nombreArchivo + ".dpda");
 			try {
 				flujo_salida = new PrintStream(archivo);
-			} catch (FileNotFoundException e1) {
-				System.out.println("Error en el procesamiento de cadenas");
-				return;
+			} catch (Exception e) {
+				archivo = new File("src/ProcesamientoCadenas/AFPD/" + "procesamientoListaCadenas" + ".dpda");
+				try {
+					flujo_salida = new PrintStream(archivo);
+				} catch (FileNotFoundException e1) {
+					System.out.println("Error en el procesamiento de cadenas");
+					return;
+				}
 			}
+		
+			for (Iterator<String> iterator = listaCadenas.iterator(); iterator.hasNext();) {
+				String cadena = (String) iterator.next();
+				String procesamiento = procesarCadena(cadena, true);
+				boolean resultado = procesamiento.split(">>")[1].equals("accepted");
+				if (imprimirPantalla)
+					System.out.println(procesamiento);
+				flujo_salida.print(cadena + "\t");
+				flujo_salida.print(procesamiento +"\t");
+				flujo_salida.println(resultado ? "yes" : "no");
+		
+			}
+			flujo_salida.flush();
+			flujo_salida.close();
 		}
 	
-		for (Iterator<String> iterator = listaCadenas.iterator(); iterator.hasNext();) {
-			String cadena = (String) iterator.next();
-			String procesamiento = procesarCadena(cadena, true);
-			boolean resultado = procesamiento.split(">>")[1].equals("accepted");
-			if (imprimirPantalla)
-				System.out.println(procesamiento);
-			flujo_salida.print(cadena + "\t");
-			flujo_salida.print(procesamiento +"\t");
-			flujo_salida.println(resultado ? "yes" : "no");
-	
+		public static void main(String[] args) {
+			AFPD afpd = new AFPD("uno");
+			System.out.println(afpd.procesarCadenaConDetalles("aaabbba"));
+			System.out.println(afpd.procesarCadenaConDetalles("aaabbb"));
+			System.out.println(afpd.procesarCadenaConDetalles("bbbaaa"));
+			System.out.println(afpd.procesarCadenaConDetalles("aaabb"));
+			System.out.println(afpd.procesarCadenaConDetalles("abb"));
+			System.out.println(afpd.procesarCadenaConDetalles("$"));
+			AFD afd = new AFD("uno");
+			System.out.println("/////////");
+			afd.fullProcesarCadena("$", true);
+			afd.fullProcesarCadena("ACCCC", true);
+			afd.fullProcesarCadena("BBBBB", true);
+			afd.fullProcesarCadena("CCCCACCC", true);
+			afd.fullProcesarCadena("ACCCCAAABBBBAA", true);
+			System.out.println("/////////>:D");
+			List<String> lista = new ArrayList<>();
+			lista.add("$");
+			lista.add("ACCCC");
+			lista.add("BBBBB");
+			lista.add("CCCCACCC");
+			lista.add("ACCCCAAABBBBAA");
+			afd.procesarListaCadenas(lista, "xd", true);
 		}
-		flujo_salida.flush();
-		flujo_salida.close();
-	}
-
-	public static void main(String[] args) {
-		AFPD afpd = new AFPD("uno");
-		System.out.println(afpd.procesarCadenaConDetalles("aaabbba"));
-		System.out.println(afpd.procesarCadenaConDetalles("aaabbb"));
-		System.out.println(afpd.procesarCadenaConDetalles("bbbaaa"));
-		System.out.println(afpd.procesarCadenaConDetalles("aaabb"));
-		System.out.println(afpd.procesarCadenaConDetalles("abb"));
-		System.out.println(afpd.procesarCadenaConDetalles("$"));
-		AFD afd = new AFD("uno");
-		System.out.println("/////////");
-		afd.fullProcesarCadena("$", true);
-		afd.fullProcesarCadena("ACCCC", true);
-		afd.fullProcesarCadena("BBBBB", true);
-		afd.fullProcesarCadena("CCCCACCC", true);
-		afd.fullProcesarCadena("ACCCCAAABBBBAA", true);
-		System.out.println("/////////>:D");
-		List<String> lista = new ArrayList<>();
-		lista.add("$");
-		lista.add("ACCCC");
-		lista.add("BBBBB");
-		lista.add("CCCCACCC");
-		lista.add("ACCCCAAABBBBAA");
-		afd.procesarListaCadenas(lista, "xd", true);
-	}
-*/
+	*/
 
 }
