@@ -1,0 +1,2 @@
+(q0,abab,$)->(q0,bab,A)->(q0,ab,$)->(q0,b,A)->(q0,$,BA)>>rejected
+(q0,abab,$)->(q0,bab,A)->(q0,b,BA)->(q0,$,BBA)>>rejected

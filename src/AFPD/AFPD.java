@@ -11,8 +11,6 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
 
-import AFD.AFD;
-
 public class AFPD {
 
 	private Set<String> conjuntoEstados;
@@ -310,11 +308,11 @@ public class AFPD {
 		PrintStream flujo_salida;
 		File archivo = null;
 		if (nombreArchivo != null && nombreArchivo.length() > 0)
-			archivo = new File("src/ProcesamientoCadenas/AFPD/" + nombreArchivo + ".dpda");
+			archivo = new File("src/ProcesamientoCadenas/AFPD/" + nombreArchivo + ".txt");
 		try {
 			flujo_salida = new PrintStream(archivo);
 		} catch (Exception e) {
-			archivo = new File("src/ProcesamientoCadenas/AFPD/" + "procesamientoListaCadenas" + ".dpda");
+			archivo = new File("src/ProcesamientoCadenas/AFPD/" + "procesamientoListaCadenas" + ".txt");
 			try {
 				flujo_salida = new PrintStream(archivo);
 			} catch (FileNotFoundException e1) {
@@ -336,30 +334,6 @@ public class AFPD {
 		}
 		flujo_salida.flush();
 		flujo_salida.close();
-	}
-
-	public static void main(String[] args) {
-		AFPD afpd = new AFPD("uno");
-		System.out.println(afpd.procesarCadenaConDetalles("aaabbba"));
-		System.out.println(afpd.procesarCadenaConDetalles("aaabbb"));
-		System.out.println(afpd.procesarCadenaConDetalles("bbbaaa"));
-		System.out.println(afpd.procesarCadenaConDetalles("aaabb"));
-		System.out.println(afpd.procesarCadenaConDetalles("abb"));
-		System.out.println(afpd.procesarCadenaConDetalles("$"));
-		AFD afd = new AFD("uno");
-		System.out.println("/////////");
-		afd.fullProcesarCadena("$", true);
-		afd.fullProcesarCadena("ACCCC", true);
-		afd.fullProcesarCadena("BBBBB", true);
-		afd.fullProcesarCadena("CCCCACCC", true);
-		afd.fullProcesarCadena("ACCCCAAABBBBAA", true);
-		/*List<String> lista = new ArrayList<>();
-		lista.add("$");
-		lista.add("ACCCC");
-		lista.add("BBBBB");
-		lista.add("CCCCACCC");
-		lista.add("ACCCCAAABBBBAA");
-		afd.procesarListaCadenas(lista, "xd", true);*/
 	}
 
 }

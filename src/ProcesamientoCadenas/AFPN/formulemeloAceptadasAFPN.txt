@@ -1,0 +1,1 @@
+(q0,abab,$)->(q0,bab,A)->(q0,ab,$)->(q0,b,A)->(q0,$,$)>>accepted

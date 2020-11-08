@@ -7,8 +7,9 @@ public class ArbolConfiguraciones {
 	private Nodo_CI raiz;
 	private Set<String> estadosAceptacion;
 
-	public ArbolConfiguraciones(String configuracionInicial) {
+	public ArbolConfiguraciones(String configuracionInicial, Set<String> estadosAceptacion) {
 		this.raiz = new Nodo_CI(configuracionInicial);
+		this.estadosAceptacion = estadosAceptacion;
 	}
 
 	public Vector<String> getProcesamientos() {
@@ -30,7 +31,8 @@ public class ArbolConfiguraciones {
 			boolean resultado = estadosAceptacion.contains(estado) && cinta.equals("$") && pila.equals("$");
 			String resultadoProcesamiento = resultado ? "accepted" : "rejected";
 			if (procesamiento.length() > 0)
-				procesamientos.add(procesamiento + "->" + "(" + configuracion + ")" + ">>" + resultadoProcesamiento);
+				procesamientos.add(
+						procesamiento + "->" + "(" + configuracionInstantanea + ")" + ">>" + resultadoProcesamiento);
 			else
 				procesamientos.add("(" + configuracionInstantanea + ")" + ">>" + resultadoProcesamiento);
 
@@ -40,7 +42,7 @@ public class ArbolConfiguraciones {
 					addProcesamiento(hijo, procesamiento + "->" + "(" + configuracionInstantanea + ")", procesamientos);
 				else
 					addProcesamiento(hijo, "(" + configuracionInstantanea + ")", procesamientos);
-				;
+
 			}
 		}
 	}

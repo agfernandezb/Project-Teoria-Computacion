@@ -187,11 +187,11 @@ public class AFD {
 		PrintStream flujo_salida;
 		File archivo = null;
 		if (nombreArchivo != null && nombreArchivo.length() > 0)
-			archivo = new File("src/ProcesamientoCadenas/AFD/" + nombreArchivo + ".dfa");
+			archivo = new File("src/ProcesamientoCadenas/AFD/" + nombreArchivo + ".txt");
 		try {
 			flujo_salida = new PrintStream(archivo);
 		} catch (Exception e) {
-			archivo = new File("src/ProcesamientoCadenas/AFD/" + "procesamientoListaCadenas" + ".dfa");
+			archivo = new File("src/ProcesamientoCadenas/AFD/" + "procesamientoListaCadenas" + ".txt");
 			try {
 				flujo_salida = new PrintStream(archivo);
 			} catch (FileNotFoundException e1) {

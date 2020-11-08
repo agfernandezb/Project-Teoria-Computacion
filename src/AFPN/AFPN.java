@@ -2,6 +2,7 @@ package AFPN;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -168,236 +169,241 @@ public class AFPN {
 
 	}
 
-	public Vector<String> procesamientosCadena(String cadena) {
+	private Vector<String> procesamientosCadena(String cadena) {
 
 		String configuracion = estadoInicial + "," + cadena + "," + "$";
-		ArbolConfiguraciones arbol = new ArbolConfiguraciones(configuracion);
+		ArbolConfiguraciones arbol = new ArbolConfiguraciones(configuracion, estadosAceptacion);
 		procesarConfiguracionInstantanea(configuracion, arbol.getRaiz());
 		return arbol.getProcesamientos();
 
 	}
 
-	public String modificarPila(String pila, String operacion, char parametro) {
+	private String modificarPila(String pila, String operacion, char parametro) {
 		switch (operacion) {
 		case "Reemplazo": {
-			pila = pila.substring(1, pila.length());
-			pila = String.valueOf(parametro) + pila;
+			if (pila.length() == 1 && pila.charAt(0) == '$')
+				pila = String.valueOf(parametro);
+			else
+				pila = String.valueOf(parametro) + pila.substring(1, pila.length());
 			break;
 		}
 		case "Insertar": {
-			pila = String.valueOf(parametro) + pila;
+			if (pila.length() == 1 && pila.charAt(0) == '$')
+				pila = String.valueOf(parametro);
+			else
+				pila = String.valueOf(parametro) + pila;
 			break;
 		}
 		case "Remover": {
-			pila = pila.substring(1, pila.length());
+			if (pila.length() == 1)
+				pila = "$";
+			else
+				pila = pila.substring(1, pila.length());
 			break;
 		}
 		}
 		return pila;
+
 	}
 
-	public String siguienteConfiguracion(String estado, String cinta, String pila) {
+	private String siguienteConfiguracion(String estado, String cinta, String pila) {
 		return estado + "," + cinta + "," + pila;
 	}
 
-	public void procesarConfiguracionInstantanea(String configuracionInstantanea, Nodo_CI nodo) {
+	private void procesarConfiguracionInstantanea(String configuracionInstantanea, Nodo_CI nodo) {
 		String estadoActual = configuracionInstantanea.split(",")[0];
 		String cadena = configuracionInstantanea.split(",")[1];
 		String pila = configuracionInstantanea.split(",")[2];
 		char simboloPila = pila.charAt(0);
 
-		if (simboloPila != '$' && delta.getTransicion(estadoActual, '$', simboloPila) != null) {
-			Vector<String> transiciones = delta.getTransicion(estadoActual, '$', simboloPila);
-			for (String transicion : transiciones) {
-				String siguienteEstado = transicion.split(";")[0];
-				String operacion = transicion.split(";")[1].equals("$") ? "Reemplazo" : "Remover";
-				String pilaModificada = modificarPila(pila, operacion, transicion.split(";")[1].charAt(0));
-				String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, "$", pilaModificada);
+		{//Lambda transicion
+			if (simboloPila != '$' && delta.getTransicion(estadoActual, '$', simboloPila) != null) {
+				Vector<String> transiciones = delta.getTransicion(estadoActual, '$', simboloPila);
+				for (String transicion : transiciones) {
+					String siguienteEstado = transicion.split(":")[0];
+					String operacion = transicion.split(":")[1].equals("$") ? "Remover" : "Reemplazo";
+					String pilaModificada = modificarPila(pila, operacion, transicion.split(":")[1].charAt(0));
+					String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, cadena, pilaModificada);
+					nodo.insertarHijo(configuracionSiguiente);
+					Nodo_CI nodoSiguiente = nodo.getHijos().get(nodo.getHijos().size() - 1);
+					procesarConfiguracionInstantanea(configuracionSiguiente, nodoSiguiente);
+				}
+
 			}
-
+			if (delta.getTransicion(estadoActual, '$', '$') != null) {
+				Vector<String> transiciones = delta.getTransicion(estadoActual, '$', '$');
+				for (String transicion : transiciones) {
+					String siguienteEstado = transicion.split(":")[0];
+					String operacion = transicion.split(":")[1].equals("$") ? "Nada" : "Insertar";
+					String pilaModificada = modificarPila(pila, operacion, transicion.split(":")[1].charAt(0));
+					String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, cadena, pilaModificada);
+					nodo.insertarHijo(configuracionSiguiente);
+					Nodo_CI nodoSiguiente = nodo.getHijos().get(nodo.getHijos().size() - 1);
+					procesarConfiguracionInstantanea(configuracionSiguiente, nodoSiguiente);
+				}
+			}
 		}
-		if (delta.getTransicion(estadoActual, '$', '$') != null) {
+		if (!cadena.equals("$")) { //Consume simbolo
+			char simboloCinta = cadena.charAt(0);
+			if (simboloPila != '$' && delta.getTransicion(estadoActual, simboloCinta, simboloPila) != null) {
+				Vector<String> transiciones = delta.getTransicion(estadoActual, simboloCinta, simboloPila);
+				for (String transicion : transiciones) {
+					String siguienteEstado = transicion.split(":")[0];
+					String operacion = transicion.split(":")[1].equals("$") ? "Remover" : "Reemplazo";
+					String pilaModificada = modificarPila(pila, operacion, transicion.split(":")[1].charAt(0));
+					if (cadena.length() == 1)
+						cadena = "$";
+					else
+						cadena = cadena.substring(1);
+					String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, cadena, pilaModificada);
+					nodo.insertarHijo(configuracionSiguiente);
+					Nodo_CI nodoSiguiente = nodo.getHijos().get(nodo.getHijos().size() - 1);
+					procesarConfiguracionInstantanea(configuracionSiguiente, nodoSiguiente);
+				}
 
+			}
+			if (delta.getTransicion(estadoActual, simboloCinta, '$') != null) {
+				Vector<String> transiciones = delta.getTransicion(estadoActual, simboloCinta, '$');
+				for (String transicion : transiciones) {
+					String siguienteEstado = transicion.split(":")[0];
+					String operacion = transicion.split(":")[1].equals("$") ? "Nada" : "Insertar";
+					String pilaModificada = modificarPila(pila, operacion, transicion.split(":")[1].charAt(0));
+					if (cadena.length() == 1)
+						cadena = "$";
+					else
+						cadena = cadena.substring(1);
+					String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, cadena, pilaModificada);
+					nodo.insertarHijo(configuracionSiguiente);
+					Nodo_CI nodoSiguiente = nodo.getHijos().get(nodo.getHijos().size() - 1);
+					procesarConfiguracionInstantanea(configuracionSiguiente, nodoSiguiente);
+				}
+			}
 		}
-		if (!cadena.equals("$")) // probar con lambda y con el simbolo, en cada uno de esos se prueba con el simbolo de pila o lambda..., 4 casos
-		{
-
-		}
-
 	}
 
-	public String procesarCadena(String cadena, boolean retornarProcesamiento) {
-		/*String estadoActual = estadoInicial;  
-		char pilaSiguiente;
-		Vector<Character> pila = new Vector<>();
-		char topePila;
-		String procesamiento = "";
-		String pilaString = "";
-		if (cadena.equals("$")) {
-			procesamiento += "(" + estadoInicial + ",$,$" + ")>>";
-			boolean resultado = estadosAceptacion.contains(estadoInicial);
-			String resultadoProcesamiento = resultado ? "accepted" : "rejected";
-			if (retornarProcesamiento)
-				return procesamiento + resultadoProcesamiento;
-			return resultadoProcesamiento;
+	public boolean procesarCadena(String cadena) {
+		Vector<String> procesamientos = procesamientosCadena(cadena);
+		for (String procesamiento : procesamientos) {
+			if (procesamiento.split(">>")[1].equals("accepted"))
+				return true;
 		}
-		for (int i = 0; i < cadena.length(); ++i) {
-			if (pila.isEmpty())
-				pilaString = "$";
-			else {
-				pilaString = "";
-				for (int j = pila.size() - 1; j >= 0; --j) {
-					pilaString += pila.get(j);
-				}
-			}
-			procesamiento += "(" + estadoActual + "," + cadena.substring(i) + "," + pilaString + ")";
-			String configuracionSiguiente = null;
-			char simboloCinta = cadena.charAt(i);
-			if (pila.isEmpty())
-				topePila = '$';
-			else
-				topePila = pila.get(pila.size() - 1);
-			configuracionSiguiente = delta.getTransicion(estadoActual, simboloCinta, topePila); // Tomamos la
-																								// transicion con el
-																								// tope de
-						 																		// pila y el simbolo
-																								// actual
-			if (topePila != '$' && configuracionSiguiente != null) { // Como topePila no es Lambda, solo se hace
-																		// reemplazo o eliminar
-				estadoActual = configuracionSiguiente.split(":")[0];
-				pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
-				if (pilaSiguiente == '$') {// Remover tope
-					pila.remove(pila.size() - 1);
-				} else if (pilaSiguiente != '$') {// Reemplazar tope
-					pila.set(pila.size() - 1, pilaSiguiente);
-				}
-			} else {
-				configuracionSiguiente = delta.getTransicion(estadoActual, simboloCinta, '$'); // Tomamos como simbolo
-																								// de pila a Lambda
-				if (configuracionSiguiente != null) { // Consumimos unicamente un simbolo de cinta, y agregamos algo o
-														// no hacemos nada en la pila
-					estadoActual = configuracionSiguiente.split(":")[0];
-					pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
-					if (pilaSiguiente != '$') {// Agregar tope
-						pila.add(pilaSiguiente);
-					}
-				} else { // La unica posibilidad es que el simbolo de cinta sea Lambda
-					if (topePila != '$' && delta.getTransicion(estadoActual, '$', topePila) != null) { // Tope de pila
-																										// no es
-																										// lambda.
-						configuracionSiguiente = delta.getTransicion(estadoActual, '$', topePila);
-						estadoActual = configuracionSiguiente.split(":")[0];
-						pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
-						if (pilaSiguiente == '$') { // Remover tope
-							pila.remove(pila.size() - 1);
-						} else if (pilaSiguiente != '$') {// Reemplazar tope
-							pila.set(pila.size() - 1, pilaSiguiente);
-						}
-		
-					} else if (delta.getTransicion(estadoActual, '$', '$') != null) { // Tope de pila y simbolo de
-																						// cinta
-																						// son ambos lambda.
-						configuracionSiguiente = delta.getTransicion(estadoActual, '$', '$');
-						estadoActual = configuracionSiguiente.split(":")[0];
-						pilaSiguiente = configuracionSiguiente.split(":")[1].charAt(0);
-						if (pilaSiguiente != '$') {// Agregar algo a la pila
-							pila.add(pilaSiguiente);
-						}
-					} else {// Ningun caso hizo funciono, se aborta el procesamiento de la cadena.
-						procesamiento += ">>rejected";
-						if(retornarProcesamiento) return procesamiento;
-						return "rejected";
-					}
-					--i; // Como el simbolo fue Lambda, no se puede mover
-				}
-			}
-			procesamiento += "->";
-		}
-		// Se pudo procesar completamente la cadena
-		if (pila.isEmpty())
-			pilaString = "$";
-		else {
-			pilaString = "";
-			for (int i = pila.size() - 1; i >= 0; --i) {
-				pilaString += pila.get(i);
-			}
-		}
-		procesamiento += "(" + estadoActual + ",$," + pilaString + ")>>";
-		boolean resultado = estadosAceptacion.contains(estadoActual) && pila.isEmpty();
-		String resultadoProcesamiento = resultado ? "accepted" : "rejected";
-		if (retornarProcesamiento)
-			return procesamiento + resultadoProcesamiento;
-		return resultadoProcesamiento;*/
-		return null;///////////
+		return false;
 	}
-	/*
-		public boolean procesarCadena(String cadena) {
-			return procesarCadena(cadena, false).equals("accepted");
+
+	public boolean procesarCadenaConDetalles(String cadena) {
+		Vector<String> procesamientos = procesamientosCadena(cadena);
+		for (String procesamiento : procesamientos) {
+			if (procesamiento.split(">>")[1].equals("accepted")) {
+				System.out.println(procesamiento);
+				return true;
+			}
 		}
-	
-		public boolean procesarCadenaConDetalles(String cadena) {
-			String procesamiento = procesarCadena(cadena, true);
+		for (String procesamiento : procesamientos) {
 			System.out.println(procesamiento);
-			return procesamiento.split(">>")[1].equals("accepted");
 		}
-		
-		public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
-		
-			PrintStream flujo_salida;
-			File archivo = null;
-			if (nombreArchivo != null && nombreArchivo.length() > 0)
-				archivo = new File("src/ProcesamientoCadenas/AFPD/" + nombreArchivo + ".dpda");
+		return false;
+	}
+
+	int computarTodosLosProcesamientos(String cadena, String nombreArchivo) {
+		PrintStream flujo_aceptacion;
+		PrintStream flujo_rechazo;
+		File archivoAceptadas = null;
+		File archivoRechazadas = null;
+		if (nombreArchivo != null && nombreArchivo.length() > 0) {
+			archivoAceptadas = new File("src/ProcesamientoCadenas/AFPN/" + nombreArchivo + "AceptadasAFPN.txt");
+			archivoRechazadas = new File("src/ProcesamientoCadenas/AFPN/" + nombreArchivo + "RechazadasAFPN.txt");
+		}
+		try {
+			flujo_aceptacion = new PrintStream(archivoAceptadas);
+			flujo_rechazo = new PrintStream(archivoRechazadas);
+		} catch (Exception e) {
+			archivoAceptadas = new File("src/ProcesamientoCadenas/AFPN/" + "default" + "AceptadasAFPN.txt");
+			archivoRechazadas = new File("src/ProcesamientoCadenas/AFPN/" + "default" + "RechazadasAFPN.txt");
+			try {
+				flujo_aceptacion = new PrintStream(archivoAceptadas);
+				flujo_rechazo = new PrintStream(archivoRechazadas);
+			} catch (FileNotFoundException e1) {
+				System.out.println("Error en el computo de procesamientos");
+				return -1;
+			}
+		}
+		Vector<String> procesamientos = procesamientosCadena(cadena);
+		for (String procesamiento : procesamientos) {
+			if (procesamiento.split(">>")[1].equals("accepted")) {
+				flujo_aceptacion.println(procesamiento);
+			} else {
+				flujo_rechazo.println(procesamiento);
+			}
+			System.out.println(procesamiento);
+		}
+		flujo_aceptacion.flush();
+		flujo_rechazo.flush();
+		flujo_aceptacion.close();
+		flujo_rechazo.close();
+		return procesamientos.size();
+	}
+
+	/*
+	public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
+	
+		PrintStream flujo_salida;
+		File archivo = null;
+		if (nombreArchivo != null && nombreArchivo.length() > 0)
+			archivo = new File("src/ProcesamientoCadenas/AFPD/" + nombreArchivo + ".dpda");
+		try {
+			flujo_salida = new PrintStream(archivo);
+		} catch (Exception e) {
+			archivo = new File("src/ProcesamientoCadenas/AFPD/" + "procesamientoListaCadenas" + ".dpda");
 			try {
 				flujo_salida = new PrintStream(archivo);
-			} catch (Exception e) {
-				archivo = new File("src/ProcesamientoCadenas/AFPD/" + "procesamientoListaCadenas" + ".dpda");
-				try {
-					flujo_salida = new PrintStream(archivo);
-				} catch (FileNotFoundException e1) {
-					System.out.println("Error en el procesamiento de cadenas");
-					return;
-				}
+			} catch (FileNotFoundException e1) {
+				System.out.println("Error en el procesamiento de cadenas");
+				return;
 			}
-		
-			for (Iterator<String> iterator = listaCadenas.iterator(); iterator.hasNext();) {
-				String cadena = (String) iterator.next();
-				String procesamiento = procesarCadena(cadena, true);
-				boolean resultado = procesamiento.split(">>")[1].equals("accepted");
-				if (imprimirPantalla)
-					System.out.println(procesamiento);
-				flujo_salida.print(cadena + "\t");
-				flujo_salida.print(procesamiento +"\t");
-				flujo_salida.println(resultado ? "yes" : "no");
-		
-			}
-			flujo_salida.flush();
-			flujo_salida.close();
 		}
 	
-		public static void main(String[] args) {
-			AFPD afpd = new AFPD("uno");
-			System.out.println(afpd.procesarCadenaConDetalles("aaabbba"));
-			System.out.println(afpd.procesarCadenaConDetalles("aaabbb"));
-			System.out.println(afpd.procesarCadenaConDetalles("bbbaaa"));
-			System.out.println(afpd.procesarCadenaConDetalles("aaabb"));
-			System.out.println(afpd.procesarCadenaConDetalles("abb"));
-			System.out.println(afpd.procesarCadenaConDetalles("$"));
-			AFD afd = new AFD("uno");
-			System.out.println("/////////");
-			afd.fullProcesarCadena("$", true);
-			afd.fullProcesarCadena("ACCCC", true);
-			afd.fullProcesarCadena("BBBBB", true);
-			afd.fullProcesarCadena("CCCCACCC", true);
-			afd.fullProcesarCadena("ACCCCAAABBBBAA", true);
-			System.out.println("/////////>:D");
-			List<String> lista = new ArrayList<>();
-			lista.add("$");
-			lista.add("ACCCC");
-			lista.add("BBBBB");
-			lista.add("CCCCACCC");
-			lista.add("ACCCCAAABBBBAA");
-			afd.procesarListaCadenas(lista, "xd", true);
+		for (Iterator<String> iterator = listaCadenas.iterator(); iterator.hasNext();) {
+			String cadena = (String) iterator.next();
+			String procesamiento = procesarCadena(cadena, true);
+			boolean resultado = procesamiento.split(">>")[1].equals("accepted");
+			if (imprimirPantalla)
+				System.out.println(procesamiento);
+			flujo_salida.print(cadena + "\t");
+			flujo_salida.print(procesamiento + "\t");
+			flujo_salida.println(resultado ? "yes" : "no");
+	
 		}
+		flujo_salida.flush();
+		flujo_salida.close();
+	}
 	*/
+	public static void main(String[] args) {
+		/*AFPD afpd = new AFPD("uno");
+		System.out.println(afpd.procesarCadenaConDetalles("aaabbba"));
+		System.out.println(afpd.procesarCadenaConDetalles("aaabbb"));
+		System.out.println(afpd.procesarCadenaConDetalles("bbbaaa"));
+		System.out.println(afpd.procesarCadenaConDetalles("aaabb"));
+		System.out.println(afpd.procesarCadenaConDetalles("abb"));
+		System.out.println(afpd.procesarCadenaConDetalles("$"));
+		AFD afd = new AFD("uno");
+		System.out.println("/////////");
+		afd.fullProcesarCadena("$", true);
+		afd.fullProcesarCadena("ACCCC", true);
+		afd.fullProcesarCadena("BBBBB", true);
+		afd.fullProcesarCadena("CCCCACCC", true);
+		afd.fullProcesarCadena("ACCCCAAABBBBAA", true);
+		System.out.println("/////////>:D");
+		List<String> lista = new ArrayList<>();
+		lista.add("$");
+		lista.add("ACCCC");
+		lista.add("BBBBB");
+		lista.add("CCCCACCC");
+		lista.add("ACCCCAAABBBBAA");
+		afd.procesarListaCadenas(lista, "xd", true);*/
+		AFPN afpn = new AFPN("uno");
+		System.out.println(afpn.procesarCadenaConDetalles("abab"));
+		System.out.println(afpn.procesarCadenaConDetalles("aaabba"));
+		System.out.println(afpn.computarTodosLosProcesamientos("abab", "formulemelo"));
+	}
 
 }

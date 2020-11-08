@@ -1,5 +1,0 @@
-$	(q0,$)>>accepted	yes
-ACCCC	(q0,ACCCC)->(q0,CCCC)->(q1,CCC)->(q0,CC)->(q1,C)->(q0,$)>>accepted	yes
-BBBBB	(q0,BBBBB)->(q0,BBBB)->(q0,BBB)->(q0,BB)->(q0,B)->(q0,$)>>accepted	yes
-CCCCACCC	(q0,CCCCACCC)->(q1,CCCACCC)->(q0,CCACCC)->(q1,CACCC)->(q0,ACCC)->(q0,CCC)->(q1,CC)->(q0,C)->(q1,$)>>rejected	no
-ACCCCAAABBBBAA	(q0,ACCCCAAABBBBAA)->(q0,CCCCAAABBBBAA)->(q1,CCCAAABBBBAA)->(q0,CCAAABBBBAA)->(q1,CAAABBBBAA)->(q0,AAABBBBAA)->(q0,AABBBBAA)->(q0,ABBBBAA)->(q0,BBBBAA)->(q0,BBBAA)->(q0,BBAA)->(q0,BAA)->(q0,AA)->(q0,A)->(q0,$)>>accepted	yes
