@@ -24,10 +24,19 @@ public class ArbolConfiguraciones {
 
 	private void addProcesamiento(Nodo_CI configuracion, String procesamiento, Vector<String> procesamientos) {
 		String configuracionInstantanea = configuracion.getConfiguracion();
+		String estado = configuracionInstantanea.split(",")[0];
+		String cinta = configuracionInstantanea.split(",")[1];
+		String pila = configuracionInstantanea.split(",")[2];
+		if (cinta.equals("$") && pila.equals("$") && configuracion.getHijos() != null) {
+			boolean resultado = estadosAceptacion.contains(estado);
+			String resultadoProcesamiento = resultado ? "accepted" : "rejected";
+			if (procesamiento.length() > 0)
+				procesamientos.add(
+						procesamiento + "->" + "(" + configuracionInstantanea + ")" + ">>" + resultadoProcesamiento);
+			else
+				procesamientos.add("(" + configuracionInstantanea + ")" + ">>" + resultadoProcesamiento);
+		}
 		if (configuracion.getHijos() == null) {
-			String estado = configuracionInstantanea.split(",")[0];
-			String cinta = configuracionInstantanea.split(",")[1];
-			String pila = configuracionInstantanea.split(",")[2];
 			boolean resultado = estadosAceptacion.contains(estado) && cinta.equals("$") && pila.equals("$");
 			String resultadoProcesamiento = resultado ? "accepted" : "rejected";
 			if (procesamiento.length() > 0)

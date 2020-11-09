@@ -181,7 +181,7 @@ public class AFPN {
 	private String modificarPila(String pila, String operacion, char parametro) {
 		switch (operacion) {
 		case "Reemplazo": {
-			if (pila.length() == 1 && pila.charAt(0) == '$')
+			if (pila.length() == 1 && pila.charAt(0) != '$')
 				pila = String.valueOf(parametro);
 			else
 				pila = String.valueOf(parametro) + pila.substring(1, pila.length());
@@ -251,11 +251,13 @@ public class AFPN {
 					String siguienteEstado = transicion.split(":")[0];
 					String operacion = transicion.split(":")[1].equals("$") ? "Remover" : "Reemplazo";
 					String pilaModificada = modificarPila(pila, operacion, transicion.split(":")[1].charAt(0));
-					if (cadena.length() == 1)
-						cadena = "$";
+					String cadena_replace = cadena;
+					if (cadena_replace.length() == 1)
+						cadena_replace = "$";
 					else
-						cadena = cadena.substring(1);
-					String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, cadena, pilaModificada);
+						cadena_replace = cadena.substring(1);
+					String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, cadena_replace,
+							pilaModificada);
 					nodo.insertarHijo(configuracionSiguiente);
 					Nodo_CI nodoSiguiente = nodo.getHijos().get(nodo.getHijos().size() - 1);
 					procesarConfiguracionInstantanea(configuracionSiguiente, nodoSiguiente);
@@ -268,11 +270,13 @@ public class AFPN {
 					String siguienteEstado = transicion.split(":")[0];
 					String operacion = transicion.split(":")[1].equals("$") ? "Nada" : "Insertar";
 					String pilaModificada = modificarPila(pila, operacion, transicion.split(":")[1].charAt(0));
-					if (cadena.length() == 1)
-						cadena = "$";
+					String cadena_replace = cadena;
+					if (cadena_replace.length() == 1)
+						cadena_replace = "$";
 					else
-						cadena = cadena.substring(1);
-					String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, cadena, pilaModificada);
+						cadena_replace = cadena.substring(1);
+					String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, cadena_replace,
+							pilaModificada);
 					nodo.insertarHijo(configuracionSiguiente);
 					Nodo_CI nodoSiguiente = nodo.getHijos().get(nodo.getHijos().size() - 1);
 					procesarConfiguracionInstantanea(configuracionSiguiente, nodoSiguiente);
@@ -378,28 +382,7 @@ public class AFPN {
 	}
 	*/
 	public static void main(String[] args) {
-		/*AFPD afpd = new AFPD("uno");
-		System.out.println(afpd.procesarCadenaConDetalles("aaabbba"));
-		System.out.println(afpd.procesarCadenaConDetalles("aaabbb"));
-		System.out.println(afpd.procesarCadenaConDetalles("bbbaaa"));
-		System.out.println(afpd.procesarCadenaConDetalles("aaabb"));
-		System.out.println(afpd.procesarCadenaConDetalles("abb"));
-		System.out.println(afpd.procesarCadenaConDetalles("$"));
-		AFD afd = new AFD("uno");
-		System.out.println("/////////");
-		afd.fullProcesarCadena("$", true);
-		afd.fullProcesarCadena("ACCCC", true);
-		afd.fullProcesarCadena("BBBBB", true);
-		afd.fullProcesarCadena("CCCCACCC", true);
-		afd.fullProcesarCadena("ACCCCAAABBBBAA", true);
-		System.out.println("/////////>:D");
-		List<String> lista = new ArrayList<>();
-		lista.add("$");
-		lista.add("ACCCC");
-		lista.add("BBBBB");
-		lista.add("CCCCACCC");
-		lista.add("ACCCCAAABBBBAA");
-		afd.procesarListaCadenas(lista, "xd", true);*/
+
 		AFPN afpn = new AFPN("uno");
 		System.out.println(afpn.procesarCadenaConDetalles("abab"));
 		System.out.println(afpn.procesarCadenaConDetalles("aaabba"));
