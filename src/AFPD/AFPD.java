@@ -325,11 +325,10 @@ public class AFPD {
 			String cadena = (String) iterator.next();
 			String procesamiento = procesarCadena(cadena, true);
 			boolean resultado = procesamiento.split(">>")[1].equals("accepted");
+			String procesamientoConDetalles = cadena + "\t" + procesamiento + "\t" + (resultado ? "yes" : "no");
 			if (imprimirPantalla)
-				System.out.println(procesamiento);
-			flujo_salida.print(cadena + "\t");
-			flujo_salida.print(procesamiento + "\t");
-			flujo_salida.println(resultado ? "yes" : "no");
+				System.out.println(procesamientoConDetalles);
+			flujo_salida.println(procesamientoConDetalles);
 
 		}
 		flujo_salida.flush();

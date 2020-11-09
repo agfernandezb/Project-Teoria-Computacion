@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
@@ -347,17 +349,16 @@ public class AFPN {
 		return procesamientos.size();
 	}
 
-	/*
 	public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
-	
+
 		PrintStream flujo_salida;
 		File archivo = null;
 		if (nombreArchivo != null && nombreArchivo.length() > 0)
-			archivo = new File("src/ProcesamientoCadenas/AFPD/" + nombreArchivo + ".dpda");
+			archivo = new File("src/ProcesamientoCadenas/AFPN/" + nombreArchivo + ".txt");
 		try {
 			flujo_salida = new PrintStream(archivo);
 		} catch (Exception e) {
-			archivo = new File("src/ProcesamientoCadenas/AFPD/" + "procesamientoListaCadenas" + ".dpda");
+			archivo = new File("src/ProcesamientoCadenas/AFPN/" + "procesamientoListaCadenas" + ".txt");
 			try {
 				flujo_salida = new PrintStream(archivo);
 			} catch (FileNotFoundException e1) {
@@ -365,28 +366,41 @@ public class AFPN {
 				return;
 			}
 		}
-	
+
 		for (Iterator<String> iterator = listaCadenas.iterator(); iterator.hasNext();) {
 			String cadena = (String) iterator.next();
-			String procesamiento = procesarCadena(cadena, true);
-			boolean resultado = procesamiento.split(">>")[1].equals("accepted");
+			Vector<String> procesamientos = procesamientosCadena(cadena);
+			boolean resultado = false;
+			int indexAImprimir = 0;
+			int procesamientosAceptados = 0;
+			for (int i = 0; i < procesamientos.size(); ++i) {
+				if (procesamientos.get(i).split(">>")[1].equals("accepted")) {
+					resultado = true;
+					indexAImprimir = i;
+					++procesamientosAceptados;
+				}
+			}
+			String procesamientoConDetalles = cadena + "\t" + procesamientos.get(indexAImprimir) + "\t"
+					+ procesamientos.size() + "\t" + procesamientosAceptados + "\t"
+					+ (procesamientos.size() - procesamientosAceptados) + "\t" + (resultado ? "yes" : "no");
 			if (imprimirPantalla)
-				System.out.println(procesamiento);
-			flujo_salida.print(cadena + "\t");
-			flujo_salida.print(procesamiento + "\t");
-			flujo_salida.println(resultado ? "yes" : "no");
-	
+				System.out.println(procesamientoConDetalles);
+			flujo_salida.println(procesamientoConDetalles);
+
 		}
 		flujo_salida.flush();
 		flujo_salida.close();
 	}
-	*/
+
 	public static void main(String[] args) {
 
 		AFPN afpn = new AFPN("uno");
-		System.out.println(afpn.procesarCadenaConDetalles("abab"));
-		System.out.println(afpn.procesarCadenaConDetalles("aaabba"));
-		System.out.println(afpn.computarTodosLosProcesamientos("abab", "formulemelo"));
+		/*System.out.println(afpn.procesarCadenaConDetalles("abab"));
+		System.out.println(afpn.procesarCadenaConDetalles("aaabba"));*/
+		System.out.println(afpn.computarTodosLosProcesamientos("aaabbbabba", "ugly"));
+		//List<String> lista = new ArrayList<>();
+		//lista.add("aaabbbabba");
+		//afpn.procesarListaCadenas(lista, "jaja", true);
 	}
 
 }
