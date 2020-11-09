@@ -397,7 +397,7 @@ public class AFPN {
 		AFPN afpn = new AFPN("uno");
 		/*System.out.println(afpn.procesarCadenaConDetalles("abab"));
 		System.out.println(afpn.procesarCadenaConDetalles("aaabba"));*/
-		System.out.println(afpn.computarTodosLosProcesamientos("aaabbbabba", "ugly"));
+		//System.out.println(afpn.computarTodosLosProcesamientos("aaabbbabba", "ugly"));
 		//List<String> lista = new ArrayList<>();
 		//lista.add("aaabbbabba");
 		//afpn.procesarListaCadenas(lista, "jaja", true);

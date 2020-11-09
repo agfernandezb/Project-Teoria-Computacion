@@ -134,12 +134,18 @@ public class AFD {
 
 	}
 
-	public boolean fullProcesarCadena(String cadena, boolean mostrarProceso) {
+	public String procesarCadena(String cadena, boolean retornarProcesamiento) {
 		String estadoActual = estadoInicial;
 		String procesamiento = "";
 
-		if (cadena.equals("$"))
-			return estadosAceptacion.contains(estadoInicial);
+		if (cadena.equals("$")) {
+			procesamiento += "(" + estadoInicial + ",$,$" + ")>>";
+			boolean resultado = estadosAceptacion.contains(estadoInicial);
+			String resultadoProcesamiento = resultado ? "accepted" : "rejected";
+			if (retornarProcesamiento)
+				return procesamiento + resultadoProcesamiento;
+			return resultadoProcesamiento;
+		}
 
 		for (int i = 0; i < cadena.length(); ++i) {
 			procesamiento += "(" + estadoActual + "," + cadena.substring(i) + ")->";
@@ -149,37 +155,19 @@ public class AFD {
 		boolean resultado = estadosAceptacion.contains(estadoActual);
 		String resultadoProcesamiento = resultado ? "accepted" : "rejected";
 
-		if (mostrarProceso)
-			System.out.println(procesamiento + resultadoProcesamiento);
-
-		return resultado;
+		if (retornarProcesamiento)
+			return procesamiento + resultadoProcesamiento;
+		return resultadoProcesamiento;
 	}
 
 	public boolean procesarCadena(String cadena) {
-		if (cadena.equals("$"))
-			return estadosAceptacion.contains(estadoInicial);
-		String estadoActual = estadoInicial;
-		for (int i = 0; i < cadena.length(); ++i) {
-			estadoActual = delta.getTransicion(estadoActual, cadena.charAt(i));
-		}
-		return estadosAceptacion.contains(estadoActual);
+		return procesarCadena(cadena, false).equals("accepted");
 	}
 
 	public boolean procesarCadenaConDetalles(String cadena) {
-		String estadoActual = estadoInicial;
-		String procesamiento = "";
-		if (!cadena.equals("$")) {
-			for (int i = 0; i < cadena.length(); ++i) {
-				procesamiento += "(" + estadoActual + "," + cadena.substring(i) + ")->";
-				estadoActual = delta.getTransicion(estadoActual, cadena.charAt(i));
-
-			}
-		}
-		procesamiento += "(" + estadoActual + "," + "$)>>";
-		boolean resultado = estadosAceptacion.contains(estadoActual);
-		String resultadoProcesamiento = resultado ? "accepted" : "rejected";
-		System.out.println(procesamiento + resultadoProcesamiento);
-		return resultado;
+		String procesamiento = procesarCadena(cadena, true);
+		System.out.println(procesamiento);
+		return procesamiento.split(">>")[1].equals("accepted");
 	}
 
 	public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
@@ -214,12 +202,10 @@ public class AFD {
 			procesamiento += "(" + estadoActual + "," + "$)>>";
 			boolean resultado = estadosAceptacion.contains(estadoActual);
 			String resultadoProcesamiento = resultado ? "accepted" : "rejected";
+			String procesamientoConDetalles = cadena + "\t" + procesamiento + "\t" + (resultado ? "yes" : "no");
 			if (imprimirPantalla)
-				System.out.println(procesamiento + resultadoProcesamiento);
-			flujo_salida.print(cadena + "\t");
-			flujo_salida.print(procesamiento + resultadoProcesamiento + "\t");
-			flujo_salida.println(resultado ? "yes" : "no");
-
+				System.out.println(procesamientoConDetalles);
+			flujo_salida.println(procesamientoConDetalles);
 		}
 		flujo_salida.flush();
 		flujo_salida.close();
