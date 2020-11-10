@@ -449,6 +449,14 @@ public class AFPN {
 		//Estados Aceptacion
 		estadosAceptacion = conjuntoEstadosProductoCartesiano(this.estadosAceptacion, afd.getEstadosAceptacion());
 
+		//Alfabeto Cinta
+		alfabetoCinta = this.alfabetoCinta;
+
+		//Alfabeto Pila
+		alfabetoPila = this.alfabetoPila;
+
+		//Funcion Transicion
+
 		return null;/**//*THEYARETRYINGYOUBILDAPRISONFORYOUANDME*//**//**/
 	}
 
