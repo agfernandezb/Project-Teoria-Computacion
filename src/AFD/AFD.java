@@ -211,4 +211,20 @@ public class AFD {
 		flujo_salida.close();
 	}
 
+	public Set<Character> getAlfabeto() {
+		return alfabeto;
+	}
+
+	public Set<String> getConjuntoEstados() {
+		return conjuntoEstados;
+	}
+
+	public String getEstadoInicial() {
+		return estadoInicial;
+	}
+
+	public Set<String> getEstadosAceptacion() {
+		return estadosAceptacion;
+	}
+
 }

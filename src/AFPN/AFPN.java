@@ -11,6 +11,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
 
+import AFD.AFD;
+
 public class AFPN {
 
 	private Set<String> conjuntoEstados;
@@ -19,9 +21,6 @@ public class AFPN {
 	private Set<Character> alfabetoCinta;
 	private Set<Character> alfabetoPila;
 	private FuncionTransicionAFPN delta;
-	private HashMap<String, Integer> estadoANumero;
-	private HashMap<Character, Integer> simboloAlfabetoANumero;
-	private HashMap<Character, Integer> simboloPilaANumero;
 
 	public AFPN(Set<String> conjuntoEstados, String estadoInicial, Set<String> estadosAceptacion,
 			Set<Character> alfabetoCinta, Set<Character> alfabetoPila, FuncionTransicionAFPN delta) {
@@ -392,6 +391,67 @@ public class AFPN {
 		flujo_salida.close();
 	}
 
+	private boolean igualdadAlfabetos(Set<Character> primerAlfabeto, Set<Character> segundoAlfabeto) {
+		boolean iguales = true;
+		for (Character caracter : primerAlfabeto) {
+			iguales = iguales && segundoAlfabeto.contains(caracter);
+		}
+		for (Character caracter : segundoAlfabeto) {
+			iguales = iguales && primerAlfabeto.contains(caracter);
+		}
+		return iguales;
+	}
+
+	private Set<String> conjuntoEstadosProductoCartesiano(Set<String> estados_AFPN, Set<String> estados_AFD) {
+		Set<String> conjuntoEstados = new HashSet<String>();
+		for (String estado_AFPN : estados_AFPN) {
+			for (String estado_AFD : estados_AFD) {
+				conjuntoEstados.add(generarEstadoProductoCartesiano(estado_AFPN, estado_AFD));
+			}
+		}
+		return conjuntoEstados;
+	}
+
+	private String generarEstadoProductoCartesiano(String estado_AFPN, String estado_AFD) {
+		return "(" + estado_AFPN + "," + estado_AFD + ")";
+	}
+
+	private String[] obtenerEstadosDelProductoCartesiano(String estado) {
+		String[] estados = new String[2];
+		String[] sinComa = estado.split(",");
+		estados[0] = sinComa[0].substring(1);
+		estados[1] = sinComa[1].substring(0, sinComa[1].length() - 1);
+		return estados;
+	}
+
+	public AFPN hallarProductoCartesianoConAFD(AFD afd) {
+
+		//Atributos AFPN
+		Set<String> conjuntoEstados;
+		String estadoInicial;
+		Set<String> estadosAceptacion;
+		Set<Character> alfabetoCinta;
+		Set<Character> alfabetoPila;
+		FuncionTransicionAFPN delta;
+
+		//Primero verificamos que ambos alfabetos sean iguales
+		if (!igualdadAlfabetos(this.alfabetoCinta, afd.getAlfabeto()))
+			return null;
+
+		//Como son iguales, podemos proceder
+
+		//Creacion conjunto estados
+		conjuntoEstados = conjuntoEstadosProductoCartesiano(this.conjuntoEstados, afd.getConjuntoEstados());
+
+		//Estado Inicial
+		estadoInicial = generarEstadoProductoCartesiano(this.estadoInicial, afd.getEstadoInicial());
+
+		//Estados Aceptacion
+		estadosAceptacion = conjuntoEstadosProductoCartesiano(this.estadosAceptacion, afd.getEstadosAceptacion());
+
+		return null;/**//*THEYARETRYINGYOUBILDAPRISONFORYOUANDME*//**//**/
+	}
+
 	public static void main(String[] args) {
 
 		AFPN afpn = new AFPN("uno");
@@ -401,6 +461,9 @@ public class AFPN {
 		//List<String> lista = new ArrayList<>();
 		//lista.add("aaabbbabba");
 		//afpn.procesarListaCadenas(lista, "jaja", true);
+		/*String[] a = afpn.obtenerEstadosDelProductoCartesiano("(q0asdasd,qweqweqweq)");
+		System.out.println(a[0]);
+		System.out.println(a[1]);*/
 	}
 
 }
