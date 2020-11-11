@@ -51,4 +51,12 @@ public class FuncionTransicionAFPN {
 		}
 	}
 
+	public HashMap<Character, Integer> getSimboloAlfabetoANumero() {
+		return simboloAlfabetoANumero;
+	}
+
+	public HashMap<Character, Integer> getSimboloPilaANumero() {
+		return simboloPilaANumero;
+	}
+
 }

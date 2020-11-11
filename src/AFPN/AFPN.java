@@ -456,8 +456,62 @@ public class AFPN {
 		alfabetoPila = this.alfabetoPila;
 
 		//Funcion Transicion
+		int index = 0;
+		HashMap<String, Integer> estadoANumero = new HashMap<>();
+		for (String estado : conjuntoEstados) {
+			estadoANumero.put(estado, index);
+			++index;
+		}
+		delta = new FuncionTransicionAFPN(conjuntoEstados, alfabetoCinta, alfabetoPila, estadoANumero,
+				this.delta.getSimboloAlfabetoANumero(), this.delta.getSimboloPilaANumero());
 
-		return null;/**//*THEYARETRYINGYOUBILDAPRISONFORYOUANDME*//**//**/
+		//Insertar Transiciones
+		for (String estado_AFPN : this.conjuntoEstados) {
+			for (char simboloCinta : this.alfabetoPila) {
+				//Insertar Lambda-transiciones
+				char lambda = '$';
+				if (this.delta.getTransicion(estado_AFPN, simboloCinta, lambda) != null) {
+					Vector<String> transiciones = this.delta.getTransicion(estado_AFPN, simboloCinta, lambda);
+					//Iteramos sobre los estados del AFD
+					for (String estado_AFD : afd.getConjuntoEstados()) {
+						String estadoActual = generarEstadoProductoCartesiano(estado_AFPN, estado_AFD);
+						String transicion = "";
+						for (int i = 0; i < transiciones.size(); ++i) {
+							if (i >= 1)
+								transicion += ";";
+							String estadoTransicion = transiciones.get(i).split(":")[0]; //Estado al cual se mueve el AFPN
+							String operacionPila = transiciones.get(i).split(":")[1]; //Simbolo pila final
+							String estadoFinal = generarEstadoProductoCartesiano(estadoTransicion, estado_AFD); //Permanece en el mismo estado el AFD
+							transicion += estadoFinal + ":" + operacionPila;
+						}
+						delta.setTransicion(estadoActual, simboloCinta, lambda, transicion);
+					}
+				}
+				for (char simboloPila : this.alfabetoPila) {
+					if (this.delta.getTransicion(estado_AFPN, simboloCinta, simboloPila) != null) {
+						Vector<String> transiciones = this.delta.getTransicion(estado_AFPN, simboloCinta, simboloPila);
+						//Iteramos sobre los estados del AFD
+						for (String estado_AFD : afd.getConjuntoEstados()) {
+							String estadoActual = generarEstadoProductoCartesiano(estado_AFPN, estado_AFD);
+							String transicion = "";
+							for (int i = 0; i < transiciones.size(); ++i) {
+								if (i >= 1)
+									transicion += ";";
+								String estadoTransicion_AFPN = transiciones.get(i).split(":")[0]; //Estado al cual se mueve el AFPN
+								String estadoTransicion_AFD = afd.getTransicion(estado_AFD, simboloCinta); //Estado al cual se mueve el AFD
+								String operacionPila = transiciones.get(i).split(":")[1]; //Simbolo pila final
+								String estadoFinal = generarEstadoProductoCartesiano(estadoTransicion_AFPN,
+										estadoTransicion_AFD);
+								transicion += estadoFinal + ":" + operacionPila;
+							}
+							delta.setTransicion(estadoActual, simboloCinta, lambda, transicion);
+						}
+					}
+				}
+			}
+
+		}
+		return new AFPN(conjuntoEstados, estadoInicial, estadosAceptacion, alfabetoCinta, alfabetoPila, delta);
 	}
 
 	public static void main(String[] args) {

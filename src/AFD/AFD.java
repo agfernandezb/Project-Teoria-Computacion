@@ -211,6 +211,10 @@ public class AFD {
 		flujo_salida.close();
 	}
 
+	public String getTransicion(String estado, char simbolo) {
+		return delta.getTransicion(estado, simbolo);
+	}
+
 	public Set<Character> getAlfabeto() {
 		return alfabeto;
 	}
