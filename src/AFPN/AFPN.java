@@ -297,19 +297,22 @@ public class AFPN {
 
 	public boolean procesarCadenaConDetalles(String cadena) {
 		Vector<String> procesamientos = procesamientosCadena(cadena);
+		System.out.println("Cadena: " + cadena);
 		for (String procesamiento : procesamientos) {
 			if (procesamiento.split(">>")[1].equals("accepted")) {
-				System.out.println(procesamiento);
+				System.out.println("Procesamiento 1: " + procesamiento);
 				return true;
 			}
 		}
+		int numeroProcesamiento = 1;
 		for (String procesamiento : procesamientos) {
-			System.out.println(procesamiento);
+			System.out.println("Procesamiento " + numeroProcesamiento + ": " + procesamiento);
+			++numeroProcesamiento;
 		}
 		return false;
 	}
 
-	int computarTodosLosProcesamientos(String cadena, String nombreArchivo) {
+	public int computarTodosLosProcesamientos(String cadena, String nombreArchivo) {
 		PrintStream flujo_aceptacion;
 		PrintStream flujo_rechazo;
 		File archivoAceptadas = null;
@@ -517,8 +520,8 @@ public class AFPN {
 	public static void main(String[] args) {
 
 		AFPN afpn = new AFPN("uno");
-		/*System.out.println(afpn.procesarCadenaConDetalles("abab"));
-		System.out.println(afpn.procesarCadenaConDetalles("aaabba"));*/
+		System.out.println(afpn.procesarCadenaConDetalles("abab"));
+		System.out.println(afpn.procesarCadenaConDetalles("aaabba"));
 		//System.out.println(afpn.computarTodosLosProcesamientos("aaabbbabba", "ugly"));
 		//List<String> lista = new ArrayList<>();
 		//lista.add("aaabbbabba");
