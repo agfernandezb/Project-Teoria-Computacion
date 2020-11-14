@@ -33,7 +33,7 @@ public class AFPN {
 		this.delta = delta;
 	}
 
-	public AFPN(String nombre) {// Se supone que primero se procesa el alfabeto de cinta luego el de pila
+	public AFPN(String nombre) {
 		Scanner scanner = null;
 		int[] headers = new int[6]; // Encabezados como #alphabet, guarda sus posiciones
 		File archivo = new File("src/Pruebas/AFPN/" + nombre + ".pda");

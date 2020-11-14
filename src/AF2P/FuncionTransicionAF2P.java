@@ -38,7 +38,8 @@ public class FuncionTransicionAF2P {
 			char simboloSegundaPila) {
 
 		String transicion = transiciones[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
-				.get(simboloCinta)][simboloPilaANumero.get(simboloPrimeraPila)][simboloSegundaPila];
+				.get(simboloCinta)][simboloPilaANumero.get(simboloPrimeraPila)][simboloPilaANumero
+						.get(simboloSegundaPila)];
 		if (transicion == null)
 			return null;
 		else {
