@@ -419,14 +419,6 @@ public class AFPN {
 		return "(" + estado_AFPN + "," + estado_AFD + ")";
 	}
 
-	private String[] obtenerEstadosDelProductoCartesiano(String estado) {
-		String[] estados = new String[2];
-		String[] sinComa = estado.split(",");
-		estados[0] = sinComa[0].substring(1);
-		estados[1] = sinComa[1].substring(0, sinComa[1].length() - 1);
-		return estados;
-	}
-
 	public AFPN hallarProductoCartesianoConAFD(AFD afd) {
 
 		//Atributos AFPN
@@ -516,19 +508,4 @@ public class AFPN {
 		}
 		return new AFPN(conjuntoEstados, estadoInicial, estadosAceptacion, alfabetoCinta, alfabetoPila, delta);
 	}
-
-	public static void main(String[] args) {
-
-		AFPN afpn = new AFPN("uno");
-		System.out.println(afpn.procesarCadenaConDetalles("abab"));
-		System.out.println(afpn.procesarCadenaConDetalles("aaabba"));
-		//System.out.println(afpn.computarTodosLosProcesamientos("aaabbbabba", "ugly"));
-		//List<String> lista = new ArrayList<>();
-		//lista.add("aaabbbabba");
-		//afpn.procesarListaCadenas(lista, "jaja", true);
-		/*String[] a = afpn.obtenerEstadosDelProductoCartesiano("(q0asdasd,qweqweqweq)");
-		System.out.println(a[0]);
-		System.out.println(a[1]);*/
-	}
-
 }
