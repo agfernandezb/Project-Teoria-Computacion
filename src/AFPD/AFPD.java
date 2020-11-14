@@ -44,7 +44,8 @@ public class AFPD {
 			int numberOfHeaders = 0;
 			int line = 0; // iterador
 			while (scanner.hasNextLine()) {
-				if (scanner.nextLine().matches("#alphabet|#states|#initial|#accepting|#transitions")) {
+				if (scanner.nextLine()
+						.matches("#tapeAlphabet|#stackAlphabet|#states|#initial|#accepting|#transitions")) {
 					headers[numberOfHeaders] = line;
 					++numberOfHeaders;
 				}
@@ -73,35 +74,34 @@ public class AFPD {
 											 * Si esta leyendo el último encabezado, entonces lee hasta el final.																									 */
 
 			switch (encabezado) {
-			case "#alphabet": {
-				if (!procesoAlfabetoCinta) {
-					for (int j = 0; j < ultima_linea && scanner.hasNext(); j++) {
-						String linea = scanner.nextLine();
-						if (linea.length() == 3) {
-							int inicio = linea.charAt(0);
-							int fin = linea.charAt(2);
-							for (; inicio <= fin; ++inicio) {
-								alfabetoCinta.add((char) inicio);
-							}
-
-						} else {
-							alfabetoCinta.add(linea.charAt(0));
+			case "#tapeAlphabet": {
+				for (int j = 0; j < ultima_linea && scanner.hasNext(); j++) {
+					String linea = scanner.nextLine();
+					if (linea.length() == 3) {
+						int inicio = linea.charAt(0);
+						int fin = linea.charAt(2);
+						for (; inicio <= fin; ++inicio) {
+							alfabetoCinta.add((char) inicio);
 						}
+
+					} else {
+						alfabetoCinta.add(linea.charAt(0));
 					}
-					procesoAlfabetoCinta = true;
-				} else {
-					for (int j = 0; j < ultima_linea && scanner.hasNext(); j++) {
-						String linea = scanner.nextLine();
-						if (linea.length() == 3) {
-							int inicio = linea.charAt(0);
-							int fin = linea.charAt(2);
-							for (; inicio <= fin; ++inicio) {
-								alfabetoPila.add((char) inicio);
-							}
-
-						} else {
-							alfabetoPila.add(linea.charAt(0));
+				}
+				break;
+			}
+			case "#stackAlphabet": {
+				for (int j = 0; j < ultima_linea && scanner.hasNext(); j++) {
+					String linea = scanner.nextLine();
+					if (linea.length() == 3) {
+						int inicio = linea.charAt(0);
+						int fin = linea.charAt(2);
+						for (; inicio <= fin; ++inicio) {
+							alfabetoPila.add((char) inicio);
 						}
+
+					} else {
+						alfabetoPila.add(linea.charAt(0));
 					}
 				}
 				break;
