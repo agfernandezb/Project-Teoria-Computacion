@@ -335,13 +335,41 @@ public class AFPN {
 			}
 		}
 		Vector<String> procesamientos = procesamientosCadena(cadena);
+		Vector<String> procesamientosAceptados = new Vector<>();
+		Vector<String> procesamientosRechazados = new Vector<>();
+		int cadenasAceptadas = 0;
+		int cadenasRechazadas = 0;
+		flujo_aceptacion.println("Cadena: " + cadena);
+		flujo_rechazo.println("Cadena: " + cadena);
 		for (String procesamiento : procesamientos) {
 			if (procesamiento.split(">>")[1].equals("accepted")) {
-				flujo_aceptacion.println(procesamiento);
+				cadenasAceptadas++;
+				String procesamientoAceptacion = "Procesamiento" + cadenasAceptadas + ": " + procesamiento;
+				flujo_aceptacion.println(procesamientoAceptacion);
+				procesamientosAceptados.add(procesamientoAceptacion);
 			} else {
-				flujo_rechazo.println(procesamiento);
+				cadenasRechazadas++;
+				String procesamientoRechazo = "Procesamiento" + cadenasRechazadas + ": " + procesamiento;
+				flujo_rechazo.println(procesamientoRechazo);
+				procesamientosRechazados.add(procesamientoRechazo);
 			}
-			System.out.println(procesamiento);
+		}
+		System.out.println("Cadena: " + cadena);
+		System.out.println("Procesamientos de aceptación: ");
+		if (procesamientosAceptados.isEmpty()) {
+			System.out.println("No existen procesamientos de aceptación.");
+		} else {
+			for (String procesamientoAceptacion : procesamientosAceptados) {
+				System.out.println(procesamientoAceptacion);
+			}
+		}
+		System.out.println("Procesamientos de rechazo: ");
+		if (procesamientosRechazados.isEmpty()) {
+			System.out.println("No existen procesamientos rechazados.");
+		} else {
+			for (String procesamientoRechazo : procesamientosRechazados) {
+				System.out.println(procesamientoRechazo);
+			}
 		}
 		flujo_aceptacion.flush();
 		flujo_rechazo.flush();
@@ -387,7 +415,6 @@ public class AFPN {
 			if (imprimirPantalla)
 				System.out.println(procesamientoConDetalles);
 			flujo_salida.println(procesamientoConDetalles);
-
 		}
 		flujo_salida.flush();
 		flujo_salida.close();
