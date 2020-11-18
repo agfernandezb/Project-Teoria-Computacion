@@ -520,4 +520,165 @@ public class AF2P {
 		flujo_salida.flush();
 		flujo_salida.close();
 	}
+
+	@Override
+	public String toString() {
+		String states = "#states";
+		String estados = "";
+		for (String estado : conjuntoEstados) {
+			estados += estado + '\n';
+		}
+		String initial = "#initial";
+		String accepting = "#accepting";
+		String estadoAceptacion = "";
+		for (String estado : estadosAceptacion) {
+			estadoAceptacion += estado + '\n';
+		}
+		String tapeAlphabet = "#tapeAlphabet";
+		String alfabCinta = "";
+		for (char simbolo : this.alfabetoCinta) {
+			alfabCinta += String.valueOf(simbolo) + '\n';
+		}
+		String stackAlphabet = "#stackAlphabet";
+		String alfabPila = "";
+		for (char simbolo : alfabetoPila) {
+			alfabPila += String.valueOf(simbolo) + '\n';
+		}
+		String transitions = "#transitions";
+		String transiciones = "";
+
+		for (String estadoActual : conjuntoEstados) {
+			//Lambda transicion
+			for (char simboloPrimeraPila : alfabetoPila) {
+				for (char simboloSegundaPila : alfabetoPila) {
+					if (delta.getTransicionString(estadoActual, '$', simboloPrimeraPila, simboloSegundaPila) != null) { //Ambas pilas no estan vacias
+						if (transiciones.length() > 0) {
+							transiciones += '\n';
+						}
+						transiciones += delta.getTransicionString(estadoActual, '$', simboloPrimeraPila,
+								simboloSegundaPila);
+					}
+				}
+				char simboloSegundaPila = simboloPrimeraPila;
+				if (delta.getTransicionString(estadoActual, '$', '$', simboloSegundaPila) != null) { //En la primera pila utilizamos Lambda, en la segunda no
+					if (transiciones.length() > 0) {
+						transiciones += '\n';
+					}
+					transiciones += delta.getTransicionString(estadoActual, '$', '$', simboloSegundaPila);
+				}
+				if (delta.getTransicion(estadoActual, '$', simboloPrimeraPila, '$') != null) { //En la segunda pila utilizamos lambda, en la primera no
+					if (transiciones.length() > 0) {
+						transiciones += '\n';
+					}
+					transiciones += delta.getTransicion(estadoActual, '$', simboloPrimeraPila, '$');
+				}
+			}
+			if (delta.getTransicion(estadoActual, '$', '$', '$') != null) { //En ambas pilas utilizamos a Lambda
+				if (transiciones.length() > 0) {
+					transiciones += '\n';
+				}
+				transiciones += delta.getTransicion(estadoActual, '$', '$', '$');
+			}
+			//iterar sobre el alfabeto cinta
+			/*
+			if (!cadena.equals("$")) { //Consume simbolo
+			char simboloCinta = cadena.charAt(0);
+			if (simboloPrimeraPila != '$' && simboloSegundaPila != '$' && delta.getTransicion(estadoActual,
+					simboloCinta, simboloPrimeraPila, simboloSegundaPila) != null) { //Ambas pilas no estan vacias, se consume simbolo
+				Vector<String> transiciones = delta.getTransicion(estadoActual, simboloCinta, simboloPrimeraPila,
+						simboloSegundaPila);
+				for (String transicion : transiciones) {
+					String siguienteEstado = transicion.split(":")[0];
+					String operacionPrimeraPila = transicion.split(":")[1].equals("$") ? "Remover" : "Reemplazo";
+					String operacionSegundaPila = transicion.split(":")[2].equals("$") ? "Remover" : "Reemplazo";
+					String primeraPilaModificada = modificarPila(primeraPila, operacionPrimeraPila,
+							transicion.split(":")[1].charAt(0));
+					String segundaPilaModificada = modificarPila(segundaPila, operacionSegundaPila,
+							transicion.split(":")[2].charAt(0));
+					String cadena_replace = cadena;
+					if (cadena_replace.length() == 1)
+						cadena_replace = "$";
+					else
+						cadena_replace = cadena.substring(1);
+					String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, cadena_replace,
+							primeraPilaModificada, segundaPilaModificada);
+					nodo.insertarHijo(configuracionSiguiente);
+					Nodo_CI_AF2P nodoSiguiente = nodo.getHijos().get(nodo.getHijos().size() - 1);
+					procesarConfiguracionInstantanea(configuracionSiguiente, nodoSiguiente);
+				}
+			}
+			if (simboloSegundaPila != '$'
+					&& delta.getTransicion(estadoActual, simboloCinta, '$', simboloSegundaPila) != null) { //En la primera pila utilizamos Lambda, en la segunda no
+				Vector<String> transiciones = delta.getTransicion(estadoActual, simboloCinta, '$', simboloSegundaPila);
+				for (String transicion : transiciones) {
+					String siguienteEstado = transicion.split(":")[0];
+					String operacionPrimeraPila = transicion.split(":")[1].equals("$") ? "Nada" : "Insertar";
+					String operacionSegundaPila = transicion.split(":")[2].equals("$") ? "Remover" : "Reemplazo";
+					String primeraPilaModificada = modificarPila(primeraPila, operacionPrimeraPila,
+							transicion.split(":")[1].charAt(0));
+					String segundaPilaModificada = modificarPila(segundaPila, operacionSegundaPila,
+							transicion.split(":")[2].charAt(0));
+					String cadena_replace = cadena;
+					if (cadena_replace.length() == 1)
+						cadena_replace = "$";
+					else
+						cadena_replace = cadena.substring(1);
+					String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, cadena_replace,
+							primeraPilaModificada, segundaPilaModificada);
+					nodo.insertarHijo(configuracionSiguiente);
+					Nodo_CI_AF2P nodoSiguiente = nodo.getHijos().get(nodo.getHijos().size() - 1);
+					procesarConfiguracionInstantanea(configuracionSiguiente, nodoSiguiente);
+				}
+			}
+			if (simboloPrimeraPila != '$'
+					&& delta.getTransicion(estadoActual, simboloCinta, simboloPrimeraPila, '$') != null) { //En la segunda pila utilizamos lambda, en la primera no
+				Vector<String> transiciones = delta.getTransicion(estadoActual, simboloCinta, simboloPrimeraPila, '$');
+				for (String transicion : transiciones) {
+					String siguienteEstado = transicion.split(":")[0];
+					String operacionPrimeraPila = transicion.split(":")[1].equals("$") ? "Remover" : "Reemplazo";
+					String operacionSegundaPila = transicion.split(":")[2].equals("$") ? "Nada" : "Insertar";
+					String primeraPilaModificada = modificarPila(primeraPila, operacionPrimeraPila,
+							transicion.split(":")[1].charAt(0));
+					String segundaPilaModificada = modificarPila(segundaPila, operacionSegundaPila,
+							transicion.split(":")[2].charAt(0));
+					String cadena_replace = cadena;
+					if (cadena_replace.length() == 1)
+						cadena_replace = "$";
+					else
+						cadena_replace = cadena.substring(1);
+					String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, cadena_replace,
+							primeraPilaModificada, segundaPilaModificada);
+					nodo.insertarHijo(configuracionSiguiente);
+					Nodo_CI_AF2P nodoSiguiente = nodo.getHijos().get(nodo.getHijos().size() - 1);
+					procesarConfiguracionInstantanea(configuracionSiguiente, nodoSiguiente);
+				}
+			}
+			if (delta.getTransicion(estadoActual, simboloCinta, '$', '$') != null) { //En ambas pilas utilizamos a Lambda
+				Vector<String> transiciones = delta.getTransicion(estadoActual, simboloCinta, '$', '$');
+				for (String transicion : transiciones) {
+					String siguienteEstado = transicion.split(":")[0];
+					String operacionPrimeraPila = transicion.split(":")[1].equals("$") ? "Nada" : "Insertar";
+					String operacionSegundaPila = transicion.split(":")[2].equals("$") ? "Nada" : "Insertar";
+					String primeraPilaModificada = modificarPila(primeraPila, operacionPrimeraPila,
+							transicion.split(":")[1].charAt(0));
+					String segundaPilaModificada = modificarPila(segundaPila, operacionSegundaPila,
+							transicion.split(":")[2].charAt(0));
+					String cadena_replace = cadena;
+					if (cadena_replace.length() == 1)
+						cadena_replace = "$";
+					else
+						cadena_replace = cadena.substring(1);
+					String configuracionSiguiente = siguienteConfiguracion(siguienteEstado, cadena_replace,
+							primeraPilaModificada, segundaPilaModificada);
+					nodo.insertarHijo(configuracionSiguiente);
+					Nodo_CI_AF2P nodoSiguiente = nodo.getHijos().get(nodo.getHijos().size() - 1);
+					procesarConfiguracionInstantanea(configuracionSiguiente, nodoSiguiente);
+				}
+			}*/
+		}
+		return states + '\n' + estados + initial + '\n' + estadoInicial + '\n' + accepting + '\n' + estadoAceptacion
+				+ tapeAlphabet + '\n' + alfabCinta + stackAlphabet + '\n' + alfabPila + transitions + '\n';
+
+	}
+
 }

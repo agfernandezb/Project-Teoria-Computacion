@@ -52,6 +52,14 @@ public class FuncionTransicionAF2P {
 		}
 	}
 
+	public String getTransicionString(String estadoActual, char simboloCinta, char simboloPrimeraPila,
+			char simboloSegundaPila) {
+		String transicion = transiciones[estadoANumero.get(estadoActual)][simboloAlfabetoANumero
+				.get(simboloCinta)][simboloPilaANumero.get(simboloPrimeraPila)][simboloPilaANumero
+						.get(simboloSegundaPila)];
+		return transicion;
+	}
+
 	public HashMap<Character, Integer> getSimboloAlfabetoANumero() {
 		return simboloAlfabetoANumero;
 	}
