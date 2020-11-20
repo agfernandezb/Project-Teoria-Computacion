@@ -546,17 +546,21 @@ public class AF2P {
 		}
 		String transitions = "#transitions";
 		String transiciones = "";
-
+		boolean newLine = false;
 		for (String estadoActual : conjuntoEstados) {
 			//Lambda transicion
 			for (char simboloPrimeraPila : alfabetoPila) {
 				for (char simboloSegundaPila : alfabetoPila) {
+
 					if (delta.getTransicionString(estadoActual, '$', simboloPrimeraPila, simboloSegundaPila) != null) { //Ambas pilas no estan vacias
+						newLine = true;
 						if (transiciones.length() > 0) {
 							transiciones += '\n';
 						}
-						transiciones += delta.getTransicionString(estadoActual, '$', simboloPrimeraPila,
-								simboloSegundaPila);
+						String transicionInicio = estadoActual + ":$:" + simboloPrimeraPila + ":" + simboloSegundaPila
+								+ ">";
+						transiciones += transicionInicio
+								+ delta.getTransicionString(estadoActual, '$', simboloPrimeraPila, simboloSegundaPila);
 					}
 				}
 				char simboloSegundaPila = simboloPrimeraPila;
@@ -564,21 +568,27 @@ public class AF2P {
 					if (transiciones.length() > 0) {
 						transiciones += '\n';
 					}
-					transiciones += delta.getTransicionString(estadoActual, '$', '$', simboloSegundaPila);
+					String transicionInicio = estadoActual + ":$:" + "$" + ":" + simboloSegundaPila + ">";
+					transiciones += transicionInicio
+							+ delta.getTransicionString(estadoActual, '$', '$', simboloSegundaPila);
 				}
 				if (delta.getTransicion(estadoActual, '$', simboloPrimeraPila, '$') != null) { //En la segunda pila utilizamos lambda, en la primera no
 					if (transiciones.length() > 0) {
 						transiciones += '\n';
 					}
-					transiciones += delta.getTransicion(estadoActual, '$', simboloPrimeraPila, '$');
+					String transicionInicio = estadoActual + ":$:" + simboloPrimeraPila + ":" + "$" + ">";
+					transiciones += transicionInicio
+							+ delta.getTransicionString(estadoActual, '$', simboloPrimeraPila, '$');
 				}
 			}
 			if (delta.getTransicion(estadoActual, '$', '$', '$') != null) { //En ambas pilas utilizamos a Lambda
 				if (transiciones.length() > 0) {
 					transiciones += '\n';
 				}
-				transiciones += delta.getTransicion(estadoActual, '$', '$', '$');
+				String transicionInicio = estadoActual + ":$:" + "$" + ":" + "$" + ">";
+				transiciones += transicionInicio + delta.getTransicionString(estadoActual, '$', '$', '$');
 			}
+
 			for (char simboloCinta : alfabetoCinta) {
 				for (char simboloPrimeraPila : alfabetoPila) {
 					for (char simboloSegundaPila : alfabetoPila) {
@@ -587,8 +597,10 @@ public class AF2P {
 							if (transiciones.length() > 0) {
 								transiciones += '\n';
 							}
-							transiciones += delta.getTransicionString(estadoActual, simboloCinta, simboloPrimeraPila,
-									simboloSegundaPila);
+							String transicionInicio = estadoActual + ":" + simboloCinta + ":" + simboloPrimeraPila + ":"
+									+ simboloSegundaPila + ">";
+							transiciones += transicionInicio + delta.getTransicionString(estadoActual, simboloCinta,
+									simboloPrimeraPila, simboloSegundaPila);
 						}
 					}
 					char simboloSegundaPila = simboloPrimeraPila;
@@ -596,25 +608,33 @@ public class AF2P {
 						if (transiciones.length() > 0) {
 							transiciones += '\n';
 						}
-						transiciones += delta.getTransicionString(estadoActual, simboloCinta, '$', simboloSegundaPila);
+						String transicionInicio = estadoActual + ":" + simboloCinta + ":" + "$" + ":"
+								+ simboloSegundaPila + ">";
+						transiciones += transicionInicio
+								+ delta.getTransicionString(estadoActual, simboloCinta, '$', simboloSegundaPila);
 					}
 					if (delta.getTransicion(estadoActual, simboloCinta, simboloPrimeraPila, '$') != null) { //En la segunda pila utilizamos lambda, en la primera no
 						if (transiciones.length() > 0) {
 							transiciones += '\n';
 						}
-						transiciones += delta.getTransicion(estadoActual, simboloCinta, simboloPrimeraPila, '$');
+						String transicionInicio = estadoActual + ":" + simboloCinta + ":" + simboloPrimeraPila + ":"
+								+ "$" + ">";
+						transiciones += transicionInicio
+								+ delta.getTransicionString(estadoActual, simboloCinta, simboloPrimeraPila, '$');
 					}
 				}
 				if (delta.getTransicion(estadoActual, simboloCinta, '$', '$') != null) { //En ambas pilas utilizamos a Lambda
 					if (transiciones.length() > 0) {
 						transiciones += '\n';
 					}
-					transiciones += delta.getTransicion(estadoActual, simboloCinta, '$', '$');
+					String transicionInicio = estadoActual + ":" + simboloCinta + ":" + "$" + ":" + "$" + ">";
+					transiciones += transicionInicio + delta.getTransicionString(estadoActual, simboloCinta, '$', '$');
 				}
 			}
 		}
 		return states + '\n' + estados + initial + '\n' + estadoInicial + '\n' + accepting + '\n' + estadoAceptacion
-				+ tapeAlphabet + '\n' + alfabCinta + stackAlphabet + '\n' + alfabPila + transitions + '\n';
+				+ tapeAlphabet + '\n' + alfabCinta + stackAlphabet + '\n' + alfabPila + transitions + '\n'
+				+ transiciones;
 
 	}
 
