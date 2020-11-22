@@ -66,6 +66,9 @@ public class AFPD {
 		HashMap<String, Integer> estadoANumero = null;
 		HashMap<Character, Integer> simboloAlfabetoANumero = null;
 		HashMap<Character, Integer> simboloPilaANumero = null;
+		Vector<String> numeroAEstado = new Vector<String>();
+		Vector<Character> numeroASimboloAlfabeto = new Vector<Character>();
+		Vector<Character> numeroASimboloPila = new Vector<Character>();
 
 		for (int i = 0; i < headers.length; i++) {
 			String encabezado = scanner.nextLine();
@@ -128,6 +131,7 @@ public class AFPD {
 				estadoANumero = new HashMap<>();
 				int numeroEstado = 0;
 				for (String estado : conjuntoEstados) {
+					numeroAEstado.add(estado);
 					estadoANumero.put(estado, numeroEstado);
 					++numeroEstado;
 				}
@@ -135,7 +139,9 @@ public class AFPD {
 				simboloAlfabetoANumero = new HashMap<>();
 				int numeroSimboloCinta = 1;
 				simboloAlfabetoANumero.put('$', 0);
+				numeroASimboloAlfabeto.add('$');
 				for (Character simbolo : alfabetoCinta) {
+					numeroASimboloAlfabeto.add(simbolo);
 					simboloAlfabetoANumero.put(simbolo, numeroSimboloCinta);
 					++numeroSimboloCinta;
 				}
@@ -143,12 +149,15 @@ public class AFPD {
 				simboloPilaANumero = new HashMap<>();
 				int numeroSimboloPila = 1;
 				simboloPilaANumero.put('$', 0);
+				numeroASimboloPila.add('$');
 				for (Character simbolo : alfabetoPila) {
+					numeroASimboloPila.add(simbolo);
 					simboloPilaANumero.put(simbolo, numeroSimboloPila);
 					++numeroSimboloPila;
 				}
 				delta = new FuncionTransicionAFPD(conjuntoEstados, alfabetoCinta, alfabetoPila, estadoANumero,
-						simboloAlfabetoANumero, simboloPilaANumero);
+						simboloAlfabetoANumero, simboloPilaANumero, numeroAEstado, numeroASimboloAlfabeto,
+						numeroASimboloPila);
 				for (int j = 0; j < ultima_linea && scanner.hasNext(); j++) {
 					String transicion = scanner.nextLine();
 					String estadoActual = transicion.split(">")[0].split(":")[0];
@@ -335,4 +344,25 @@ public class AFPD {
 		flujo_salida.close();
 	}
 
+	@Override
+	public String toString() {
+		String resultado = "";
+		resultado += "#states \n";
+		resultado += conjuntoEstados.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
+				.replaceAll(",", "\n") + "\n";
+		resultado += "#initial \n";
+		resultado += estadoInicial + "\n";
+		resultado += "#accepting \n";
+		resultado += estadosAceptacion.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
+				.replaceAll(",", "\n") + "\n";
+		resultado += "#tapeAlphabet \n";
+		resultado += alfabetoCinta.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
+				.replaceAll(",", "\n") + "\n";
+		resultado += "#stackAlphabet \n";
+		resultado += alfabetoPila.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
+				.replaceAll(",", "\n") + "\n";
+		resultado += "#transitions \n";
+		resultado += delta.toString();
+		return resultado;
+	}
 }

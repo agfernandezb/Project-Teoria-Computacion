@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
-
+import java.util.Vector;
 
 public class MT {
 	private Set<String> conjuntoEstados;
@@ -19,6 +19,7 @@ public class MT {
 	private Set<Character> alfabetoCinta;
 	private FuncionTransicionMT delta;
 	private String cinta;
+
 	//Constructor
 	public MT(Set<String> conjuntoEstados, String estadoInicial, Set<String> estadosAceptacion,
 			Set<Character> alfabetoEntrada, Set<Character> alfabetoCinta, FuncionTransicionMT delta) {
@@ -31,6 +32,7 @@ public class MT {
 		this.delta = delta;
 		this.cinta = "";
 	}
+
 	//Constructor con Nombre de Archivo
 	public MT(String nombreArchivo) {
 		Scanner scanner = null;
@@ -62,6 +64,8 @@ public class MT {
 		FuncionTransicionMT delta = null;
 		HashMap<String, Integer> estadoANumero = null;
 		HashMap<Character, Integer> simboloAlfabetoANumero = null;
+		Vector<String> numeroAEstado = new Vector<String>();
+		Vector<Character> numeroASimbolo = new Vector<Character>();
 
 		for (int i = 0; i < headers.length; i++) {
 			String encabezado = scanner.nextLine();
@@ -110,7 +114,7 @@ public class MT {
 
 			}
 			case "#initial": {
-					estadoInicial = scanner.nextLine();
+				estadoInicial = scanner.nextLine();
 				break;
 			}
 			case "#accepting": {
@@ -124,19 +128,23 @@ public class MT {
 				estadoANumero = new HashMap<>();
 				int numeroEstado = 0;
 				for (String estado : conjuntoEstados) {
+					numeroAEstado.add(estado);
 					estadoANumero.put(estado, numeroEstado);
 					++numeroEstado;
 				}
 
 				simboloAlfabetoANumero = new HashMap<>();
 				simboloAlfabetoANumero.put('!', 0);
+				numeroASimbolo.add('!');
 				int numeroSimbolo = 1;
 				for (Character simbolo : alfabetoCinta) {
+					numeroASimbolo.add(simbolo);
 					simboloAlfabetoANumero.put(simbolo, numeroSimbolo);
 					++numeroSimbolo;
 				}
 
-				delta = new FuncionTransicionMT(conjuntoEstados, alfabetoCinta, estadoANumero, simboloAlfabetoANumero);
+				delta = new FuncionTransicionMT(conjuntoEstados, alfabetoCinta, estadoANumero, simboloAlfabetoANumero,
+						numeroAEstado, numeroASimbolo);
 
 				for (int j = 0; j < ultima_linea && scanner.hasNext(); j++) {
 					String transicion = scanner.nextLine();
@@ -158,57 +166,67 @@ public class MT {
 		this.alfabetoCinta = alfabetoCinta;
 		this.delta = delta;
 		this.cinta = "";
-		
+
 	}
+
 	private String procesarCadena(String cadena, boolean imprimirProcesamiento) {
 		String procesamiento = "Cadena: " + cadena + "\n" + "Procesamiento: \n";
 		String estadoActual = estadoInicial;
 		cinta = cadena;
 		int apuntador = 0;
-		while(!estadosAceptacion.contains(estadoActual)) {
-			if(apuntador < 0) {
-				cinta = "!".repeat(apuntador*-1)+cinta;
+		while (!estadosAceptacion.contains(estadoActual)) {
+			if (apuntador < 0) {
+				cinta = "!".repeat(apuntador * -1) + cinta;
 				apuntador = 0;
 			}
-			if(apuntador >= cinta.length()) {
-				cinta = cinta + "!".repeat(apuntador-cinta.length()+1);
+			if (apuntador >= cinta.length()) {
+				cinta = cinta + "!".repeat(apuntador - cinta.length() + 1);
 			}
-			
-			procesamiento += cinta.substring(0, apuntador) + "(" + estadoActual + ")" + cinta.substring(apuntador) + "->";
+
+			procesamiento += cinta.substring(0, apuntador) + "(" + estadoActual + ")" + cinta.substring(apuntador)
+					+ "->";
 			//Ejecutar delta
 			try {
 				char ch = delta.getTransicion(estadoActual, cinta.charAt(apuntador)).simbolo;
 				char mov = delta.getTransicion(estadoActual, cinta.charAt(apuntador)).movimiento;
 				estadoActual = delta.getTransicion(estadoActual, cinta.charAt(apuntador)).estado;
 				//cambiar símbolo en cinta
-				cinta = cinta.substring(0, apuntador) + ch + cinta.substring(apuntador+1);
+				cinta = cinta.substring(0, apuntador) + ch + cinta.substring(apuntador + 1);
 				//movimiento
-				if(mov == '<') apuntador--;
-				if(mov == '>') apuntador++;
+				if (mov == '<')
+					apuntador--;
+				if (mov == '>')
+					apuntador++;
 				//estado
 			} catch (Exception e) {
 				procesamiento += "> no";
-				if (imprimirProcesamiento) System.out.println(procesamiento);
+				if (imprimirProcesamiento)
+					System.out.println(procesamiento);
 				return "abortada";
-			}		
+			}
 		}
 		procesamiento += cinta.substring(0, apuntador) + "(" + estadoActual + ")" + cinta.substring(apuntador) + "->";
 		procesamiento += "> yes";
-		if (imprimirProcesamiento) System.out.println(procesamiento);
+		if (imprimirProcesamiento)
+			System.out.println(procesamiento);
 		return "aceptada";
 	}
+
 	public boolean procesarCadena(String cadena) {
 		return procesarCadena(cadena, false).equals("aceptada");
 	}
+
 	public boolean procesarCadenaConDetalles(String cadena) {
 		String aux = procesarCadena(cadena, true);
 		return aux.equals("aceptada");
 	}
+
 	public String procesarFuncion(String cadena) {
 		procesarCadena(cadena, false);
 		//System.out.println(cinta);
 		return cinta;
 	}
+
 	public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
 
 		PrintStream flujo_salida;
@@ -239,23 +257,26 @@ public class MT {
 		}
 		flujo_salida.flush();
 		flujo_salida.close();
-	}	
-	
+	}
+
 	public String toString() {
 		String resultado = "";
 		resultado += "#states \n";
-		resultado += conjuntoEstados.toString() + "\n";
+		resultado += conjuntoEstados.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
+				.replaceAll(",", "\n") + "\n";
 		resultado += "#initial \n";
 		resultado += estadoInicial + "\n";
 		resultado += "#accepting \n";
-		resultado += estadosAceptacion.toString() + "\n";
+		resultado += estadosAceptacion.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
+				.replaceAll(",", "\n") + "\n";
 		resultado += "#inputAlphabet \n";
-		resultado += alfabetoEntrada.toString() + "\n";
+		resultado += alfabetoEntrada.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
+				.replaceAll(",", "\n") + "\n";
 		resultado += "#tapeAlphabet \n";
-		resultado += alfabetoCinta.toString() + "\n";
+		resultado += alfabetoCinta.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
+				.replaceAll(",", "\n") + "\n";
 		resultado += "#transitions \n";
 		resultado += delta.toString() + "\n";
 		return resultado;
 	}
 }
-

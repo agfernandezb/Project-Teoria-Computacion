@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Vector;
 
 public class AFD {
 	private Set<Character> alfabeto;
@@ -55,6 +56,8 @@ public class AFD {
 		FuncionTransicionAFD delta = null;
 		HashMap<String, Integer> estadoANumero = null;
 		HashMap<Character, Integer> simboloANumero = null;
+		Vector<String> numeroAEstado = new Vector<String>();
+		Vector<Character> numeroASimboloAlfabeto = new Vector<Character>();
 
 		for (int i = 0; i < headers.length; i++) {
 			String encabezado = scanner.nextLine();
@@ -98,21 +101,26 @@ public class AFD {
 				break;
 			}
 			case "#transitions": {
+
 				estadoANumero = new HashMap<>();
 				int numeroEstado = 0;
 				for (String estado : conjuntoEstados) {
+					numeroAEstado.add(estado);
 					estadoANumero.put(estado, numeroEstado);
 					++numeroEstado;
 				}
 
 				simboloANumero = new HashMap<>();
 				int numeroSimbolo = 0;
+				numeroASimboloAlfabeto.add('$');
 				for (Character simbolo : alfabeto) {
+					numeroASimboloAlfabeto.add(simbolo);
 					simboloANumero.put(simbolo, numeroSimbolo);
 					++numeroSimbolo;
 				}
 
-				delta = new FuncionTransicionAFD(alfabeto, conjuntoEstados, estadoANumero, simboloANumero);
+				delta = new FuncionTransicionAFD(alfabeto, conjuntoEstados, estadoANumero, simboloANumero,
+						numeroAEstado, numeroASimboloAlfabeto);
 
 				for (int j = 0; j < ultima_linea && scanner.hasNext(); j++) {
 					String transicion = scanner.nextLine();
@@ -231,4 +239,22 @@ public class AFD {
 		return estadosAceptacion;
 	}
 
+	@Override
+	public String toString() {
+		String resultado = "";
+		resultado += "#alphabet \n";
+		resultado += alfabeto.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "").replaceAll(",",
+				"\n") + "\n";
+		resultado += "#states \n";
+		resultado += conjuntoEstados.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
+				.replaceAll(",", "\n") + "\n";
+		resultado += "#initial \n";
+		resultado += estadoInicial + "\n";
+		resultado += "#accepting \n";
+		resultado += estadosAceptacion.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
+				.replaceAll(",", "\n") + "\n";
+		resultado += "#transitions \n";
+		resultado += delta.toString();
+		return resultado;
+	}
 }
