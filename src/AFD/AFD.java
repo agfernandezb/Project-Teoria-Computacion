@@ -29,6 +29,7 @@ public class AFD {
 	}
 
 	public AFD(String nombre) {
+		String estadoInicial = null;
 		Scanner scanner = null;
 		int[] headers = new int[5]; // Encabezados como #alphabet, guarda sus posiciones
 		File archivo = new File("src/Pruebas/AFD/" + nombre + ".dfa");
@@ -52,7 +53,6 @@ public class AFD {
 
 		Set<Character> alfabeto = new HashSet<Character>();
 		Set<String> conjuntoEstados = new HashSet<String>();
-		String estadoInicial = null;
 		Set<String> estadosAceptacion = new HashSet<String>();
 		FuncionTransicionAFD delta = null;
 		HashMap<String, Integer> estadoANumero = null;
