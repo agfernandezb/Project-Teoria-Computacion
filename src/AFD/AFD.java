@@ -47,6 +47,7 @@ public class AFD {
 			scanner = new Scanner(archivo);
 		} catch (FileNotFoundException e) {
 			System.out.println("Error en la lectura del archivo, no fue encontrado.");
+			return;
 		}
 
 		Set<Character> alfabeto = new HashSet<Character>();
@@ -209,7 +210,6 @@ public class AFD {
 			}
 			procesamiento += "(" + estadoActual + "," + "$)>>";
 			boolean resultado = estadosAceptacion.contains(estadoActual);
-			String resultadoProcesamiento = resultado ? "accepted" : "rejected";
 			String procesamientoConDetalles = cadena + "\t" + procesamiento + "\t" + (resultado ? "yes" : "no");
 			if (imprimirPantalla)
 				System.out.println(procesamientoConDetalles);

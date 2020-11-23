@@ -1,0 +1,9 @@
+aaaaaab	(q0,aaaaaab)->(q1,aaaaab)->(q2,aaaab)->(q2,aaab)->(q2,aab)->(q2,ab)->(q2,b)->(q3,$)>>	yes
+cb	(q0,cb)->(q6,b)->(q8,$)>>	no
+aaaabc	(q0,aaaabc)->(q1,aaabc)->(q2,aabc)->(q2,abc)->(q2,bc)->(q3,c)->(q8,$)>>	no
+acccccc	(q0,acccccc)->(q1,cccccc)->(q4,ccccc)->(q4,cccc)->(q4,ccc)->(q4,cc)->(q4,c)->(q4,$)>>	yes
+c	(q0,c)->(q6,$)>>	yes
+cccc	(q0,cccc)->(q6,ccc)->(q8,cc)->(q8,c)->(q8,$)>>	no
+bbbbc	(q0,bbbbc)->(q5,bbbc)->(q5,bbc)->(q5,bc)->(q5,c)->(q6,$)>>	yes
+bcaa	(q0,bcaa)->(q5,caa)->(q6,aa)->(q7,a)->(q7,$)>>	yes
+bc	(q0,bc)->(q5,c)->(q6,$)>>	yes

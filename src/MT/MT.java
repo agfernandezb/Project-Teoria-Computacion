@@ -54,6 +54,7 @@ public class MT {
 			scanner = new Scanner(archivo);
 		} catch (FileNotFoundException e) {
 			System.out.println("Error en la lectura del archivo, no fue encontrado.");
+			return;
 		}
 
 		Set<String> conjuntoEstados = new HashSet<String>();
