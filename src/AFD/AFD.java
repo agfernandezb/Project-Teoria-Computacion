@@ -143,7 +143,7 @@ public class AFD {
 
 	}
 
-	public String procesarCadena(String cadena, boolean retornarProcesamiento) {
+	private String procesarCadena(String cadena, boolean retornarProcesamiento) {
 		String estadoActual = estadoInicial;
 		String procesamiento = "";
 

@@ -181,7 +181,7 @@ public class AFPD {
 
 	}
 
-	public void modificarPila(Vector<Character> pila, String operacion, char parametro) {
+	private void modificarPila(Vector<Character> pila, String operacion, char parametro) {
 		switch (operacion) {
 		case "Reemplazo": {
 			pila.set(pila.size() - 1, parametro);
