@@ -3,6 +3,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 import AFD.AFD;
+import AFPD.AFPD;
 
 public class main {
 	public static void main(String[] args) {
@@ -184,10 +185,162 @@ public class main {
 				}
 				break;
 			}
-			/*case 2: {
-			
+			case "2": {
+				boolean menu1 = true;
+				while (menu1) {
+					System.out.println("Clase AFPD");
+					System.out.println("Seleccione el autómata finito con pila determinista que desea utilizar:");
+					System.out.println("1.Autómata finito que acepta el lenguaje a^2nb^n, n >= 0");
+					System.out.println("2.Autómata finito que acepta el lenguaje a^mb^n con n > m >=1");
+					System.out.println("3.Autómata finito que acepta el lenguaje a^nb^ma^(n+1) con m >= 1, n >= 0");
+					System.out.println("4.Ingresar uno propio");
+					System.out.println("Presione cualquier otra tecla para volver al menú inicial");
+					String opcion1 = scanner.next();
+					AFPD afpd = null;
+					switch (opcion1) {
+					case "1": {
+						afpd = new AFPD("a2nbn");
+						break;
+					}
+					case "2": {
+						afpd = new AFPD("ambn");
+						break;
+					}
+					case "3": {
+						afpd = new AFPD("anbman1");
+						break;
+					}
+					case "4": {
+						System.out.println(
+								"Ingrese el nombre del archivo con la extensión .dpda en la carpeta Pruebas\\AFPD");
+						String nombre = scanner.next();
+						afpd = new AFPD(nombre);
+						while (afpd.getEstadoInicial() == null) {
+							System.out.println(
+									"Hubo un error, ingrese el nombre del archivo con la extensión .dfa en la carpeta Pruebas\\AFD ");
+							nombre = scanner.next();
+							afpd = new AFPD(nombre);
+						}
+						break;
+					}
+					default:
+						menu1 = false;
+						break;
+					}
+					boolean menu2 = menu1;
+					while (menu2) {
+						System.out.println("Seleccione la operación que desea realizar con el AFPD:");
+						System.out.println("1.Saber si una cadena es aceptada o no");
+						System.out.println("2.Procesar una cadena con detalles*");
+						System.out.println(
+								"3.Procesar una lista de cadenas, viendo el procesamiento de cada una de ellas");
+						System.out.println("4.Imprimir el automata en el formato de entrada");
+						System.out.println("5.Cambiar el autómata");
+						System.out.println("Presione cualquier otra tecla para volver al menú inicial");
+						String opcion2 = scanner.next();
+						ArrayList<String> bancoString = null;
+						boolean hayBancoString = !opcion1.equals("4");
+						if (hayBancoString) {
+							bancoString = new ArrayList<>();
+							bancoString.add("aaaaaabbb");
+							bancoString.add("aaaabb");
+							bancoString.add("aaaaaaaaaaaaaaaabbbb");
+							bancoString.add("aaaaabbbbbbbbbbb");
+							bancoString.add("bbbbbbb");
+							bancoString.add("aaa");
+							bancoString.add("aaaaabbbbbbbbbb");
+							bancoString.add("aaaaaabbbbbb");
+							bancoString.add("aabbaaa");
+							bancoString.add("bbbbbbb");
+							bancoString.add("aaabbbaaa");
+							bancoString.add("aaaaabbbbbbbaaaaaa");
+							bancoString.add("a");
+						}
+						switch (opcion2) {
+						case "1": {
+							boolean usarBanco = true;
+							if (hayBancoString) {
+								System.out.println(
+										"¿Desea escribir la cadena a utilizar? ('si' para una respuesta afirmativa)");
+								String res = scanner.next();
+								if (res.equalsIgnoreCase("si")) {
+									usarBanco = false;
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + afpd.procesarCadena(cadena));
+								}
+							}
+							if (usarBanco) {
+								Random random = new Random();
+								int indiceAleatorio = random.nextInt(10);
+								System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
+								System.out
+										.println("Resultado: " + afpd.procesarCadena(bancoString.get(indiceAleatorio)));
+							}
+							continue;
+						}
+						case "2": {
+							boolean usarBanco = true;
+							if (hayBancoString) {
+								System.out.println(
+										"¿Desea escribir la cadena a utilizar? ('Si' para una respuesta afirmativa)");
+								String res = scanner.next();
+								if (res.equalsIgnoreCase("si")) {
+									usarBanco = false;
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + afpd.procesarCadenaConDetalles(cadena));
+								}
+							}
+							if (usarBanco) {
+								Random random = new Random();
+								int indiceAleatorio = random.nextInt(10);
+								System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
+								System.out.println("Resultado: "
+										+ afpd.procesarCadenaConDetalles(bancoString.get(indiceAleatorio)));
+							}
+							continue;
+						}
+						case "3": {
+							System.out.println("Escriba un nombre para el archivo donde se guardará el procesamiento.");
+							String nombreArchivo = scanner.next();
+							System.out.println("");
+							Integer num = null;
+							while (true) {
+								System.out.println("Escriba el numero de cadenas a procesar: ");
+								try {
+									num = scanner.nextInt();
+									if (num > 0)
+										break;
+								} catch (Exception e) {
+								}
+							}
+							ArrayList<String> listaCadenas = new ArrayList<String>();
+							for (int i = 0; i < num; ++i) {
+								listaCadenas.add(scanner.next());
+							}
+							System.out.println("Desea ver los resultados en pantalla? ");
+							String res = scanner.next();
+							boolean imprimirPantalla = res.equalsIgnoreCase("si");
+							afpd.procesarListaCadenas(listaCadenas, nombreArchivo, imprimirPantalla);
+							continue;
+						}
+						case "4": {
+							System.out.println(afpd.toString());
+							continue;
+						}
+						case "5": {
+							menu2 = false;
+							break;
+						}
+						default:
+							menu1 = false;
+							menu2 = false;
+							break;
+						}
+					}
+				}
+				break;
 			}
-			case 3: {
+			/*case 3: {
 			
 			}
 			case 4: {

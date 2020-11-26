@@ -35,6 +35,7 @@ public class AFPD {
 	}
 
 	public AFPD(String nombre) {// Se supone que primero se procesa el alfabeto de cinta luego el de pila
+		String estadoInicial = null;
 		Scanner scanner = null;
 		int[] headers = new int[6]; // Encabezados como #alphabet, guarda sus posiciones
 		File archivo = new File("src/Pruebas/AFPD/" + nombre + ".dpda");
@@ -58,7 +59,6 @@ public class AFPD {
 		}
 
 		Set<String> conjuntoEstados = new HashSet<String>();
-		String estadoInicial = null;
 		Set<String> estadosAceptacion = new HashSet<String>();
 		Set<Character> alfabetoCinta = new HashSet<Character>();
 		Set<Character> alfabetoPila = new HashSet<Character>();
@@ -343,6 +343,10 @@ public class AFPD {
 		}
 		flujo_salida.flush();
 		flujo_salida.close();
+	}
+
+	public String getEstadoInicial() {
+		return estadoInicial;
 	}
 
 	@Override
