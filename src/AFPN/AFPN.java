@@ -34,6 +34,7 @@ public class AFPN {
 	}
 
 	public AFPN(String nombre) {
+		String estadoInicial = null;
 		Scanner scanner = null;
 		int[] headers = new int[6]; // Encabezados como #alphabet, guarda sus posiciones
 		File archivo = new File("src/Pruebas/AFPN/" + nombre + ".pda");
@@ -57,7 +58,6 @@ public class AFPN {
 		}
 
 		Set<String> conjuntoEstados = new HashSet<String>();
-		String estadoInicial = null;
 		Set<String> estadosAceptacion = new HashSet<String>();
 		Set<Character> alfabetoCinta = new HashSet<Character>();
 		Set<Character> alfabetoPila = new HashSet<Character>();
@@ -592,6 +592,10 @@ public class AFPN {
 			}
 		}
 		return new AFPN(conjuntoEstados, estadoInicial, estadosAceptacion, alfabetoCinta, alfabetoPila, delta);
+	}
+
+	public String getEstadoInicial() {
+		return estadoInicial;
 	}
 
 	@Override
