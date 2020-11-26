@@ -451,7 +451,7 @@ public class AFPN {
 	}
 
 	private String generarEstadoProductoCartesiano(String estado_AFPN, String estado_AFD) {
-		return "(" + estado_AFPN + "," + estado_AFD + ")";
+		return "(" + estado_AFPN + "+" + estado_AFD + ")";
 	}
 
 	public AFPN hallarProductoCartesianoConAFD(AFD afd) {
@@ -511,14 +511,14 @@ public class AFPN {
 						String estadoActual = generarEstadoProductoCartesiano(estado_AFPN, estado_AFD);
 						String transicion = "";
 						for (int i = 0; i < transiciones.size(); ++i) {
-							if (i >= 1 && i < transiciones.size() - 1)
-								transicion += ";";
 							String estadoTransicion_AFPN = transiciones.get(i).split(":")[0]; //Estado al cual se mueve el AFPN
 							String estadoTransicion_AFD = estado_AFD; //AFD permanece quieto
 							String operacionPila = transiciones.get(i).split(":")[1]; //Simbolo pila final
 							String estadoFinal = generarEstadoProductoCartesiano(estadoTransicion_AFPN,
 									estadoTransicion_AFD);
 							transicion += estadoFinal + ":" + operacionPila;
+							if (i < transiciones.size() - 1)
+								transicion += ";";
 						}
 						delta.setTransicion(estadoActual, simboloCinta, simboloPila, transicion);
 					}
@@ -532,14 +532,14 @@ public class AFPN {
 					String estadoActual = generarEstadoProductoCartesiano(estado_AFPN, estado_AFD);
 					String transicion = "";
 					for (int i = 0; i < transiciones.size(); ++i) {
-						if (i >= 1 && i < transiciones.size() - 1)
-							transicion += ";";
 						String estadoTransicion_AFPN = transiciones.get(i).split(":")[0]; //Estado al cual se mueve el AFPN
 						String estadoTransicion_AFD = estado_AFD; //AFD permanece quieto
 						String operacionPila = transiciones.get(i).split(":")[1]; //Simbolo pila final
 						String estadoFinal = generarEstadoProductoCartesiano(estadoTransicion_AFPN,
 								estadoTransicion_AFD);
 						transicion += estadoFinal + ":" + operacionPila;
+						if (i < transiciones.size() - 1)
+							transicion += ";";
 					}
 					delta.setTransicion(estadoActual, '$', '$', transicion);
 				}
@@ -555,14 +555,14 @@ public class AFPN {
 						String estadoActual = generarEstadoProductoCartesiano(estado_AFPN, estado_AFD);
 						String transicion = "";
 						for (int i = 0; i < transiciones.size(); ++i) {
-							if (i >= 1 && i < transiciones.size() - 1)
-								transicion += ";";
 							String estadoTransicion = transiciones.get(i).split(":")[0]; //Estado al cual se mueve el AFPN
 							String estadoTransicion_AFD = afd.getTransicion(estado_AFD, simboloCinta); //Estado al cual se mueve el AFD
 							String operacionPila = transiciones.get(i).split(":")[1]; //Simbolo pila final
 							String estadoFinal = generarEstadoProductoCartesiano(estadoTransicion,
 									estadoTransicion_AFD);
 							transicion += estadoFinal + ":" + operacionPila;
+							if (i < transiciones.size() - 1)
+								transicion += ";";
 						}
 						delta.setTransicion(estadoActual, simboloCinta, lambda, transicion);
 					}
@@ -576,14 +576,14 @@ public class AFPN {
 							String estadoActual = generarEstadoProductoCartesiano(estado_AFPN, estado_AFD);
 							String transicion = "";
 							for (int i = 0; i < transiciones.size(); ++i) {
-								if (i >= 1 && i < transiciones.size() - 1)
-									transicion += ";";
 								String estadoTransicion_AFPN = transiciones.get(i).split(":")[0]; //Estado al cual se mueve el AFPN
 								String estadoTransicion_AFD = afd.getTransicion(estado_AFD, simboloCinta); //Estado al cual se mueve el AFD
 								String operacionPila = transiciones.get(i).split(":")[1]; //Simbolo pila final
 								String estadoFinal = generarEstadoProductoCartesiano(estadoTransicion_AFPN,
 										estadoTransicion_AFD);
 								transicion += estadoFinal + ":" + operacionPila;
+								if (i < transiciones.size() - 1)
+									transicion += ";";
 							}
 							delta.setTransicion(estadoActual, simboloCinta, simboloPila, transicion);
 						}
@@ -591,7 +591,8 @@ public class AFPN {
 				}
 			}
 		}
-		return new AFPN(conjuntoEstados, estadoInicial, estadosAceptacion, alfabetoCinta, alfabetoPila, delta);
+		AFPN result = new AFPN(conjuntoEstados, estadoInicial, estadosAceptacion, alfabetoCinta, alfabetoPila, delta);
+		return result;
 	}
 
 	public String getEstadoInicial() {
@@ -600,24 +601,31 @@ public class AFPN {
 
 	@Override
 	public String toString() {
-		String resultado = "";
-		resultado += "#states \n";
-		resultado += conjuntoEstados.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
-				.replaceAll(",", "\n") + "\n";
-		resultado += "#initial \n";
-		resultado += estadoInicial + "\n";
-		resultado += "#accepting \n";
-		resultado += estadosAceptacion.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
-				.replaceAll(",", "\n") + "\n";
-		resultado += "#tapeAlphabet \n";
-		resultado += alfabetoCinta.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
-				.replaceAll(",", "\n") + "\n";
-		resultado += "#stackAlphabet \n";
-		resultado += alfabetoPila.toString().replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(" ", "")
-				.replaceAll(",", "\n") + "\n";
-		resultado += "#transitions \n";
-		resultado += delta.toString();
-		return resultado;
-	}
+		String states = "#states";
+		String estados = "";
+		for (String estado : conjuntoEstados) {
+			estados += estado + '\n';
+		}
+		String initial = "#initial";
+		String accepting = "#accepting";
+		String estadoAceptacion = "";
+		for (String estado : estadosAceptacion) {
+			estadoAceptacion += estado + '\n';
+		}
+		String tapeAlphabet = "#tapeAlphabet";
+		String alfabCinta = "";
+		for (char simbolo : this.alfabetoCinta) {
+			alfabCinta += String.valueOf(simbolo) + '\n';
+		}
+		String stackAlphabet = "#stackAlphabet";
+		String alfabPila = "";
+		for (char simbolo : alfabetoPila) {
+			alfabPila += String.valueOf(simbolo) + '\n';
+		}
+		String transitions = "#transitions";
+		return states + '\n' + estados + initial + '\n' + estadoInicial + '\n' + accepting + '\n' + estadoAceptacion
+				+ tapeAlphabet + '\n' + alfabCinta + stackAlphabet + '\n' + alfabPila + transitions + '\n'
+				+ delta.toString();
 
+	}
 }

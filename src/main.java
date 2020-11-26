@@ -29,7 +29,8 @@ public class main {
 							"1. Autómata finito determinista que acepta las cadenas con un número par de aes y de bes");
 					System.out.println("2. Autómata finito determinista que acepta el lenguaje (a^2i)*(b^3j)*");
 					System.out.println("3. Autómata finito determinista que acepta el lenguaje a+b* U ac* U b*ca*");
-					System.out.println("4. Ingresar uno propio");
+					System.out.println("4. Autómata finito determinista que acepta cadenas que no terminan en ab");
+					System.out.println("5. Ingresar uno propio");
 					System.out.println("Presione cualquier otra tecla para volver al menú inicial");
 					String opcion1 = scanner.next();
 					AFD afd = null;
@@ -47,6 +48,10 @@ public class main {
 						break;
 					}
 					case "4": {
+						afd = new AFD("notab");
+						break;
+					}
+					case "5": {
 						System.out.println(
 								"Ingrese el nombre del archivo con la extensión .dfa en la carpeta Pruebas\\AFD");
 						String nombre = scanner.next();
@@ -67,7 +72,7 @@ public class main {
 					while (menu2) {
 						System.out.println("Seleccione la operación que desea realizar con el AFD:");
 						System.out.println("1. Saber si una cadena es aceptada o no");
-						System.out.println("2. Procesar una cadena con detalles*");
+						System.out.println("2. Procesar una cadena con detalles");
 						System.out.println(
 								"3. Procesar una lista de cadenas, viendo el procesamiento de cada una de ellas");
 						System.out.println("4. Imprimir el automata en el formato de entrada");
@@ -75,7 +80,7 @@ public class main {
 						System.out.println("Presione cualquier otra tecla para volver al menú inicial");
 						String opcion2 = scanner.next();
 						ArrayList<String> bancoString = null;
-						boolean hayBancoString = !opcion1.equals("4");
+						boolean hayBancoString = !opcion1.equals("5");
 						if (hayBancoString) {
 							if (opcion1.equals("3")) {
 								bancoString = new ArrayList<>();
@@ -232,7 +237,7 @@ public class main {
 					while (menu2) {
 						System.out.println("Seleccione la operación que desea realizar con el AFPD:");
 						System.out.println("1. Saber si una cadena es aceptada o no");
-						System.out.println("2. Procesar una cadena con detalles*");
+						System.out.println("2. Procesar una cadena con detalles");
 						System.out.println(
 								"3. Procesar una lista de cadenas, viendo el procesamiento de cada una de ellas");
 						System.out.println("4. Imprimir el automata en el formato de entrada");
@@ -393,7 +398,7 @@ public class main {
 					while (menu2) {
 						System.out.println("Seleccione la operación que desea realizar con el AFPN:");
 						System.out.println("1. Saber si una cadena es aceptada o no");
-						System.out.println("2. Procesar una cadena con detalles*");
+						System.out.println("2. Procesar una cadena con detalles");
 						System.out.println("3. Computar todos los procesamientos para una cadena");
 						System.out.println(
 								"4. Procesar una lista de cadenas, viendo el procesamiento de cada una de ellas");
@@ -524,7 +529,9 @@ public class main {
 							System.out.println("2. Autómata finito que acepta el lenguaje a^m b^n con n > m >=1");
 							System.out.println(
 									"3. Autómata finito que acepta el lenguaje a^n b^m a^(n+1) con m >= 1, n >= 0");
-							System.out.println("4. Ingresar uno propio");
+							System.out.println(
+									"4. Autómata finito determinista que acepta cadenas que no terminan en ab");
+							System.out.println("5. Ingresar uno propio");
 							int opc = -1;
 							while (true) {
 								try {
@@ -550,6 +557,10 @@ public class main {
 								break;
 							}
 							case 4: {
+								afd = new AFD("notab");
+								break;
+							}
+							case 5: {
 								System.out.println(
 										"Ingrese el nombre del archivo con la extensión .dfa en la carpeta Pruebas\\AFD");
 								String nombre = scanner.next();
@@ -561,9 +572,9 @@ public class main {
 									afd = new AFD(nombre);
 								}
 							}
-								afpn = afpn.hallarProductoCartesianoConAFD(afd);
-								continue;
 							}
+							afpn = afpn.hallarProductoCartesianoConAFD(afd);
+							continue;
 						}
 						case "6": {
 							System.out.println(afpn.toString());
@@ -593,9 +604,12 @@ public class main {
 			}
 		}
 		scanner.close();
-		/*
-		Crear Automatas AFPD, no se requieren mas opciones.	
-		
+
+		//Crear Automatas AFPD, no se requieren mas opciones.	
+		/*AFD af = new AFD("notab");
+		AFPN afp = new AFPN("palindrome");
+		AFPN afpnn = afp.hallarProductoCartesianoConAFD(af);
+		System.out.println(afpnn.toString());*/
 		//AF2P af2p = new AF2P("uno");
 		//System.out.println(af2p.toString());
 		//MT -> mismo numero de a que b
