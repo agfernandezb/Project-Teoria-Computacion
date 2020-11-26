@@ -233,11 +233,11 @@ public class MT {
 		PrintStream flujo_salida;
 		File archivo = null;
 		if (nombreArchivo != null && nombreArchivo.length() > 0)
-			archivo = new File("src/Resultados/MT/" + nombreArchivo + ".txt");
+			archivo = new File("src/ProcesamientoCadenas/MT/" + nombreArchivo + ".txt");
 		try {
 			flujo_salida = new PrintStream(archivo);
 		} catch (Exception e) {
-			archivo = new File("src/Resultados/MT/" + "procesamientoListaCadenas" + ".txt");
+			archivo = new File("src/ProcesamientoCadenas/MT/" + "procesamientoListaCadenas" + ".txt");
 			try {
 				flujo_salida = new PrintStream(archivo);
 			} catch (FileNotFoundException e1) {

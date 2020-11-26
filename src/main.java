@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import AFD.AFD;
 import AFPD.AFPD;
+import MT.MT;
 
 public class main {
 	public static void main(String[] args) {
@@ -530,11 +531,12 @@ public class main {
 		//AF2P af2p = new AF2P("uno");
 		//System.out.println(af2p.toString());
 		//MT -> mismo numero de a que b
-		//MT mt = new MT("uno");
-		/*mt.procesarCadenaConDetalles("ababababaa");
+		MT mt = new MT("uno");
+		mt.procesarCadenaConDetalles("ababababaa");
 		System.out.println(mt.procesarFuncion("ababababaa"));
-		List<String> prueba = Arrays.asList("aabb", "abaaba", "abababaaa", "aabbaab");
-		mt.procesarListaCadenas(prueba, "igualAqueB", true);*/
+		ArrayList<String> prueba = new ArrayList<>();
+		prueba.add("aabb"); prueba.add("abaaba"); prueba.add("abababaaa"); prueba.add("aabbaab"); 
+		mt.procesarListaCadenas(prueba, "igualAqueB", true);
 		//System.out.println(mt.toString());
 
 	}
