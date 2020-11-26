@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import AFD.AFD;
 import AFPD.AFPD;
+import AFPN.AFPN;
 
 public class main {
 	public static void main(String[] args) {
@@ -148,7 +149,6 @@ public class main {
 						case "3": {
 							System.out.println("Escriba un nombre para el archivo donde se guardará el procesamiento.");
 							String nombreArchivo = scanner.next();
-							System.out.println("");
 							Integer num = null;
 							while (true) {
 								System.out.println("Escriba el numero de cadenas a procesar: ");
@@ -341,7 +341,7 @@ public class main {
 				}
 				break;
 			}
-			/*case "3": {
+			case "3": {
 				boolean menu1 = true;
 				while (menu1) {
 					System.out.println("Clase AFPN");
@@ -374,7 +374,7 @@ public class main {
 					}
 					case "5": {
 						System.out.println(
-								"Ingrese el nombre del archivo con la extensión .dpda en la carpeta Pruebas\\AFPN");
+								"Ingrese el nombre del archivo con la extensión .pda en la carpeta Pruebas\\AFPN");
 						String nombre = scanner.next();
 						afpn = new AFPN(nombre);
 						while (afpn.getEstadoInicial() == null) {
@@ -405,29 +405,29 @@ public class main {
 						ArrayList<String> bancoString = null;
 						boolean hayBancoString = !opcion1.equals("5");
 						if (opcion1.equals("4")) {
-							/*bancoString = new ArrayList<>();
-							bancoString.add("aaaaaab");
-							bancoString.add("cb");
-							bancoString.add("aaaabc");
+							bancoString = new ArrayList<>();
+							bancoString.add("aaaa");
+							bancoString.add("bbbbb");
+							bancoString.add("aaaabbbccc");
 							bancoString.add("acccccc");
-							bancoString.add("c");
 							bancoString.add("cccc");
+							bancoString.add("aaabcccc");
 							bancoString.add("bbbbc");
 							bancoString.add("bcaa");
-							bancoString.add("bc");
+							bancoString.add("cb");
 							bancoString.add("aaaaaaabccccc");
 						} else {
-							/*bancoString = new ArrayList<>();
-							bancoString.add("aabbabba");
-							bancoString.add("abababa");
-							bancoString.add("aaabbb");
-							bancoString.add("abababab");
-							bancoString.add("bbbbbbbb");
-							bancoString.add("aaaabaaaa");
+							bancoString = new ArrayList<>();
+							bancoString.add("aaaabbaaaa");
+							bancoString.add("ababaa");
+							bancoString.add("aaaaaabbb");
+							bancoString.add("aaaaaa");
+							bancoString.add("aaaabb");
+							bancoString.add("aaaabaaa");
 							bancoString.add("bbb");
-							bancoString.add("aaaabbbbbb");
-							bancoString.add("aabbba");
-							bancoString.add("bababaaabb");
+							bancoString.add("baabaa");
+							bancoString.add("bbbb");
+							bancoString.add("abababa");
 						}
 						switch (opcion2) {
 						case "1": {
@@ -439,7 +439,7 @@ public class main {
 								if (res.equalsIgnoreCase("si")) {
 									usarBanco = false;
 									String cadena = scanner.next();
-									System.out.println("Resultado: " + afpd.procesarCadena(cadena));
+									System.out.println("Resultado: " + afpn.procesarCadena(cadena));
 								}
 							}
 							if (usarBanco) {
@@ -447,7 +447,7 @@ public class main {
 								int indiceAleatorio = random.nextInt(10);
 								System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
 								System.out
-										.println("Resultado: " + afpd.procesarCadena(bancoString.get(indiceAleatorio)));
+										.println("Resultado: " + afpn.procesarCadena(bancoString.get(indiceAleatorio)));
 							}
 							continue;
 						}
@@ -460,7 +460,7 @@ public class main {
 								if (res.equalsIgnoreCase("si")) {
 									usarBanco = false;
 									String cadena = scanner.next();
-									System.out.println("Resultado: " + afpd.procesarCadenaConDetalles(cadena));
+									System.out.println("Resultado: " + afpn.procesarCadenaConDetalles(cadena));
 								}
 							}
 							if (usarBanco) {
@@ -468,17 +468,36 @@ public class main {
 								int indiceAleatorio = random.nextInt(10);
 								System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
 								System.out.println("Resultado: "
-										+ afpd.procesarCadenaConDetalles(bancoString.get(indiceAleatorio)));
+										+ afpn.procesarCadenaConDetalles(bancoString.get(indiceAleatorio)));
 							}
 							continue;
 						}
 						case "3": {
-			
+							System.out.println(
+									"Escriba un nombre para el prefijo de los archivos donde se guardará el computo.");
+							String nombreArchivo = scanner.next();
+							boolean usarBanco = true;
+							if (hayBancoString) {
+								System.out.println(
+										"¿Desea escribir la cadena a utilizar? ('Si' para una respuesta afirmativa)");
+								String res = scanner.next();
+								if (res.equalsIgnoreCase("si")) {
+									usarBanco = false;
+									String cadena = scanner.next();
+									afpn.computarTodosLosProcesamientos(cadena, nombreArchivo);
+								}
+							}
+							if (usarBanco) {
+								Random random = new Random();
+								int indiceAleatorio = random.nextInt(10);
+								System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
+								afpn.computarTodosLosProcesamientos(bancoString.get(indiceAleatorio), nombreArchivo);
+							}
+							continue;
 						}
 						case "4": {
 							System.out.println("Escriba un nombre para el archivo donde se guardará el procesamiento.");
 							String nombreArchivo = scanner.next();
-							System.out.println("");
 							Integer num = null;
 							while (true) {
 								System.out.println("Escriba el numero de cadenas a procesar: ");
@@ -496,14 +515,58 @@ public class main {
 							System.out.println("Desea ver los resultados en pantalla? ");
 							String res = scanner.next();
 							boolean imprimirPantalla = res.equalsIgnoreCase("si");
-							afpd.procesarListaCadenas(listaCadenas, nombreArchivo, imprimirPantalla);
+							afpn.procesarListaCadenas(listaCadenas, nombreArchivo, imprimirPantalla);
 							continue;
 						}
 						case "5": {
-			
+							System.out.println("Seleccione el AFD que desea utilizar en el producto cartesiano:");
+							System.out.println("1. Autómata finito que acepta el lenguaje a^2n b^n, n >= 0");
+							System.out.println("2. Autómata finito que acepta el lenguaje a^m b^n con n > m >=1");
+							System.out.println(
+									"3. Autómata finito que acepta el lenguaje a^n b^m a^(n+1) con m >= 1, n >= 0");
+							System.out.println("4. Ingresar uno propio");
+							int opc = -1;
+							while (true) {
+								try {
+									opc = scanner.nextInt();
+									if (opc <= 4 && opc >= 1)
+										break;
+								} catch (Exception e) {
+									System.out.println("Vuelva a intentarlo");
+								}
+							}
+							AFD afd = null;
+							switch (opc) {
+							case 1: {
+								afd = new AFD("parAparB");
+								break;
+							}
+							case 2: {
+								afd = new AFD("a2ib3j");
+								break;
+							}
+							case 3: {
+								afd = new AFD("afd3");
+								break;
+							}
+							case 4: {
+								System.out.println(
+										"Ingrese el nombre del archivo con la extensión .dfa en la carpeta Pruebas\\AFD");
+								String nombre = scanner.next();
+								afd = new AFD(nombre);
+								while (afd.getEstadoInicial() == null) {
+									System.out.println(
+											"Hubo un error, ingrese el nombre del archivo con la extensión .dfa en la carpeta Pruebas\\AFD ");
+									nombre = scanner.next();
+									afd = new AFD(nombre);
+								}
+							}
+								afpn = afpn.hallarProductoCartesianoConAFD(afd);
+								continue;
+							}
 						}
 						case "6": {
-							System.out.println(afpd.toString());
+							System.out.println(afpn.toString());
 							continue;
 						}
 						case "7": {
@@ -516,15 +579,32 @@ public class main {
 							break;
 						}
 					}
-				}break;
-			}case"4":{
-			
-			}case"5":{}*/default:
+				}
+				break;
+			}
+			case "4": {
+
+			}
+			case "5": {
+
+			}
+			default:
 				menu = false;
 			}
 		}
 		scanner.close();
-
+		/*
+		Crear Automatas AFPD, no se requieren mas opciones.	
+		
+		//AF2P af2p = new AF2P("uno");
+		//System.out.println(af2p.toString());
+		//MT -> mismo numero de a que b
+		//MT mt = new MT("uno");
+		/*mt.procesarCadenaConDetalles("ababababaa");
+		System.out.println(mt.procesarFuncion("ababababaa"));
+		List<String> prueba = Arrays.asList("aabb", "abaaba", "abababaaa", "aabbaab");
+		mt.procesarListaCadenas(prueba, "igualAqueB", true);*/
+		//System.out.println(mt.toString());
 
 	}
 }
