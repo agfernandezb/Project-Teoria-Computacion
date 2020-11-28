@@ -306,6 +306,8 @@ public class MTP {
 
 			PrintStream flujo_salida;
 			File archivo = null;
+			File dir = new File("src/ProcesamientoCadenas/MTP");
+			dir.mkdirs();
 			if (nombreArchivo != null && nombreArchivo.length() > 0)
 				archivo = new File("src/ProcesamientoCadenas/MTP/" + nombreArchivo + ".txt");
 			try {
@@ -319,15 +321,18 @@ public class MTP {
 					return;
 				}
 			}
-
+			Object[] fila = new String[] {"CADENA", "ÚLTIMA CONF. INSTANTÁNEA", "RESULTADO"};
+			if (imprimirPantalla)
+				System.out.format("%15s%60s%15s\n", fila);
+			flujo_salida.format("%15s%60s%15s\n", fila);
 			for (Iterator<String> iterator = listaCadenas.iterator(); iterator.hasNext();) {
 				String cadena = (String) iterator.next();
 				String configFinal = procesarFuncion(cadena);
 				boolean resultado = procesarCadena(cadena);
-				String procesamientoConDetalles = cadena + "\t" + configFinal + "\t" + (resultado ? "yes" : "no");
+				fila = new String[] {cadena, configFinal, (resultado ? "yes" : "no")};
 				if (imprimirPantalla)
-					System.out.println(procesamientoConDetalles);
-				flujo_salida.println(procesamientoConDetalles);
+					System.out.format("%15s%60s%15s\n", fila);
+				flujo_salida.format("%15s%60s%15s\n", fila);
 
 			}
 			flujo_salida.flush();
@@ -355,15 +360,6 @@ public class MTP {
 			return resultado;
 		}
 		
-		/*public static void main(String[] args) {
-			MTP test = new MTP("a^nb^nc^n");
-			System.out.println(test.procesarCadena("aabbcc"));
-			test.procesarCadenaConDetalles("abcc");
-			List<String> cadenas = new ArrayList<String>();
-			cadenas.add("!!!!"); cadenas.add("aaabcbc"); cadenas.add("aaabbccc");
-			test.procesarListaCadenas(cadenas, "pruebaMTP", true);
-			System.out.println(test.toString());
-		}*/
 	}
 
 

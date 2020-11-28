@@ -1,0 +1,4 @@
+         CADENA                                    ÚLTIMA CONF. INSTANTÁNEA      RESULTADO
+           !!!!                                                        !!!!            yes
+        aaababa                                                    AAABaBa!             no
+         aaabbb                                                     AAABBB!            yes

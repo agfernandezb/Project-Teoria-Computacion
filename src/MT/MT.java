@@ -3,6 +3,7 @@ package MT;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
+
+import MTP.MTP;
 
 public class MT {
 	private Set<String> conjuntoEstados;
@@ -232,6 +235,8 @@ public class MT {
 
 		PrintStream flujo_salida;
 		File archivo = null;
+		File dir = new File("src/ProcesamientoCadenas/MT");
+		dir.mkdirs();
 		if (nombreArchivo != null && nombreArchivo.length() > 0)
 			archivo = new File("src/ProcesamientoCadenas/MT/" + nombreArchivo + ".txt");
 		try {
@@ -246,14 +251,18 @@ public class MT {
 			}
 		}
 
+		Object[] fila = new String[] {"CADENA", "ÚLTIMA CONF. INSTANTÁNEA", "RESULTADO"};
+		if (imprimirPantalla)
+			System.out.format("%15s%60s%15s\n", fila);
+		flujo_salida.format("%15s%60s%15s\n", fila);
 		for (Iterator<String> iterator = listaCadenas.iterator(); iterator.hasNext();) {
 			String cadena = (String) iterator.next();
 			String configFinal = procesarFuncion(cadena);
 			boolean resultado = procesarCadena(cadena);
-			String procesamientoConDetalles = cadena + "\t" + configFinal + "\t" + (resultado ? "yes" : "no");
+			fila = new String[] {cadena, configFinal, (resultado ? "yes" : "no")};
 			if (imprimirPantalla)
-				System.out.println(procesamientoConDetalles);
-			flujo_salida.println(procesamientoConDetalles);
+				System.out.format("%15s%60s%15s\n", fila);
+			flujo_salida.format("%15s%60s%15s\n", fila);
 
 		}
 		flujo_salida.flush();
@@ -279,5 +288,15 @@ public class MT {
 		resultado += "#transitions \n";
 		resultado += delta.toString() + "\n";
 		return resultado;
+	}
+	
+	public static void main(String[] args) {
+		MT test = new MT("igualAqueB");
+		System.out.println(test.procesarCadena("aababababaaab"));
+		test.procesarCadenaConDetalles("abaababababaaab");
+		List<String> cadenas = new ArrayList<String>();
+		cadenas.add("!!!!"); cadenas.add("aaababa"); cadenas.add("aaabbb");
+		test.procesarListaCadenas(cadenas, "pruebaMTP", true);
+		System.out.println(test.toString());
 	}
 }
