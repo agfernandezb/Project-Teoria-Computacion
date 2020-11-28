@@ -290,7 +290,7 @@ public class MT {
 		return resultado;
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		MT test = new MT("igualAqueB");
 		System.out.println(test.procesarCadena("aababababaaab"));
 		test.procesarCadenaConDetalles("abaababababaaab");
@@ -298,5 +298,5 @@ public class MT {
 		cadenas.add("!!!!"); cadenas.add("aaababa"); cadenas.add("aaabbb");
 		test.procesarListaCadenas(cadenas, "pruebaMTP", true);
 		System.out.println(test.toString());
-	}
+	}*/
 }

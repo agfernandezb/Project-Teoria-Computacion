@@ -424,6 +424,8 @@ public class AF2P {
 	public int computarTodosLosProcesamientos(String cadena, String nombreArchivo) {
 		PrintStream flujo_aceptacion;
 		PrintStream flujo_rechazo;
+		File dir = new File("src/ProcesamientoCadenas/AF2P");
+		dir.mkdirs();
 		File archivoAceptadas = null;
 		File archivoRechazadas = null;
 		if (nombreArchivo != null && nombreArchivo.length() > 0) {
@@ -492,12 +494,14 @@ public class AF2P {
 
 		PrintStream flujo_salida;
 		File archivo = null;
+		File dir = new File("src/ProcesamientoCadenas/AF2P");
+		dir.mkdirs();
 		if (nombreArchivo != null && nombreArchivo.length() > 0)
-			archivo = new File("src/ProcesamientoCadenas/AFPN/" + nombreArchivo + ".txt");
+			archivo = new File("src/ProcesamientoCadenas/AF2P/" + nombreArchivo + ".txt");
 		try {
 			flujo_salida = new PrintStream(archivo);
 		} catch (Exception e) {
-			archivo = new File("src/ProcesamientoCadenas/AFPN/" + "procesamientoListaCadenas" + ".txt");
+			archivo = new File("src/ProcesamientoCadenas/AF2P/" + "procesamientoListaCadenas" + ".txt");
 			try {
 				flujo_salida = new PrintStream(archivo);
 			} catch (FileNotFoundException e1) {

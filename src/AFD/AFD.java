@@ -183,6 +183,8 @@ public class AFD {
 
 		PrintStream flujo_salida;
 		File archivo = null;
+		File dir = new File("src/ProcesamientoCadenas/AFD");
+		dir.mkdirs();
 		if (nombreArchivo != null && nombreArchivo.length() > 0)
 			archivo = new File("src/ProcesamientoCadenas/AFD/" + nombreArchivo + ".txt");
 		try {

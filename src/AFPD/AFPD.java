@@ -317,6 +317,8 @@ public class AFPD {
 
 		PrintStream flujo_salida;
 		File archivo = null;
+		File dir = new File("src/ProcesamientoCadenas/AFPD");
+		dir.mkdirs();
 		if (nombreArchivo != null && nombreArchivo.length() > 0)
 			archivo = new File("src/ProcesamientoCadenas/AFPD/" + nombreArchivo + ".txt");
 		try {

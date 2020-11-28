@@ -323,6 +323,8 @@ public class AFPN {
 	public int computarTodosLosProcesamientos(String cadena, String nombreArchivo) {
 		PrintStream flujo_aceptacion;
 		PrintStream flujo_rechazo;
+		File dir = new File("src/ProcesamientoCadenas/AFPN");
+		dir.mkdirs();
 		File archivoAceptadas = null;
 		File archivoRechazadas = null;
 		if (nombreArchivo != null && nombreArchivo.length() > 0) {
@@ -391,6 +393,8 @@ public class AFPN {
 
 		PrintStream flujo_salida;
 		File archivo = null;
+		File dir = new File("src/ProcesamientoCadenas/AFPN");
+		dir.mkdirs();
 		if (nombreArchivo != null && nombreArchivo.length() > 0)
 			archivo = new File("src/ProcesamientoCadenas/AFPN/" + nombreArchivo + ".txt");
 		try {
