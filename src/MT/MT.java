@@ -237,7 +237,7 @@ public class MT {
 		try {
 			flujo_salida = new PrintStream(archivo);
 		} catch (Exception e) {
-			archivo = new File("src/ProcesamientoCadenas/MT/" + "procesamientoListaCadenas" + ".txt");
+			archivo = new File("src/ProcesamientoCadenas/MT/" + "procesamientoListaCadenasMT" + ".txt");
 			try {
 				flujo_salida = new PrintStream(archivo);
 			} catch (FileNotFoundException e1) {
