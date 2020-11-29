@@ -296,7 +296,7 @@ public class MT {
 		test.procesarCadenaConDetalles("abaababababaaab");
 		List<String> cadenas = new ArrayList<String>();
 		cadenas.add("!!!!"); cadenas.add("aaababa"); cadenas.add("aaabbb");
-		test.procesarListaCadenas(cadenas, "pruebaMTP", true);
+		test.procesarListaCadenas(cadenas, "igualAqueB", true);
 		System.out.println(test.toString());
 	}*/
 }

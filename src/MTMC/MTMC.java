@@ -1,4 +1,4 @@
-package MTP;
+package MTMC;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,17 +12,17 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
 
-public class MTP {
+public class MTMC {
 	private Set<String> conjuntoEstados;
 	private String estadoInicial;
 	private Set<String> estadosAceptacion;
 	private Set<Character> alfabetoEntrada;
 	private Set<Character> alfabetoCinta;
-	private FuncionTransicionMTP delta;
-	private List<String> cintaPistas;
+	private FuncionTransicionMTMC delta;
+	private cintaMTMC cinta;
 	//Constructor
-		public MTP(Set<String> conjuntoEstados, String estadoInicial, Set<String> estadosAceptacion,
-				Set<Character> alfabetoEntrada, Set<Character> alfabetoCinta, FuncionTransicionMTP delta) {
+		public MTMC(Set<String> conjuntoEstados, String estadoInicial, Set<String> estadosAceptacion,
+				Set<Character> alfabetoEntrada, Set<Character> alfabetoCinta, FuncionTransicionMTMC delta) {
 			super();
 			this.conjuntoEstados = conjuntoEstados;
 			this.estadoInicial = estadoInicial;
@@ -30,15 +30,14 @@ public class MTP {
 			this.alfabetoEntrada = alfabetoEntrada;
 			this.alfabetoCinta = alfabetoCinta;
 			this.delta = delta;
-			cintaPistas = new ArrayList<String>();
-			cintaPistas.add("!!!!!!!!!!!!!!!!");
+			cinta = new cintaMTMC(3);
 		}
 
 		//Constructor con Nombre de Archivo
-		public MTP(String nombreArchivo) {
+		public MTMC(String nombreArchivo) {
 			Scanner scanner = null;
 			int[] headers = new int[6]; // Encabezados como #alphabet, guarda sus posiciones
-			File archivo = new File("src/Pruebas/MTP/" + nombreArchivo + ".ttm");
+			File archivo = new File("src/Pruebas/MTMC/" + nombreArchivo + ".mttm");
 
 			try {
 				scanner = new Scanner(archivo);
@@ -63,17 +62,18 @@ public class MTP {
 			Set<String> estadosAceptacion = new HashSet<String>();
 			Set<Character> alfabetoEntrada = new HashSet<Character>();
 			Set<Character> alfabetoCinta = new HashSet<Character>();
-			FuncionTransicionMTP delta = null;
+			FuncionTransicionMTMC delta = null;
 			HashMap<String, Integer> estadoANumero = null;
 			HashMap<String, Integer> simbolosAlfabetoANumero = null;
 			Vector<String> numeroAEstado = new Vector<String>();
 			Vector<String> numeroASimbolos = new Vector<String>();
+			
 			int n_pistas = 1;
 			for (int i = 0; i < headers.length; i++) {
 				String encabezado = scanner.nextLine();
 				int ultima_linea = i != headers.length - 1 ? headers[i + 1] - headers[i] - 1
 						: Integer.MAX_VALUE; /*
-												 * Si esta leyendo el último encabezado, entonces lee hasta el final.																									 */
+												 * Si esta leyendo el último encabezado, entonces lee hasta el final. */
 
 				switch (encabezado) {
 				case "#tapeAlphabet": {
@@ -146,10 +146,17 @@ public class MTP {
 						auxii.add(simbolos);
 						String estadoFinal = transicion.split("\\?")[1].split(":")[0]; //Estado Final
 						auxi.add(estadoFinal);
-						String simbolosCinta = transicion.split("\\?")[1].substring(estadoFinal.length()).replaceAll(":","").replaceAll("<","").replaceAll(">","").replaceAll("-",""); //Símbolos a reemplazar en la cinta
+						String alfYmov = transicion.split("\\?")[1].substring(estadoFinal.length()).replaceAll(":","").replaceAll(";",""); //Símbolos a reemplazar en la cinta
+						String simbolosCinta = "";
+						String movimientos = "";
+						for(Character k: alfYmov.toCharArray()) {
+							if(k=='<' || k=='>' || k=='-')
+								movimientos += k;
+							else
+								simbolosCinta += k;
+						}
 						auxi.add(simbolosCinta);
-						char movimiento = transicion.split(":")[transicion.split(":").length-1].charAt(0); //Movimiento
-						auxi.add(Character.toString(movimiento));
+						auxi.add(movimientos);
 					}
 					
 					n_pistas = auxii.get(0).length();
@@ -165,11 +172,11 @@ public class MTP {
 						++numeroSimbolo;
 					}
 
-					delta = new FuncionTransicionMTP(conjuntoEstados, alfabetoCinta, estadoANumero, simbolosAlfabetoANumero,
+					delta = new FuncionTransicionMTMC(conjuntoEstados, alfabetoCinta, estadoANumero, simbolosAlfabetoANumero,
 							numeroAEstado, numeroASimbolos, numeroSimbolo);
 
 					for (int j = 0; j < auxi.size(); j+=5) {
-						delta.setTransicion(auxi.get(j), auxi.get(j+1), auxi.get(j+2), auxi.get(j+3), auxi.get(j+4).charAt(0));
+						delta.setTransicion(auxi.get(j), auxi.get(j+1), auxi.get(j+2), auxi.get(j+3), auxi.get(j+4));
 					}
 					break;
 				}
@@ -182,71 +189,27 @@ public class MTP {
 			this.alfabetoEntrada = alfabetoEntrada;
 			this.alfabetoCinta = alfabetoCinta;
 			this.delta = delta;
-
-			this.cintaPistas =  new ArrayList<String>();
-			for(int i = 0; i < n_pistas; i++)
-				this.cintaPistas.add("!".repeat(n_pistas));
+			this.cinta = new cintaMTMC(n_pistas);
 		}
 
 		private boolean procesarCadena(String cadena, boolean imprimirProcesamiento) {
 			String procesamiento = "Cadena: " + cadena + "\n" + "Procesamiento: \n";
 			String estadoActual = estadoInicial;
 			
-			cintaPistas.set(0, cadena);
-			for(int i = 1; i < cintaPistas.size(); i++)
-				cintaPistas.set(i, "!".repeat(cadena.length()));
-			
-			int apuntador = 0;
+			cinta.ponerCadena(cadena);
 			while (!estadosAceptacion.contains(estadoActual)) {
-				if (apuntador < 0) {
-					for(int i = 0; i < cintaPistas.size(); i++)
-						cintaPistas.set(i, "!".repeat(apuntador * -1) + cintaPistas.get(i));
-					apuntador = 0;
-				}
-				if (apuntador >= cintaPistas.get(0).length()) {
-					for(int i = 0; i < cintaPistas.size(); i++)
-						cintaPistas.set(i, cintaPistas.get(i) + "!");
-				}
-				
-				//Procesamiento
-				for(int i = 0; i < apuntador; i++) {
-					procesamiento += "(";
-					for(int j = 0; j < cintaPistas.size(); j++) {
-						procesamiento += cintaPistas.get(j).charAt(i);
-						procesamiento += (j < cintaPistas.size()-1) ? "," : "";
-					}
-					procesamiento += ")";
-				}
-				procesamiento += "(" + estadoActual + ")";
-				for(int i = apuntador; i < cintaPistas.get(0).length(); i++) {
-					procesamiento += "(";
-					for(int j = 0; j < cintaPistas.size(); j++) {
-						procesamiento += cintaPistas.get(j).charAt(i);
-						procesamiento += (j < cintaPistas.size()-1) ? "," : "";
-					}
-					procesamiento += ")";
-				}
-				procesamiento += "->";
-				
+				//
+				String lecturaCinta = cinta.leer();
+				procesamiento += "(" + estadoActual + "," + cinta.toString() + ")" + "->";
 				//Ejecutar delta
 				try {
-					String lecturaCinta = "";
-					for(int j = 0; j < cintaPistas.size(); j++)
-						lecturaCinta += cintaPistas.get(j).charAt(apuntador);
-					
 					String escrituraCinta = delta.getTransicion(estadoActual, lecturaCinta).simbolo;
-					char mov = delta.getTransicion(estadoActual, lecturaCinta).movimiento;
+					String mov = delta.getTransicion(estadoActual, lecturaCinta).movimiento;
 					estadoActual = delta.getTransicion(estadoActual, lecturaCinta).estado;
 					//cambiar símbolo en cinta
-					//cinta = cinta.substring(0, apuntador) + ch + cinta.substring(apuntador + 1);
-					for(int j = 0; j < cintaPistas.size(); j++) {
-						cintaPistas.set(j, cintaPistas.get(j).substring(0, apuntador) + escrituraCinta.charAt(j) + cintaPistas.get(j).substring(apuntador + 1));
-					}
+					cinta.escribir(escrituraCinta);
 					//movimiento
-					if (mov == '<')
-						apuntador--;
-					if (mov == '>')
-						apuntador++;
+					cinta.ejecutarMov(mov);
 				} catch (Exception e) {
 					procesamiento += "> no";
 					if (imprimirProcesamiento)
@@ -255,24 +218,7 @@ public class MTP {
 				}
 			}
 			//Procesamiento
-			for(int i = 0; i < apuntador; i++) {
-				procesamiento += "(";
-				for(int j = 0; j < cintaPistas.size(); j++) {
-					procesamiento += cintaPistas.get(j).charAt(i);
-					procesamiento += (j < cintaPistas.size()-1) ? "," : "";
-				}
-				procesamiento += ")";
-			}
-			procesamiento += "(" + estadoActual + ")";
-			for(int i = apuntador; i < cintaPistas.get(0).length(); i++) {
-				procesamiento += "(";
-				for(int j = 0; j < cintaPistas.size(); j++) {
-					procesamiento += cintaPistas.get(j).charAt(i);
-					procesamiento += (j < cintaPistas.size()-1) ? "," : "";
-				}
-				procesamiento += ")";
-			}
-			procesamiento += "->";
+			procesamiento += "(" + estadoActual + "," + cinta.toString() + ")" + "->";
 			procesamiento += "> yes";
 			
 			if (imprimirProcesamiento)
@@ -289,15 +235,7 @@ public class MTP {
 		}
 		public String procesarFuncion(String cadena) {
 			procesarCadena(cadena, false);
-			String aux = "";
-			for(int i = 0; i < cintaPistas.get(0).length(); i++) {
-				aux += "(";
-				for(int j = 0; j < cintaPistas.size(); j++) {
-					aux += cintaPistas.get(j).charAt(i);
-					aux += (j < cintaPistas.size()-1) ? "," : "";
-				}
-				aux += ")";
-			}
+			String aux = "("+ cinta.toString().replaceAll("\\*", "") + ")";
 			return aux;
 		}
 
@@ -305,14 +243,14 @@ public class MTP {
 
 			PrintStream flujo_salida;
 			File archivo = null;
-			File dir = new File("src/ProcesamientoCadenas/MTP");
+			File dir = new File("src/ProcesamientoCadenas/MTMC");
 			dir.mkdirs();
 			if (nombreArchivo != null && nombreArchivo.length() > 0)
-				archivo = new File("src/ProcesamientoCadenas/MTP/" + nombreArchivo + ".txt");
+				archivo = new File("src/ProcesamientoCadenas/MTMC/" + nombreArchivo + ".txt");
 			try {
 				flujo_salida = new PrintStream(archivo);
 			} catch (Exception e) {
-				archivo = new File("src/ProcesamientoCadenas/MTP/" + "procesamientoListaCadenasMTP" + ".txt");
+				archivo = new File("src/ProcesamientoCadenas/MTMC/" + "procesamientoListaCadenasMTMC" + ".txt");
 				try {
 					flujo_salida = new PrintStream(archivo);
 				} catch (FileNotFoundException e1) {
@@ -359,16 +297,84 @@ public class MTP {
 			return resultado;
 		}
 		
+		//OBJETO CINTA - PARA FACILITAR LAS COSAS
+		class cintaMTMC {
+			List<String> cintas;
+			int[] apuntador;
+			
+			cintaMTMC(int n_cintas){
+				cintas = new ArrayList<String>();
+				apuntador = new int[n_cintas];
+				for(int k = 0; k < n_cintas; k++)
+					cintas.add("");
+			}
+			void ponerCadena(String cadena) {
+				cintas.set(0, cadena);
+				for(int i=1; i < cintas.size(); i++)
+					cintas.set(i, "!");
+				for(int i=0; i < apuntador.length; i++)
+					apuntador[i]=0;
+				
+			}
+			String leer() {
+				String lectura = "";
+				for(int i = 0; i < apuntador.length; i++) {
+					if(apuntador[i] < 0) {
+						cintas.set(i, "!".repeat(apuntador[i]*-1) + cintas.get(i));
+						apuntador[i] = 0;
+					}
+					if (apuntador[i] >= cintas.get(i).length()) {
+						cintas.set(i, cintas.get(i) + "!".repeat(apuntador[i]-cintas.get(i).length()+1));
+					}	
+					lectura += cintas.get(i).charAt(apuntador[i]);
+				}
+				return lectura;
+			}
+			void escribir(String escritura){
+				for(int i = 0; i < cintas.size(); i++)
+					cintas.set(i, cintas.get(i).substring(0, apuntador[i]) + escritura.charAt(i) + cintas.get(i).substring(apuntador[i] + 1));
+			}
+			void setApuntador(int[] ap) {
+				apuntador = ap;
+			}
+			int[] getApuntador() {
+				return apuntador;
+			}
+			int n_pistas() {
+				return apuntador.length;
+			}
+			void ejecutarMov(String movimientos) {
+				if(movimientos.length() != apuntador.length) {
+					System.out.println("Movimientos Inválidos");
+					return;
+				}
+				for(int i=0; i < movimientos.length(); i++) {
+					if(movimientos.charAt(i)=='<')
+						apuntador[i]--;
+					else if(movimientos.charAt(i)=='>')
+						apuntador[i]++;
+					else if(movimientos.charAt(i)=='-')
+						apuntador[i] = apuntador[i];
+					else
+						System.out.println("Malos movimientos");
+				}
+			}
+			public String toString() {
+				String resultado = "";
+				for(int i = 0; i < cintas.size(); i++) {
+					resultado += cintas.get(i).substring(0, apuntador[i])+"*"+cintas.get(i).substring(apuntador[i]);
+					resultado += (i<cintas.size()-1) ? ", " : "";
+				}
+				return resultado;
+			}
+		}
+		
 		/*public static void main(String[] args) {
-			MTP test = new MTP("a^nb^nc^n");
-			System.out.println(test.procesarCadena("abc"));
+			MTMC test = new MTMC("a^nb^nc^n");
 			test.procesarCadenaConDetalles("aabbcc");
 			List<String> cadenas = new ArrayList<String>();
 			cadenas.add("!!!!"); cadenas.add("aaababacc"); cadenas.add("aaabbbccc");
 			test.procesarListaCadenas(cadenas, "a^nb^nc^n", true);
 			System.out.println(test.toString());
 		}*/
-		
-	}
-
-
+}

@@ -1,4 +1,4 @@
-aabb	AABB!	yes
-abaaba	ABAABa!	no
-abababaaa	ABABABAaa!	no
-aabbaab	AABBAAB!	no
+         CADENA                                    ÚLTIMA CONF. INSTANTÁNEA      RESULTADO
+           !!!!                                                        !!!!            yes
+        aaababa                                                    AAABaBa!             no
+         aaabbb                                                     AAABBB!            yes
