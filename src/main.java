@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+import AF2P.AF2P;
 import AFD.AFD;
 import AFPD.AFPD;
 import AFPN.AFPN;
@@ -536,7 +537,7 @@ public class main {
 							while (true) {
 								try {
 									opc = scanner.nextInt();
-									if (opc <= 4 && opc >= 1)
+									if (opc <= 5 && opc >= 1)
 										break;
 								} catch (Exception e) {
 									System.out.println("Vuelva a intentarlo");
@@ -594,7 +595,186 @@ public class main {
 				break;
 			}
 			case "4": {
-
+				boolean menu1 = true;
+				while (menu1) {
+					System.out.println("Clase AF2P");
+					System.out.println("Seleccione el autómata finito con dos pilas que desea utilizar:");
+					System.out.println("1. Autómata finito que acepta el lenguaje a^n b^2n c^n, n >= 0");
+					System.out.println("2. Autómata finito que acepta el lenguaje a^m b^n c^n, m >= 1 y n > m");
+					System.out.println("3. Autómata finito que acepta el lenguaje a^m b^n a^m c^n con m distinto a m");
+					System.out.println("4. Autómata finito que acepta el lenguaje con igual número de aes, bes y ces");
+					System.out.println("5. Ingresar uno propio");
+					System.out.println("Presione cualquier otra tecla para volver al menú inicial");
+					String opcion1 = scanner.next();
+					AF2P af2p = null;
+					switch (opcion1) {
+					case "1": {
+						af2p = new AF2P("anb2ncn");
+						break;
+					}
+					case "2": {
+						af2p = new AF2P("ambncn");
+						break;
+					}
+					case "3": {
+						af2p = new AF2P("ambnamcn");
+						break;
+					}
+					case "4": {
+						af2p = new AF2P("a=b=c");
+						break;
+					}
+					case "5": {
+						System.out.println(
+								"Ingrese el nombre del archivo con la extensión .dpda en la carpeta Pruebas\\AF2P");
+						String nombre = scanner.next();
+						af2p = new AF2P(nombre);
+						while (af2p.getEstadoInicial() == null) {
+							System.out.println(
+									"Hubo un error, ingrese el nombre del archivo con la extensión .msm en la carpeta Pruebas\\AF2P ");
+							nombre = scanner.next();
+							af2p = new AF2P(nombre);
+						}
+						break;
+					}
+					default:
+						menu1 = false;
+						break;
+					}
+					boolean menu2 = menu1;
+					while (menu2) {
+						System.out.println("Seleccione la operación que desea realizar con el AFPN:");
+						System.out.println("1. Saber si una cadena es aceptada o no");
+						System.out.println("2. Procesar una cadena con detalles");
+						System.out.println("3. Computar todos los procesamientos para una cadena");
+						System.out.println(
+								"4. Procesar una lista de cadenas, viendo el procesamiento de cada una de ellas");
+						System.out.println("5. Imprimir el autómata en el formato de entrada");
+						System.out.println("6. Cambiar el autómata");
+						System.out.println("Presione cualquier otra tecla para volver al menú inicial");
+						String opcion2 = scanner.next();
+						ArrayList<String> bancoString = null;
+						boolean hayBancoString = !opcion1.equals("5");
+						bancoString = new ArrayList<>();
+						bancoString.add("aaaaccbbccbbabc");
+						bancoString.add("aaabbbccc");
+						bancoString.add("acccccc");
+						bancoString.add("aaabaaac");
+						bancoString.add("abbbbcccca");
+						bancoString.add("abca");
+						bancoString.add("abbbbbccccc");
+						bancoString.add("bbbcccccc");
+						bancoString.add("aaaaaaabccccc");
+						bancoString.add("aaaabbaaaa");
+						bancoString.add("aaabbbbbbccc");
+						bancoString.add("aabbbbcc");
+						bancoString.add("bbbb");
+						bancoString.add("abababa");
+						switch (opcion2) {
+						case "1": {
+							boolean usarBanco = true;
+							if (hayBancoString) {
+								System.out.println(
+										"¿Desea escribir la cadena a utilizar? ('si' para una respuesta afirmativa)");
+								String res = scanner.next();
+								if (res.equalsIgnoreCase("si")) {
+									usarBanco = false;
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + af2p.procesarCadena(cadena));
+								}
+							}
+							if (usarBanco) {
+								Random random = new Random();
+								int indiceAleatorio = random.nextInt(10);
+								System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
+								System.out
+										.println("Resultado: " + af2p.procesarCadena(bancoString.get(indiceAleatorio)));
+							}
+							continue;
+						}
+						case "2": {
+							boolean usarBanco = true;
+							if (hayBancoString) {
+								System.out.println(
+										"¿Desea escribir la cadena a utilizar? ('Si' para una respuesta afirmativa)");
+								String res = scanner.next();
+								if (res.equalsIgnoreCase("si")) {
+									usarBanco = false;
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + af2p.procesarCadenaConDetalles(cadena));
+								}
+							}
+							if (usarBanco) {
+								Random random = new Random();
+								int indiceAleatorio = random.nextInt(10);
+								System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
+								System.out.println("Resultado: "
+										+ af2p.procesarCadenaConDetalles(bancoString.get(indiceAleatorio)));
+							}
+							continue;
+						}
+						case "3": {
+							System.out.println(
+									"Escriba un nombre para el prefijo de los archivos donde se guardará el computo.");
+							String nombreArchivo = scanner.next();
+							boolean usarBanco = true;
+							if (hayBancoString) {
+								System.out.println(
+										"¿Desea escribir la cadena a utilizar? ('Si' para una respuesta afirmativa)");
+								String res = scanner.next();
+								if (res.equalsIgnoreCase("si")) {
+									usarBanco = false;
+									String cadena = scanner.next();
+									af2p.computarTodosLosProcesamientos(cadena, nombreArchivo);
+								}
+							}
+							if (usarBanco) {
+								Random random = new Random();
+								int indiceAleatorio = random.nextInt(10);
+								System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
+								af2p.computarTodosLosProcesamientos(bancoString.get(indiceAleatorio), nombreArchivo);
+							}
+							continue;
+						}
+						case "4": {
+							System.out.println("Escriba un nombre para el archivo donde se guardará el procesamiento.");
+							String nombreArchivo = scanner.next();
+							Integer num = null;
+							while (true) {
+								System.out.println("Escriba el numero de cadenas a procesar: ");
+								try {
+									num = scanner.nextInt();
+									if (num > 0)
+										break;
+								} catch (Exception e) {
+								}
+							}
+							ArrayList<String> listaCadenas = new ArrayList<String>();
+							for (int i = 0; i < num; ++i) {
+								listaCadenas.add(scanner.next());
+							}
+							System.out.println("Desea ver los resultados en pantalla? ");
+							String res = scanner.next();
+							boolean imprimirPantalla = res.equalsIgnoreCase("si");
+							af2p.procesarListaCadenas(listaCadenas, nombreArchivo, imprimirPantalla);
+							continue;
+						}
+						case "5": {
+							System.out.println(af2p.toString());
+							continue;
+						}
+						case "6": {
+							menu2 = false;
+							break;
+						}
+						default:
+							menu1 = false;
+							menu2 = false;
+							break;
+						}
+					}
+				}
+				break;
 			}
 			case "5": {
 

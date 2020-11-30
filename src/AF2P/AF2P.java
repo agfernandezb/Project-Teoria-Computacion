@@ -31,6 +31,7 @@ public class AF2P {
 	}
 
 	public AF2P(String nombre) {
+		String estadoInicial = null;
 		Scanner scanner = null;
 		int[] headers = new int[6]; // Encabezados como #alphabet, guarda sus posiciones
 		File archivo = new File("src/Pruebas/AF2P/" + nombre + ".msm");
@@ -53,7 +54,6 @@ public class AF2P {
 		}
 
 		Set<String> conjuntoEstados = new HashSet<String>();
-		String estadoInicial = null;
 		Set<String> estadosAceptacion = new HashSet<String>();
 		Set<Character> alfabetoCinta = new HashSet<Character>();
 		Set<Character> alfabetoPila = new HashSet<Character>();
@@ -532,6 +532,10 @@ public class AF2P {
 		}
 		flujo_salida.flush();
 		flujo_salida.close();
+	}
+
+	public String getEstadoInicial() {
+		return estadoInicial;
 	}
 
 	@Override
