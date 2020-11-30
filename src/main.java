@@ -601,7 +601,7 @@ public class main {
 					System.out.println("Seleccione el autómata finito con dos pilas que desea utilizar:");
 					System.out.println("1. Autómata finito que acepta el lenguaje a^n b^2n c^n, n >= 0");
 					System.out.println("2. Autómata finito que acepta el lenguaje a^m b^n c^n, m >= 1 y n > m");
-					System.out.println("3. Autómata finito que acepta el lenguaje a^m b^n a^m c^n con m distinto a m");
+					System.out.println("3. Autómata finito que acepta el lenguaje a^m b^n a^m c^n con m distinto a n");
 					System.out.println("4. Autómata finito que acepta el lenguaje con igual número de aes, bes y ces");
 					System.out.println("5. Ingresar uno propio");
 					System.out.println("Presione cualquier otra tecla para volver al menú inicial");
@@ -643,7 +643,7 @@ public class main {
 					}
 					boolean menu2 = menu1;
 					while (menu2) {
-						System.out.println("Seleccione la operación que desea realizar con el AFPN:");
+						System.out.println("Seleccione la operación que desea realizar con el AF2P:");
 						System.out.println("1. Saber si una cadena es aceptada o no");
 						System.out.println("2. Procesar una cadena con detalles");
 						System.out.println("3. Computar todos los procesamientos para una cadena");

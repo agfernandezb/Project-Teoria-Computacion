@@ -355,12 +355,12 @@ public class AFPN {
 		for (String procesamiento : procesamientos) {
 			if (procesamiento.split(">>")[1].equals("accepted")) {
 				cadenasAceptadas++;
-				String procesamientoAceptacion = "Procesamiento" + cadenasAceptadas + ": " + procesamiento;
+				String procesamientoAceptacion = "Procesamiento " + cadenasAceptadas + ": " + procesamiento;
 				flujo_aceptacion.println(procesamientoAceptacion);
 				procesamientosAceptados.add(procesamientoAceptacion);
 			} else {
 				cadenasRechazadas++;
-				String procesamientoRechazo = "Procesamiento" + cadenasRechazadas + ": " + procesamiento;
+				String procesamientoRechazo = "Procesamiento " + cadenasRechazadas + ": " + procesamiento;
 				flujo_rechazo.println(procesamientoRechazo);
 				procesamientosRechazados.add(procesamientoRechazo);
 			}
