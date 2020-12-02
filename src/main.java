@@ -626,7 +626,7 @@ public class main {
 					}
 					case "5": {
 						System.out.println(
-								"Ingrese el nombre del archivo con la extensión .dpda en la carpeta Pruebas\\AF2P");
+								"Ingrese el nombre del archivo con la extensión .msm en la carpeta Pruebas\\AF2P");
 						String nombre = scanner.next();
 						af2p = new AF2P(nombre);
 						while (af2p.getEstadoInicial() == null) {
