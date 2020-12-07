@@ -12,6 +12,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
 
+import MTMC.MTMC;
+
 public class MTP {
 	private Set<String> conjuntoEstados;
 	private String estadoInicial;
@@ -192,6 +194,9 @@ public class MTP {
 			String procesamiento = "Cadena: " + cadena + "\n" + "Procesamiento: \n";
 			String estadoActual = estadoInicial;
 			
+			long t= System.currentTimeMillis();
+			long limit = t+13000; //13 SEG DE TIEMPO LÍMITE 
+			
 			cintaPistas.set(0, cadena);
 			for(int i = 1; i < cintaPistas.size(); i++)
 				cintaPistas.set(i, "!".repeat(cadena.length()));
@@ -249,6 +254,13 @@ public class MTP {
 						apuntador++;
 				} catch (Exception e) {
 					procesamiento += "> no";
+					if (imprimirProcesamiento)
+						System.out.println(procesamiento);
+					return false;
+				}
+				// SALE POR TIEMPO
+				if(System.currentTimeMillis() > limit) {
+					procesamiento += "> TIME-STAMPED";
 					if (imprimirProcesamiento)
 						System.out.println(procesamiento);
 					return false;
@@ -322,22 +334,24 @@ public class MTP {
 			}
 			Object[] fila = new String[] {"CADENA", "ÚLTIMA CONF. INSTANTÁNEA", "RESULTADO"};
 			if (imprimirPantalla)
-				System.out.format("%15s%60s%15s\n", fila);
-			flujo_salida.format("%15s%60s%15s\n", fila);
+				System.out.format("%15s%80s%15s\n", fila);
+			flujo_salida.format("%15s%80s%15s\n", fila);
 			for (Iterator<String> iterator = listaCadenas.iterator(); iterator.hasNext();) {
 				String cadena = (String) iterator.next();
 				String configFinal = procesarFuncion(cadena);
 				boolean resultado = procesarCadena(cadena);
 				fila = new String[] {cadena, configFinal, (resultado ? "yes" : "no")};
 				if (imprimirPantalla)
-					System.out.format("%15s%60s%15s\n", fila);
-				flujo_salida.format("%15s%60s%15s\n", fila);
+					System.out.format("%15s%80s%15s\n", fila);
+				flujo_salida.format("%15s%80s%15s\n", fila);
 
 			}
 			flujo_salida.flush();
 			flujo_salida.close();
 		}
-
+		public String getAlfabeto() {
+			return alfabetoEntrada.toString();
+		}
 		public String toString() {
 			String resultado = "";
 			resultado += "#states \n";
@@ -360,12 +374,12 @@ public class MTP {
 		}
 		
 		/*public static void main(String[] args) {
-			MTP test = new MTP("a^nb^nc^n");
-			System.out.println(test.procesarCadena("abc"));
-			test.procesarCadenaConDetalles("aabbcc");
+			MTP test = new MTP("1^n0^2n");
+			System.out.println(test.procesarCadena("11100"));
+			test.procesarCadenaConDetalles("110000");
 			List<String> cadenas = new ArrayList<String>();
-			cadenas.add("!!!!"); cadenas.add("aaababacc"); cadenas.add("aaabbbccc");
-			test.procesarListaCadenas(cadenas, "a^nb^nc^n", true);
+			cadenas.add("!!!!"); cadenas.add("1111000"); cadenas.add("111100101");
+			test.procesarListaCadenas(cadenas, "1^n0^2n", true);
 			System.out.println(test.toString());
 		}*/
 		

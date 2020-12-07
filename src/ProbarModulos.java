@@ -6,18 +6,24 @@ import AF2P.AF2P;
 import AFD.AFD;
 import AFPD.AFPD;
 import AFPN.AFPN;
+import MT.MT;
+import MTP.MTP;
+import MTMC.MTMC;
 
-public class main {
+public class ProbarModulos {
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 		boolean menu = true;
 		while (menu) {
-			System.out.println("Seleccione el módulo que desea observar:");
+			System.out.println("Seleccione el módulo que desea usar:");
 			System.out.println("1: AFD");
 			System.out.println("2: AFPD");
 			System.out.println("3: AFPN");
 			System.out.println("4: AF2P");
 			System.out.println("5: MT");
+			System.out.println("6: MTP");
+			System.out.println("7: MTMC");
+			//System.out.println("8: MTN");
 			System.out.println("Presione cualquier otra tecla para salir del programa");
 			String opcionSeleccionada = scanner.next();
 			switch (opcionSeleccionada) {
@@ -167,9 +173,10 @@ public class main {
 							}
 							ArrayList<String> listaCadenas = new ArrayList<String>();
 							for (int i = 0; i < num; ++i) {
+								System.out.println("Inserte cadena no." + (i+1));
 								listaCadenas.add(scanner.next());
 							}
-							System.out.println("Desea ver los resultados en pantalla? ");
+							System.out.println("Desea ver los resultados en pantalla? (si/no) ");
 							String res = scanner.next();
 							boolean imprimirPantalla = res.equalsIgnoreCase("si");
 							afd.procesarListaCadenas(listaCadenas, nombreArchivo, imprimirPantalla);
@@ -322,9 +329,10 @@ public class main {
 							}
 							ArrayList<String> listaCadenas = new ArrayList<String>();
 							for (int i = 0; i < num; ++i) {
+								System.out.println("Inserte cadena no." + (i+1));
 								listaCadenas.add(scanner.next());
 							}
-							System.out.println("Desea ver los resultados en pantalla? ");
+							System.out.println("Desea ver los resultados en pantalla? (si/no) ");
 							String res = scanner.next();
 							boolean imprimirPantalla = res.equalsIgnoreCase("si");
 							afpd.procesarListaCadenas(listaCadenas, nombreArchivo, imprimirPantalla);
@@ -516,9 +524,10 @@ public class main {
 							}
 							ArrayList<String> listaCadenas = new ArrayList<String>();
 							for (int i = 0; i < num; ++i) {
+								System.out.println("Inserte cadena no." + (i+1));
 								listaCadenas.add(scanner.next());
 							}
-							System.out.println("Desea ver los resultados en pantalla? ");
+							System.out.println("Desea ver los resultados en pantalla? (si/no) ");
 							String res = scanner.next();
 							boolean imprimirPantalla = res.equalsIgnoreCase("si");
 							afpn.procesarListaCadenas(listaCadenas, nombreArchivo, imprimirPantalla);
@@ -751,9 +760,10 @@ public class main {
 							}
 							ArrayList<String> listaCadenas = new ArrayList<String>();
 							for (int i = 0; i < num; ++i) {
+								System.out.println("Inserte cadena no." + (i+1));
 								listaCadenas.add(scanner.next());
 							}
-							System.out.println("Desea ver los resultados en pantalla? ");
+							System.out.println("Desea ver los resultados en pantalla? (si/no) ");
 							String res = scanner.next();
 							boolean imprimirPantalla = res.equalsIgnoreCase("si");
 							af2p.procesarListaCadenas(listaCadenas, nombreArchivo, imprimirPantalla);
@@ -777,28 +787,559 @@ public class main {
 				break;
 			}
 			case "5": {
-
+				boolean menu1 = true;
+				while (menu1) {
+					System.out.println("Clase MT");
+					System.out.println("Seleccione la Máquina de Turing (Modelo Estándar) que desea utilizar:");
+					System.out.println(
+							"1. Máquina de Turing que acepta las cadenas con igual número de aes y de bes");
+					System.out.println("2. Máquina de Turing que acepta cadenas palíndromes de longitud par");
+					System.out.println("3. Máquina de Turing que acepta cadenas de la forma ww");
+					System.out.println("4. Función Turing-Computable que obtene la siguiente cadena con el orden lexicografico");
+					System.out.println("5. Función Turing-Computable que obtene el máximo entre dos números");
+					System.out.println("6. Ingresar uno propio");
+					System.out.println("Presione cualquier otra tecla para volver al menú inicial");
+					String opcion1 = scanner.next();
+					MT mt = null;
+					ArrayList<String> bancoString = new ArrayList<String>();
+					boolean hayBanco = true;
+					switch (opcion1) {
+					case "1": {
+						mt = new MT("igualAqueB");
+						bancoString.add("abababaaba");
+						bancoString.add("ababababbb");
+						bancoString.add("abaaaaba");
+						bancoString.add("aaaabbb");
+						bancoString.add("abababaabb");
+						break;
+					}
+					case "2": {
+						mt = new MT("paliPar");
+						bancoString.add("abaabab");
+						bancoString.add("abaaba");
+						bancoString.add("aaaaaaa");
+						bancoString.add("ababababab");
+						bancoString.add("abbbbbba");
+						break;
+					}
+					case "3": {
+						mt = new MT("ww");
+						bancoString.add("abababaab");
+						bancoString.add("abbaabba");
+						bancoString.add("aaabbbaaabbb");
+						bancoString.add("aaaaaaba");
+						bancoString.add("bbaabbaa");
+						break;
+					}
+					case "4": {
+						mt = new MT("ftc-sigLex");
+						bancoString.add("abc");
+						bancoString.add("ccc");
+						bancoString.add("ccca");
+						bancoString.add("abbac");
+						bancoString.add("acacab");
+						break;
+					}
+					case "5": {
+						mt = new MT("ftc-max1");
+						bancoString.add("1111!111");
+						bancoString.add("111111!111");
+						bancoString.add("111!111");
+						bancoString.add("!111");
+						bancoString.add("111!");
+						break;
+					}
+					case "6": {
+						System.out.println(
+								"Ingrese el nombre del archivo con la extensión .tm en la carpeta Pruebas\\MT (sin .tm)");
+						String nombre = scanner.next();
+						while (true) {
+							mt = new MT(nombre);
+							try {
+							if(mt.getAlfabeto() != null)
+								break;
+							}catch(Exception e){
+							System.out.println("Hubo un error, ingrese el nombre del archivo con la extensión .tm en la carpeta Pruebas\\MT (sin .tm)");
+							nombre = scanner.next();
+							}
+						}
+						hayBanco=false;
+						break;
+					}
+					default:
+						menu1 = false;
+						break;
+					}
+					boolean menu2 = menu1;
+					while (menu2) {
+						System.out.println("Seleccione la operación que desea realizar con la MT:");
+						System.out.println("1. Saber si una cadena es aceptada o no");
+						System.out.println("2. Procesar una cadena con detalles");
+						System.out.println("3. Procesar una cadena y retornar su última configuaración inicial");
+						System.out.println(
+								"4. Procesar una lista de cadenas, viendo el procesamiento de cada una de ellas");
+						System.out.println("5. Imprimir el automata en el formato de entrada");
+						System.out.println("6. Cambiar la MT");
+						System.out.println("Presione cualquier otra tecla para volver al menú inicial");
+						String opcion2 = scanner.next();
+						
+						switch (opcion2) {
+						case "1": {
+								if(hayBanco) {
+								System.out.println(
+										"¿Desea escribir la cadena a utilizar? ('si' para una respuesta afirmativa)");
+								String res = scanner.next();
+								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto de la MT es: " + mt.getAlfabeto());
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + mt.procesarCadena(cadena));
+								} else {
+										System.out.println("Entonces, eligiremos una cadena por usted.");
+										Random random = new Random();
+										int indiceAleatorio = random.nextInt(5);
+										System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
+										System.out.println("Resultado: " + mt.procesarCadena(bancoString.get(indiceAleatorio)));
+									}
+								}else {
+									System.out.println("Por favor, escriba su cadena");
+									System.out.println("Recuerde que el alfabeto de la MT es: " + mt.getAlfabeto());
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + mt.procesarCadena(cadena));
+								}
+							continue;
+						}
+						case "2": {
+							if (hayBanco) {
+								System.out.println(
+										"¿Desea escribir la cadena a utilizar? ('si' para una respuesta afirmativa)");
+								String res = scanner.next();
+								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto de la MT es: " + mt.getAlfabeto());
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + mt.procesarCadenaConDetalles(cadena));
+								}else {
+									System.out.println("Entonces, eligiremos una cadena por usted.");
+									Random random = new Random();
+									int indiceAleatorio = random.nextInt(5);
+									System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
+									System.out.println("Resultado: "
+											+ mt.procesarCadenaConDetalles(bancoString.get(indiceAleatorio)));
+								}
+							}else {
+								System.out.println("Por favor, escriba su cadena");
+								System.out.println("Recuerde que el alfabeto de la MT es: " + mt.getAlfabeto());
+								String cadena = scanner.next();
+								System.out.println("Resultado: " + mt.procesarCadenaConDetalles(cadena));	
+							}
+							
+							continue;
+						}
+						case "3": {
+							if (hayBanco) {
+								System.out.println(
+										"¿Desea escribir la cadena a utilizar? ('si' para una respuesta afirmativa)");
+								String res = scanner.next();
+								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto de la MT es: " + mt.getAlfabeto());
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + mt.procesarFuncion(cadena));
+								}else {
+									System.out.println("Entonces, eligiremos una cadena por usted.");
+									Random random = new Random();
+									int indiceAleatorio = random.nextInt(5);
+									System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
+									System.out.println("Resultado: "
+											+ mt.procesarFuncion(bancoString.get(indiceAleatorio)));
+								}
+							}else {
+								System.out.println("Por favor, escriba su cadena");
+								System.out.println("Recuerde que el alfabeto de la MT es: " + mt.getAlfabeto());
+								String cadena = scanner.next();
+								System.out.println("Resultado: " + mt.procesarFuncion(cadena));	
+							}
+							
+							continue;
+						}
+						case "4": {
+							System.out.println("Escriba un nombre para el archivo donde se guardará el procesamiento.");
+							String nombreArchivo = scanner.next();
+							Integer num = null;
+							while (true) {
+								System.out.println("Escriba el numero de cadenas a procesar: ");
+								try {
+									num = scanner.nextInt();
+									if (num > 0)
+										break;
+								} catch (Exception e) {
+								}
+							}
+							ArrayList<String> listaCadenas = new ArrayList<String>();
+							System.out.println("Recuerde que el alfabeto de la MT es: " + mt.getAlfabeto());
+							for (int i = 0; i < num; ++i) {
+								System.out.println("Inserte cadena no." + (i+1));
+								listaCadenas.add(scanner.next());
+							}
+							System.out.println("Desea ver los resultados en pantalla? (si/no) ");
+							String res = scanner.next();
+							boolean imprimirPantalla = res.equalsIgnoreCase("si");
+							mt.procesarListaCadenas(listaCadenas, nombreArchivo, imprimirPantalla);
+							continue;
+						}
+						case "5": {
+							System.out.println(mt.toString());
+							continue;
+						}
+						case "6": {
+							menu2 = false;
+							break;
+						}
+						default:
+							menu1 = false;
+							menu2 = false;
+							break;
+						}
+					}
+				}
+				break;
+			}
+			case "6": {
+				boolean menu1 = true;
+				while (menu1) {
+					System.out.println("Clase MTP");
+					System.out.println("Seleccione la Máquina de Turing con una Cinta dividida en Pistas que desea utilizar:");
+					System.out.println("1. MTP que acepta el lenguaje a^n b^n c^n");
+					System.out.println("2. MTP que acepta cadenas de la forma a^(3n) b^n");
+					System.out.println("3. MTP que acepta cadenas el lenguaje 1^n 0^(2n)");
+					System.out.println("4. Ingresar uno propio");
+					System.out.println("Presione cualquier otra tecla para volver al menú inicial");
+					String opcion1 = scanner.next();
+					MTP mtp = null;
+					ArrayList<String> bancoString = new ArrayList<String>();
+					boolean hayBanco = true;
+					switch (opcion1) {
+					case "1": {
+						mtp = new MTP("a^nb^nc^n");
+						bancoString.add("aaabbbccc");
+						bancoString.add("abacbacbacb");
+						bancoString.add("aaaaabbbbbccccc");
+						bancoString.add("aaaaabbbbb");
+						bancoString.add("aaabbbccca");
+						break;
+					}
+					case "2": {
+						mtp = new MTP("a^3nb^n");
+						bancoString.add("aaaaaabb");
+						bancoString.add("aaaba");
+						bancoString.add("ababababaaa");
+						bancoString.add("aaaaabb");
+						bancoString.add("aaaaaaabb");
+						break;
+					}
+					case "3": {
+						mtp = new MTP("1^n0^2n");
+						bancoString.add("1111000");
+						bancoString.add("111000000");
+						bancoString.add("1110000");
+						bancoString.add("10000");
+						bancoString.add("10101110");
+						break;
+					}
+					case "4": {
+						System.out.println(
+								"Ingrese el nombre del archivo con la extensión .ttm en la carpeta Pruebas\\MTP (sin .ttm)");
+						String nombre = scanner.next();
+						while (true) {
+							mtp = new MTP(nombre);
+							try {
+							if(mtp.getAlfabeto() != null)
+								break;
+							}catch(Exception e){
+							System.out.println("Hubo un error, ingrese el nombre del archivo con la extensión .ttm en la carpeta Pruebas\\MTP (sin .ttm)");
+							nombre = scanner.next();
+							}
+						}
+						hayBanco=false;
+						break;
+					}
+					default:
+						menu1 = false;
+						break;
+					}
+					boolean menu2 = menu1;
+					while (menu2) {
+						System.out.println("Seleccione la operación que desea realizar con la MTP:");
+						System.out.println("1. Saber si una cadena es aceptada o no");
+						System.out.println("2. Procesar una cadena con detalles");
+						System.out.println("3. Procesar una lista de cadenas, viendo el procesamiento de cada una de ellas");
+						System.out.println("4. Imprimir el automata en el formato de entrada");
+						System.out.println("5. Cambiar la MTP");
+						System.out.println("Presione cualquier otra tecla para volver al menú inicial");
+						String opcion2 = scanner.next();
+						
+						switch (opcion2) {
+						case "1": {
+								if(hayBanco) {
+								System.out.println(
+										"¿Desea escribir la cadena a utilizar? ('si' para una respuesta afirmativa)");
+								String res = scanner.next();
+								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto de la MTP es: " + mtp.getAlfabeto());
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + mtp.procesarCadena(cadena));
+								} else {
+										System.out.println("Entonces, eligiremos una cadena por usted.");
+										Random random = new Random();
+										int indiceAleatorio = random.nextInt(5);
+										System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
+										System.out.println("Resultado: " + mtp.procesarCadena(bancoString.get(indiceAleatorio)));
+									}
+								}else {
+									System.out.println("Por favor, escriba su cadena");
+									System.out.println("Recuerde que el alfabeto de la MTP es: " + mtp.getAlfabeto());
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + mtp.procesarCadena(cadena));
+								}
+							continue;
+						}
+						case "2": {
+							if (hayBanco) {
+								System.out.println(
+										"¿Desea escribir la cadena a utilizar? ('si' para una respuesta afirmativa)");
+								String res = scanner.next();
+								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto de la MTP es: " + mtp.getAlfabeto());
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + mtp.procesarCadenaConDetalles(cadena));
+								}else {
+									System.out.println("Entonces, eligiremos una cadena por usted.");
+									Random random = new Random();
+									int indiceAleatorio = random.nextInt(5);
+									System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
+									System.out.println("Resultado: "
+											+ mtp.procesarCadenaConDetalles(bancoString.get(indiceAleatorio)));
+								}
+							}else {
+								System.out.println("Por favor, escriba su cadena");
+								System.out.println("Recuerde que el alfabeto de la MTP es: " + mtp.getAlfabeto());
+								String cadena = scanner.next();
+								System.out.println("Resultado: " + mtp.procesarCadenaConDetalles(cadena));	
+							}
+							
+							continue;
+						}
+						case "3": {
+							System.out.println("Escriba un nombre para el archivo donde se guardará el procesamiento.");
+							String nombreArchivo = scanner.next();
+							Integer num = null;
+							while (true) {
+								System.out.println("Escriba el numero de cadenas a procesar: ");
+								try {
+									num = scanner.nextInt();
+									if (num > 0)
+										break;
+								} catch (Exception e) {
+								}
+							}
+							ArrayList<String> listaCadenas = new ArrayList<String>();
+							System.out.println("Recuerde que el alfabeto de la MTP es: " + mtp.getAlfabeto());
+							for (int i = 0; i < num; ++i) {
+								System.out.println("Inserte cadena no." + (i+1));
+								listaCadenas.add(scanner.next());
+							}
+							System.out.println("Desea ver los resultados en pantalla? (si/no) ");
+							String res = scanner.next();
+							boolean imprimirPantalla = res.equalsIgnoreCase("si");
+							mtp.procesarListaCadenas(listaCadenas, nombreArchivo, imprimirPantalla);
+							continue;
+						}
+						case "4": {
+							System.out.println(mtp.toString());
+							continue;
+						}
+						case "5": {
+							menu2 = false;
+							break;
+						}
+						default:
+							menu1 = false;
+							menu2 = false;
+							break;
+						}
+					}
+				}
+				break;
+			}
+			case "7": {
+				boolean menu1 = true;
+				while (menu1) {
+					System.out.println("Clase MTMC");
+					System.out.println("Seleccione la Máquina de Turing con Múltiples Cintas que desea utilizar:");
+					System.out.println("1. MTMC que acepta el lenguaje a^n b^n c^n");
+					System.out.println("2. MTMC que acepta cadenas con igual número de aes, bes y ces");
+					System.out.println("3. MTMC que acepta las cadenas de la forma ww");
+					System.out.println("4. Ingresar uno propio");
+					System.out.println("Presione cualquier otra tecla para volver al menú inicial");
+					String opcion1 = scanner.next();
+					MTMC mtmc = null;
+					ArrayList<String> bancoString = new ArrayList<String>();
+					boolean hayBanco = true;
+					switch (opcion1) {
+					case "1": {
+						mtmc = new MTMC("a^nb^nc^n");
+						bancoString.add("aaabbbccc");
+						bancoString.add("abacbacbacb");
+						bancoString.add("aaaaabbbbbccccc");
+						bancoString.add("aaaaabbbbb");
+						bancoString.add("aaabbbccca");
+						break;
+					}
+					case "2": {
+						mtmc = new MTMC("AigualBigualC");
+						bancoString.add("abababababacabab");
+						bancoString.add("abacbacbaca");
+						bancoString.add("ababccababcc");
+						bancoString.add("aaaabbbcccc");
+						bancoString.add("aaccacabbb");
+						break;
+					}
+					case "3": {
+						mtmc = new MTMC("ww");
+						bancoString.add("abababababababab");
+						bancoString.add("abababaababab");
+						bancoString.add("ababababa");
+						bancoString.add("aaabbbaaabbb");
+						bancoString.add("ababaaababb");
+						break;
+					}
+					case "4": {
+						System.out.println("Ingrese el nombre del archivo con la extensión .mttm en la carpeta Pruebas\\MTMC (sin .mttm)");
+						String nombre = scanner.next();
+						while (true) {
+							mtmc = new MTMC(nombre);
+							try {
+							if(mtmc.getAlfabeto() != null)
+								break;
+							}catch(Exception e){
+							System.out.println("Hubo un error, ingrese el nombre del archivo con la extensión .ttm en la carpeta Pruebas\\MTMC (sin .mttm)");
+							nombre = scanner.next();
+							}
+						}
+						hayBanco=false;
+						break;
+					}
+					default:
+						menu1 = false;
+						break;
+					}
+					boolean menu2 = menu1;
+					while (menu2) {
+						System.out.println("Seleccione la operación que desea realizar con la MTMC:");
+						System.out.println("1. Saber si una cadena es aceptada o no");
+						System.out.println("2. Procesar una cadena con detalles");
+						System.out.println("3. Procesar una lista de cadenas, viendo el procesamiento de cada una de ellas");
+						System.out.println("4. Imprimir el automata en el formato de entrada");
+						System.out.println("5. Cambiar la MTMC");
+						System.out.println("Presione cualquier otra tecla para volver al menú inicial");
+						String opcion2 = scanner.next();
+						
+						switch (opcion2) {
+						case "1": {
+								if(hayBanco) {
+								System.out.println(
+										"¿Desea escribir la cadena a utilizar? ('si' para una respuesta afirmativa)");
+								String res = scanner.next();
+								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto de la MTMC es: " + mtmc.getAlfabeto());
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + mtmc.procesarCadena(cadena));
+								} else {
+										System.out.println("Entonces, eligiremos una cadena por usted.");
+										Random random = new Random();
+										int indiceAleatorio = random.nextInt(5);
+										System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
+										System.out.println("Resultado: " + mtmc.procesarCadena(bancoString.get(indiceAleatorio)));
+									}
+								}else {
+									System.out.println("Por favor, escriba su cadena");
+									System.out.println("Recuerde que el alfabeto de la MTMC es: " + mtmc.getAlfabeto());
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + mtmc.procesarCadena(cadena));
+								}
+							continue;
+						}
+						case "2": {
+							if (hayBanco) {
+								System.out.println(
+										"¿Desea escribir la cadena a utilizar? ('si' para una respuesta afirmativa)");
+								String res = scanner.next();
+								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto de la MTMC es: " + mtmc.getAlfabeto());
+									String cadena = scanner.next();
+									System.out.println("Resultado: " + mtmc.procesarCadenaConDetalles(cadena));
+								}else {
+									System.out.println("Entonces, eligiremos una cadena por usted.");
+									Random random = new Random();
+									int indiceAleatorio = random.nextInt(5);
+									System.out.println("La cadena seleccionada fue: " + bancoString.get(indiceAleatorio));
+									System.out.println("Resultado: "
+											+ mtmc.procesarCadenaConDetalles(bancoString.get(indiceAleatorio)));
+								}
+							}else {
+								System.out.println("Por favor, escriba su cadena");
+								System.out.println("Recuerde que el alfabeto de la MTMC es: " + mtmc.getAlfabeto());
+								String cadena = scanner.next();
+								System.out.println("Resultado: " + mtmc.procesarCadenaConDetalles(cadena));	
+							}
+							
+							continue;
+						}
+						case "3": {
+							System.out.println("Escriba un nombre para el archivo donde se guardará el procesamiento.");
+							String nombreArchivo = scanner.next();
+							Integer num = null;
+							while (true) {
+								System.out.println("Escriba el numero de cadenas a procesar: ");
+								try {
+									num = scanner.nextInt();
+									if (num > 0)
+										break;
+								} catch (Exception e) {
+								}
+							}
+							ArrayList<String> listaCadenas = new ArrayList<String>();
+							System.out.println("Recuerde que el alfabeto de la MTMC es: " + mtmc.getAlfabeto());
+							for (int i = 0; i < num; ++i) {
+								System.out.println("Inserte cadena no." + (i+1));
+								listaCadenas.add(scanner.next());
+							}
+							System.out.println("Desea ver los resultados en pantalla? (si/no) ");
+							String res = scanner.next();
+							boolean imprimirPantalla = res.equalsIgnoreCase("si");
+							mtmc.procesarListaCadenas(listaCadenas, nombreArchivo, imprimirPantalla);
+							continue;
+						}
+						case "4": {
+							System.out.println(mtmc.toString());
+							continue;
+						}
+						case "5": {
+							menu2 = false;
+							break;
+						}
+						default:
+							menu1 = false;
+							menu2 = false;
+							break;
+						}
+					}
+				}
+				break;
 			}
 			default:
 				menu = false;
 			}
 		}
 		scanner.close();
-
-		//Crear Automatas AFPD, no se requieren mas opciones.	
-		/*AFD af = new AFD("notab");
-		AFPN afp = new AFPN("palindrome");
-		AFPN afpnn = afp.hallarProductoCartesianoConAFD(af);
-		System.out.println(afpnn.toString());*/
-		//AF2P af2p = new AF2P("uno");
-		//System.out.println(af2p.toString());
-		//MT -> mismo numero de a que b
-		//MT mt = new MT("uno");
-		/*mt.procesarCadenaConDetalles("ababababaa");
-		System.out.println(mt.procesarFuncion("ababababaa"));
-		List<String> prueba = Arrays.asList("aabb", "abaaba", "abababaaa", "aabbaab");
-		mt.procesarListaCadenas(prueba, "igualAqueB", true);*/
-		//System.out.println(mt.toString());
 
 	}
 }

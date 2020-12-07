@@ -6,20 +6,16 @@ import java.util.Vector;
 
 
 public class FuncionTransicionMTMC {
-	private Set<String> conjuntoEstados;
-	private Set<Character> alfabetoCinta;
 	private HashMap<String, Integer> estadoANumero;
 	private HashMap<String, Integer> simboloANumero;
 	private Transicion[][] transiciones;
 	private Vector<String> numeroAEstado;
 	private Vector<String> numeroASimbolo;
 
-	public FuncionTransicionMTMC(Set<String> conjuntoEstados, Set<Character> alfabetoCinta,
+	public FuncionTransicionMTMC(Set<String> conjuntoEstados,
 			HashMap<String, Integer> estadoANumero, HashMap<String, Integer> simboloANumero,
 			Vector<String> numeroAEstado, Vector<String> numeroASimbolo, int n_sim) {
 		super();
-		this.conjuntoEstados = conjuntoEstados;
-		this.alfabetoCinta = alfabetoCinta;
 		this.estadoANumero = estadoANumero;
 		this.simboloANumero = simboloANumero;
 		this.transiciones = new Transicion[conjuntoEstados.size()][n_sim];

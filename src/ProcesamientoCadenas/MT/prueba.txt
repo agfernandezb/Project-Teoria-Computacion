@@ -1,0 +1,4 @@
+         CADENA                                    ÚLTIMA CONF. INSTANTÁNEA      RESULTADO
+         ababab                                                     !babab!             no
+        abababa                                                    !!!!!!!!             no
+       ababbbbb                                                   !babbbbb!             no

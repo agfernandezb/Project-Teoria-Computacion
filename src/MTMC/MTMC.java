@@ -172,7 +172,7 @@ public class MTMC {
 						++numeroSimbolo;
 					}
 
-					delta = new FuncionTransicionMTMC(conjuntoEstados, alfabetoCinta, estadoANumero, simbolosAlfabetoANumero,
+					delta = new FuncionTransicionMTMC(conjuntoEstados, estadoANumero, simbolosAlfabetoANumero,
 							numeroAEstado, numeroASimbolos, numeroSimbolo);
 
 					for (int j = 0; j < auxi.size(); j+=5) {
@@ -195,8 +195,10 @@ public class MTMC {
 		private boolean procesarCadena(String cadena, boolean imprimirProcesamiento) {
 			String procesamiento = "Cadena: " + cadena + "\n" + "Procesamiento: \n";
 			String estadoActual = estadoInicial;
-			
 			cinta.ponerCadena(cadena);
+			long t= System.currentTimeMillis();
+			long limit = t+13000; //13 SEG DE TIEMPO LÍMITE 
+			
 			while (!estadosAceptacion.contains(estadoActual)) {
 				//
 				String lecturaCinta = cinta.leer();
@@ -212,6 +214,13 @@ public class MTMC {
 					cinta.ejecutarMov(mov);
 				} catch (Exception e) {
 					procesamiento += "> no";
+					if (imprimirProcesamiento)
+						System.out.println(procesamiento);
+					return false;
+				}
+				// SALE POR TIEMPO
+				if(System.currentTimeMillis() > limit) {
+					procesamiento += "> TIME-STAMPED";
 					if (imprimirProcesamiento)
 						System.out.println(procesamiento);
 					return false;
@@ -296,7 +305,9 @@ public class MTMC {
 			resultado += delta.toString();
 			return resultado;
 		}
-		
+		public String getAlfabeto() {
+			return alfabetoEntrada.toString();
+		}
 		//OBJETO CINTA - PARA FACILITAR LAS COSAS
 		class cintaMTMC {
 			List<String> cintas;
@@ -367,14 +378,14 @@ public class MTMC {
 				}
 				return resultado;
 			}
-		}
-		
+		}		
 		/*public static void main(String[] args) {
-			MTMC test = new MTMC("a^nb^nc^n");
-			test.procesarCadenaConDetalles("aabbcc");
+			MTMC test = new MTMC("AigualBigualC");
+			System.out.println(test.procesarCadena("abccaca"));
+			test.procesarCadenaConDetalles("abcaabcbc");
 			List<String> cadenas = new ArrayList<String>();
-			cadenas.add("!!!!"); cadenas.add("aaababacc"); cadenas.add("aaabbbccc");
-			test.procesarListaCadenas(cadenas, "a^nb^nc^n", true);
+			cadenas.add("!!!!"); cadenas.add("aaababaccc"); cadenas.add("cccaaabbb");
+			test.procesarListaCadenas(cadenas, "AigualBigualC", true);
 			System.out.println(test.toString());
 		}*/
 }

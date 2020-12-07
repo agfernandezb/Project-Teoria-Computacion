@@ -1,4 +1,4 @@
          CADENA                                    ÚLTIMA CONF. INSTANTÁNEA      RESULTADO
            !!!!                                                 (!!!!!, !!)             no
-      aaababacc                                       (aaababacc, aaababa!)             no
-      aaabbbccc                                        (aaabbbccc, aaabbb!)             no
+        aaababa                                       (!aaababa!, aaababa!)             no
+         aaabbb                                         (!aaabbb!, aaabbb!)             no

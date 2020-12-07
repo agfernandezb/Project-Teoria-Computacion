@@ -1,4 +1,4 @@
-package MT;
+package MTN;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,20 +12,19 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
 
-import MTP.MTP;
+import MT.FuncionTransicionMT;
 
-public class MT {
+
+public class MTN {
 	private Set<String> conjuntoEstados;
 	private String estadoInicial;
 	private Set<String> estadosAceptacion;
 	private Set<Character> alfabetoEntrada;
 	private Set<Character> alfabetoCinta;
-	private FuncionTransicionMT delta;
-	private String cinta;
-
-	//Constructor
-	public MT(Set<String> conjuntoEstados, String estadoInicial, Set<String> estadosAceptacion,
-			Set<Character> alfabetoEntrada, Set<Character> alfabetoCinta, FuncionTransicionMT delta) {
+	private FuncionTransicionMTN delta;
+	private cintaMTN cinta;
+	public MTN(Set<String> conjuntoEstados, String estadoInicial, Set<String> estadosAceptacion,
+			Set<Character> alfabetoEntrada, Set<Character> alfabetoCinta, FuncionTransicionMTN delta) {
 		super();
 		this.conjuntoEstados = conjuntoEstados;
 		this.estadoInicial = estadoInicial;
@@ -33,15 +32,14 @@ public class MT {
 		this.alfabetoEntrada = alfabetoEntrada;
 		this.alfabetoCinta = alfabetoCinta;
 		this.delta = delta;
-		this.cinta = "";
+		this.cinta = new cintaMTN();
 	}
 
 	//Constructor con Nombre de Archivo
-	public MT(String nombreArchivo) {
+	public MTN(String nombreArchivo) {
 		Scanner scanner = null;
 		int[] headers = new int[6]; // Encabezados como #alphabet, guarda sus posiciones
-		File archivo = new File("src/Pruebas/MT/" + nombreArchivo + ".tm");
-
+		File archivo = new File("src/Pruebas/MTN/" + nombreArchivo + ".ntm");
 		try {
 			scanner = new Scanner(archivo);
 			int numberOfHeaders = 0;
@@ -65,12 +63,12 @@ public class MT {
 		Set<String> estadosAceptacion = new HashSet<String>();
 		Set<Character> alfabetoEntrada = new HashSet<Character>();
 		Set<Character> alfabetoCinta = new HashSet<Character>();
-		FuncionTransicionMT delta = null;
+		FuncionTransicionMTN delta = null;
 		HashMap<String, Integer> estadoANumero = null;
 		HashMap<Character, Integer> simboloAlfabetoANumero = null;
 		Vector<String> numeroAEstado = new Vector<String>();
 		Vector<Character> numeroASimbolo = new Vector<Character>();
-
+		
 		for (int i = 0; i < headers.length; i++) {
 			String encabezado = scanner.nextLine();
 			int ultima_linea = i != headers.length - 1 ? headers[i + 1] - headers[i] - 1
@@ -147,139 +145,38 @@ public class MT {
 					++numeroSimbolo;
 				}
 
-				delta = new FuncionTransicionMT(conjuntoEstados, alfabetoCinta, estadoANumero, simboloAlfabetoANumero,
+				delta = new FuncionTransicionMTN(conjuntoEstados, alfabetoCinta, estadoANumero, simboloAlfabetoANumero,
 						numeroAEstado, numeroASimbolo);
 
 				for (int j = 0; j < ultima_linea && scanner.hasNext(); j++) {
 					String transicion = scanner.nextLine();
 					String estadoActual = transicion.split(":")[0];
 					char simbolo = transicion.split(":")[1].split("\\?")[0].charAt(0);
-					String estadoFinal = transicion.split(":")[1].split("\\?")[1];
-					char simboloCinta = transicion.split(":")[2].charAt(0);
-					char movimiento = transicion.split(":")[3].charAt(0);
-					delta.setTransicion(estadoActual, simbolo, estadoFinal, simboloCinta, movimiento);
+					String[] tr = transicion.split("\\?")[1].split(";");
+					for(String s: tr) {
+						String estadoFinal = s.split(":")[0];
+						char simboloCinta = s.split(":")[1].charAt(0);
+						char movimiento = s.split(":")[2].charAt(0);
+						delta.setTransicion(estadoActual, simbolo, estadoFinal, simboloCinta, movimiento);
+					}
 				}
 				break;
 			}
 			}
 		}
+		
 		this.conjuntoEstados = conjuntoEstados;
 		this.estadoInicial = estadoInicial;
 		this.estadosAceptacion = estadosAceptacion;
 		this.alfabetoEntrada = alfabetoEntrada;
 		this.alfabetoCinta = alfabetoCinta;
 		this.delta = delta;
-		this.cinta = "";
-
+		this.cinta =  new cintaMTN();
 	}
-
-	private String procesarCadena(String cadena, boolean imprimirProcesamiento) {
-		String procesamiento = "Cadena: " + cadena + "\n" + "Procesamiento: \n";
-		String estadoActual = estadoInicial;
-		cinta = cadena;
-		int apuntador = 0;
-		long t= System.currentTimeMillis();
-		long limit = t+13000; //13 SEG DE TIEMPO LÍMITE 
-		while (!estadosAceptacion.contains(estadoActual)) {
-			if (apuntador < 0) {
-				cinta = "!".repeat(apuntador * -1) + cinta;
-				apuntador = 0;
-			}
-			if (apuntador >= cinta.length()) {
-				cinta = cinta + "!".repeat(apuntador - cinta.length() + 1);
-			}
-
-			procesamiento += cinta.substring(0, apuntador) + "(" + estadoActual + ")" + cinta.substring(apuntador)
-					+ "->";
-			//Ejecutar delta
-			try {
-				char ch = delta.getTransicion(estadoActual, cinta.charAt(apuntador)).simbolo;
-				char mov = delta.getTransicion(estadoActual, cinta.charAt(apuntador)).movimiento;
-				estadoActual = delta.getTransicion(estadoActual, cinta.charAt(apuntador)).estado;
-				//cambiar símbolo en cinta
-				cinta = cinta.substring(0, apuntador) + ch + cinta.substring(apuntador + 1);
-				//movimiento
-				if (mov == '<')
-					apuntador--;
-				if (mov == '>')
-					apuntador++;
-				//estado
-			} catch (Exception e) {
-				procesamiento += "> no";
-				if (imprimirProcesamiento)
-					System.out.println(procesamiento);
-				return "abortada";
-			}
-			// SALE POR TIEMPO
-			if(System.currentTimeMillis() > limit) {
-				procesamiento += "> TIME-STAMPED";
-				if (imprimirProcesamiento)
-					System.out.println(procesamiento);
-				return "abortada";
-			}
-		}
-		procesamiento += cinta.substring(0, apuntador) + "(" + estadoActual + ")" + cinta.substring(apuntador) + "->";
-		procesamiento += "> yes";
-		if (imprimirProcesamiento)
-			System.out.println(procesamiento);
-		return "aceptada";
-	}
-
-	public boolean procesarCadena(String cadena) {
-		return procesarCadena(cadena, false).equals("aceptada");
-	}
-
-	public boolean procesarCadenaConDetalles(String cadena) {
-		String aux = procesarCadena(cadena, true);
-		return aux.equals("aceptada");
-	}
-
-	public String procesarFuncion(String cadena) {
-		procesarCadena(cadena, false);
-		return cinta;
-	}
-
-	public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
-
-		PrintStream flujo_salida;
-		File archivo = null;
-		File dir = new File("src/ProcesamientoCadenas/MT");
-		dir.mkdirs();
-		if (nombreArchivo != null && nombreArchivo.length() > 0)
-			archivo = new File("src/ProcesamientoCadenas/MT/" + nombreArchivo + ".txt");
-		try {
-			flujo_salida = new PrintStream(archivo);
-		} catch (Exception e) {
-			archivo = new File("src/ProcesamientoCadenas/MT/" + "procesamientoListaCadenasMT" + ".txt");
-			try {
-				flujo_salida = new PrintStream(archivo);
-			} catch (FileNotFoundException e1) {
-				System.out.println("Error en el procesamiento de cadenas");
-				return;
-			}
-		}
-
-		Object[] fila = new String[] {"CADENA", "ÚLTIMA CONF. INSTANTÁNEA", "RESULTADO"};
-		if (imprimirPantalla)
-			System.out.format("%15s%60s%15s\n", fila);
-		flujo_salida.format("%15s%60s%15s\n", fila);
-		for (Iterator<String> iterator = listaCadenas.iterator(); iterator.hasNext();) {
-			String cadena = (String) iterator.next();
-			String configFinal = procesarFuncion(cadena);
-			boolean resultado = procesarCadena(cadena);
-			fila = new String[] {cadena, configFinal, (resultado ? "yes" : "no")};
-			if (imprimirPantalla)
-				System.out.format("%15s%60s%15s\n", fila);
-				
-			flujo_salida.format("%15s%60s%15s\n", fila);
-
-		}
-		flujo_salida.flush();
-		flujo_salida.close();
-	}
-	public String getAlfabeto() {
-		return alfabetoEntrada.toString();
-	}
+	
+	
+	
+	
 	public String toString() {
 		String resultado = "";
 		resultado += "#states \n";
@@ -301,14 +198,59 @@ public class MT {
 		return resultado;
 	}
 	
+	//OBJETO CINTA - PARA FACILITAR LAS COSAS
+	public class cintaMTN {
+		String cinta;
+		int apuntador;
+				
+	cintaMTN(){
+		cinta = "!";
+		apuntador = 0;
+	}
+	void ponerCadena(String cadena) {
+		cinta = cadena;
+		apuntador = 0;
+	}
+	String leer() {
+		String lectura = "";
+		if(apuntador < 0) {
+			cinta = "!".repeat(apuntador*-1) + cinta;
+			apuntador = 0;
+		}
+		if (apuntador >= cinta.length()) {
+			cinta = cinta +  "!".repeat(apuntador - cinta.length()+ 1);
+		}	
+		lectura += cinta.charAt(apuntador);
+		return lectura;
+	}
+	void escribir(char escritura){
+		cinta = cinta.substring(0, apuntador) + escritura + cinta.substring(apuntador + 1);
+	}
+	void setApuntador(int ap) {
+		apuntador = ap;
+	}
+	int getApuntador() {
+		return apuntador;
+	}
+	void ejecutarMov(char movimiento) {
+		if(movimiento == '<')
+			apuntador--;
+		else if(movimiento == '>')
+			apuntador++;
+		else if(movimiento == '-')
+			apuntador = apuntador;
+		else
+			System.out.println("Malos movimientos");
+	}
+	public String toString(String estadoActual) {
+		String resultado = "";
+		resultado += cinta.substring(0, apuntador)+"("+estadoActual+")"+cinta.substring(apuntador);
+		return resultado;
+	}
+	}
+	
 	/*public static void main(String[] args) {
-		MT test = new MT("ftc-max1"); //Cuidado con !
-		System.out.println(test.procesarCadena("111!1"));
-		test.procesarCadenaConDetalles("11!");
-		test.procesarCadenaConDetalles("!11");
-		List<String> cadenas = new ArrayList<String>();
-		cadenas.add("11!11"); cadenas.add("11!11");
-		test.procesarListaCadenas(cadenas, "ftc-max", true);
+		MTN test = new MTN("uno");
 		System.out.println(test.toString());
 	}*/
 }

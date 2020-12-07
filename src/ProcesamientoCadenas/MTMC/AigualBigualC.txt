@@ -1,0 +1,4 @@
+         CADENA                                    ÚLTIMA CONF. INSTANTÁNEA      RESULTADO
+           !!!!                                          (!!!!, !!, !!, !!)            yes
+     aaababaccc                           (!!!!!!!!!!!, aaaaa!, !bb!, ccc!)             no
+      cccaaabbb                           (!!!!!!!!!!, !aaa!, !bbb!, !ccc!)            yes
