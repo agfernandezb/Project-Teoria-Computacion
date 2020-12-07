@@ -17,7 +17,7 @@ Este es el Proyecto Final de Introducción a la Teoría de la Computación. Aqu�
 Para poder interactuar con los módulos se creó una clase (src/ProbarModulos.java) en la que se puede acceder a algunos ejemplos por módulos y se pueden usar archivos especiales para poder crear y usar los autómatas o las máquinas de Turing que usted desee.
 
 Entonces, para **ejecutar** rápidamente, si se está usando Windows, haciendo click en el archivo **comandoCMD.bat** o vía CMD se puede usar el comando `java -jar PITC-Ejecutable.jar` ubicándose en el directorio del proyecto. Si todo fue bien, aparecerá un menú en el que se puede elegir, según el número, el módulo a probar.
-Los menús son bastante descriptivos en lo que piden, con lo que, en ocasiones se pedirá ingresar números para elegir cosas o decir el número de repeticiones o cadenas de texto para ser probadas.
+Los menús son bastante descriptivos en lo que piden, con lo que, en ocasiones se pedirá ingresar números para elegir o decir el número de repeticiones, o cadenas de texto para ser probadas.
 
 ### Procesamiento de varias cadenas
 Cuando se elige la opción *Procesar una lista de cadenas, viendo el procesamiento de cada una de ellas*, se pedirá un nombre para guardar los procedimientos en un archivo de texto y quedará guardado en **/src/ProcesamientoCadenas/NombreModulo/nombreArchivo.txt**.
@@ -39,7 +39,7 @@ se puede encontrar un archivo PDF, creado por el profesor Juan Mendivelso, en el
 
 # Breve explicación de la Estructura del código
 Cada módulo expuesto se encuentra en un paquete (con el mismo nombre) junto a todas las dependencias y clases que necesita para su ejecución. La clase de que contiene el *main()* (de la que se partió para hacer el ejecutable) se encuentra separada en el paquete por defecto.
-Ahora bien, para representar los diferentes conjuntos de estados y alfabetos se usó la estructura de datos Set. Para las transiciones están la clases "FuncionTransicion" en las que hay una matriz cuya dimensión depende de los parámetros de la función de transición y se usan tablas Hash y Vectores para establecer una relación eficiente entre los estados/símbolos y las posiciones de la matriz.
+Ahora bien, para representar los diferentes conjuntos de estados y alfabetos se usó la estructura de datos Set. Para las transiciones están las clases "FuncionTransicion" en las que hay una matriz cuya dimensión depende de los parámetros de la función de transición y se usan tablas Hash y Vectores para establecer una relación eficiente entre los estados/símbolos y las posiciones de la matriz.
 
 En los módulos que no son deterministas se usa un **Arbol** de Transiciones para ejecutar y guardar todas las posibles combinaciones que surgen de forma eficiente. En las Máquinas de Turing se usa una clase anidada en la Función de Transición, Transición, para facilitar el acceso de los datos en la matriz de transiciones y en MTMC se usa una clase *cintaMTMC* para facilitar los movimientos entre las diferentes cintas.
  
