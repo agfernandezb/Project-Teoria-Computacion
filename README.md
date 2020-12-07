@@ -39,7 +39,7 @@ se puede encontrar un archivo PDF, creado por el profesor Juan Mendivelso, en el
 
 # Breve explicación de la Estructura del código
 Cada módulo expuesto se encuentra en un paquete (con el mismo nombre) junto a todas las dependencias y clases que necesita para su ejecución. La clase de que contiene el *main()* (de la que se partió para hacer el ejecutable) se encuentra separada en el paquete por defecto.
-Ahora bien, para representar los diferentes conjuntos de estados y alfabetos se usó la estructura de datos Set. Para las transiciones están la clases "FuncionTransicion" en las que hay una matriz cuya dimensión depende de los parámetros de la función de transición y se usan tablas Hash y Vectores para establecer una relación eficiente entre los estados/símbolos y las posiciones de la matriz.
+Ahora bien, para representar los diferentes conjuntos de estados y alfabetos se usó la estructura de datos Set. Para las transiciones están las clases "FuncionTransicion" en las que hay una matriz cuya dimensión depende de los parámetros de la función de transición y se usan tablas Hash y Vectores para establecer una relación eficiente entre los estados/símbolos y las posiciones de la matriz.
 
 En los módulos que no son deterministas se usa un **Arbol** de Transiciones para ejecutar y guardar todas las posibles combinaciones que surgen de forma eficiente. En las Máquinas de Turing se usa una clase anidada en la Función de Transición, Transición, para facilitar el acceso de los datos en la matriz de transiciones y en MTMC se usa una clase *cintaMTMC* para facilitar los movimientos entre las diferentes cintas.
  
