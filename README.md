@@ -17,7 +17,7 @@ Este es el Proyecto Final de Introducción a la Teoría de la Computación. Aqu�
 Para poder interactuar con los módulos se creó una clase (src/ProbarModulos.java) en la que se puede acceder a algunos ejemplos por módulos y se pueden usar archivos especiales para poder crear y usar los autómatas o las máquinas de Turing que usted desee.
 
 Entonces, para **ejecutar** rápidamente, si se está usando Windows, haciendo click en el archivo **comandoCMD.bat** o vía CMD se puede usar el comando `java -jar PITC-Ejecutable.jar` ubicándose en el directorio del proyecto. Si todo fue bien, aparecerá un menú en el que se puede elegir, según el número, el módulo a probar.
-Los menús son bastante descriptivos en lo que piden, con lo que, en ocasiones se pedirá ingresar números para elegir cosas o decir el número de repeticiones o cadenas de texto para ser probadas.
+Los menús son bastante descriptivos en lo que piden, con lo que, en ocasiones se pedirá ingresar números para elegir o decir el número de repeticiones, o cadenas de texto para ser probadas.
 
 ### Procesamiento de varias cadenas
 Cuando se elige la opción *Procesar una lista de cadenas, viendo el procesamiento de cada una de ellas*, se pedirá un nombre para guardar los procedimientos en un archivo de texto y quedará guardado en **/src/ProcesamientoCadenas/NombreModulo/nombreArchivo.txt**.
