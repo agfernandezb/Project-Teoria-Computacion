@@ -1,4 +1,0 @@
-         CADENA                                    ÚLTIMA CONF. INSTANTÁNEA      RESULTADO
-       abbababa                                     (!abbababa!, abbababa!)             no
-       aabbaabb                                     (!!abbaabb!, aabb!abb!)            yes
-        aababab                                       (!aababab!, aababab!)             no

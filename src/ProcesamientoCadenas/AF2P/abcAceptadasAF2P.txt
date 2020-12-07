@@ -1,5 +1,0 @@
-Cadena: aabcbcabc
-Procesamiento 1: (q0,aabcbcabc,$,$)->(q0,abcbcabc,A,A)->(q0,bcbcabc,AA,AA)->(q0,cbcabc,A,AA)->(q0,bcabc,A,A)->(q0,cabc,$,A)->(q0,abc,$,$)->(q0,bc,A,A)->(q0,c,$,A)->(q0,$,$,$)>>accepted
-Procesamiento 2: (q0,aabcbcabc,$,$)->(q0,abcbcabc,A,A)->(q0,bcbcabc,AA,AA)->(q0,cbcabc,A,AA)->(q0,bcabc,A,A)->(q0,cabc,$,A)->(q0,abc,$,CA)->(q0,bc,A,A)->(q0,c,$,A)->(q0,$,$,$)>>accepted
-Procesamiento 3: (q0,aabcbcabc,$,$)->(q0,abcbcabc,A,A)->(q0,bcbcabc,AA,AA)->(q0,cbcabc,A,AA)->(q0,bcabc,A,A)->(q0,cabc,BA,A)->(q0,abc,BA,$)->(q0,bc,A,A)->(q0,c,$,A)->(q0,$,$,$)>>accepted
-Procesamiento 4: (q0,aabcbcabc,$,$)->(q0,abcbcabc,A,A)->(q0,bcbcabc,AA,AA)->(q0,cbcabc,A,AA)->(q0,bcabc,A,A)->(q0,cabc,BA,A)->(q0,abc,BA,CA)->(q0,bc,A,A)->(q0,c,$,A)->(q0,$,$,$)>>accepted

@@ -9,7 +9,12 @@ import AFPN.AFPN;
 import MT.MT;
 import MTP.MTP;
 import MTMC.MTMC;
-
+/*
+ * PROYECTO FINAL INTRODUCCIÓN A LA TERÍA DE LA COMPUTACIÓN
+ * Por: Agustín Fernández Bermudez - agfernandezb@unal.edu.co
+ * 		Jesús Andrés Rojas Montenegro - jrojasmo@unal.edu.co
+ * */
+ 
 public class ProbarModulos {
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
