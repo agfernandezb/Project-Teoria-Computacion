@@ -129,6 +129,7 @@ public class ProbarModulos {
 								String res = scanner.next();
 								if (res.equalsIgnoreCase("si")) {
 									usarBanco = false;
+									System.out.println("Recuerde que el alfabeto del AFD es: " + afd.getAlfabeto());
 									String cadena = scanner.next();
 									System.out.println("Resultado: " + afd.procesarCadena(cadena));
 								}
@@ -150,6 +151,7 @@ public class ProbarModulos {
 								String res = scanner.next();
 								if (res.equalsIgnoreCase("si")) {
 									usarBanco = false;
+									System.out.println("Recuerde que el alfabeto del AFD es: " + afd.getAlfabeto());
 									String cadena = scanner.next();
 									System.out.println("Resultado: " + afd.procesarCadenaConDetalles(cadena));
 								}
@@ -177,6 +179,7 @@ public class ProbarModulos {
 								}
 							}
 							ArrayList<String> listaCadenas = new ArrayList<String>();
+							System.out.println("Recuerde que el alfabeto del AFD es: " + afd.getAlfabeto());
 							for (int i = 0; i < num; ++i) {
 								System.out.println("Inserte cadena no." + (i+1));
 								listaCadenas.add(scanner.next());
@@ -284,6 +287,7 @@ public class ProbarModulos {
 								String res = scanner.next();
 								if (res.equalsIgnoreCase("si")) {
 									usarBanco = false;
+									System.out.println("Recuerde que el alfabeto del AFPD es: " + afpd.getAlfabeto());
 									String cadena = scanner.next();
 									System.out.println("Resultado: " + afpd.procesarCadena(cadena));
 								}
@@ -304,6 +308,7 @@ public class ProbarModulos {
 										"¿Desea escribir la cadena a utilizar? ('Si' para una respuesta afirmativa)");
 								String res = scanner.next();
 								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto del AFPD es: " + afpd.getAlfabeto());
 									usarBanco = false;
 									String cadena = scanner.next();
 									System.out.println("Resultado: " + afpd.procesarCadenaConDetalles(cadena));
@@ -333,6 +338,7 @@ public class ProbarModulos {
 								}
 							}
 							ArrayList<String> listaCadenas = new ArrayList<String>();
+							System.out.println("Recuerde que el alfabeto del AFPD es: " + afpd.getAlfabeto());
 							for (int i = 0; i < num; ++i) {
 								System.out.println("Inserte cadena no." + (i+1));
 								listaCadenas.add(scanner.next());
@@ -456,6 +462,7 @@ public class ProbarModulos {
 										"¿Desea escribir la cadena a utilizar? ('si' para una respuesta afirmativa)");
 								String res = scanner.next();
 								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto del AFPN es: " + afpn.getAlfabeto());
 									usarBanco = false;
 									String cadena = scanner.next();
 									System.out.println("Resultado: " + afpn.procesarCadena(cadena));
@@ -477,6 +484,7 @@ public class ProbarModulos {
 										"¿Desea escribir la cadena a utilizar? ('Si' para una respuesta afirmativa)");
 								String res = scanner.next();
 								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto del AFPN es: " + afpn.getAlfabeto());
 									usarBanco = false;
 									String cadena = scanner.next();
 									System.out.println("Resultado: " + afpn.procesarCadenaConDetalles(cadena));
@@ -501,6 +509,7 @@ public class ProbarModulos {
 										"¿Desea escribir la cadena a utilizar? ('Si' para una respuesta afirmativa)");
 								String res = scanner.next();
 								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto del AFPN es: " + afpn.getAlfabeto());
 									usarBanco = false;
 									String cadena = scanner.next();
 									afpn.computarTodosLosProcesamientos(cadena, nombreArchivo);
@@ -527,6 +536,7 @@ public class ProbarModulos {
 								} catch (Exception e) {
 								}
 							}
+							System.out.println("Recuerde que el alfabeto del AFPN es: " + afpn.getAlfabeto());
 							ArrayList<String> listaCadenas = new ArrayList<String>();
 							for (int i = 0; i < num; ++i) {
 								System.out.println("Inserte cadena no." + (i+1));
@@ -692,6 +702,7 @@ public class ProbarModulos {
 										"¿Desea escribir la cadena a utilizar? ('si' para una respuesta afirmativa)");
 								String res = scanner.next();
 								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto del AF2P es: " + af2p.getAlfabeto());
 									usarBanco = false;
 									String cadena = scanner.next();
 									System.out.println("Resultado: " + af2p.procesarCadena(cadena));
@@ -713,6 +724,7 @@ public class ProbarModulos {
 										"¿Desea escribir la cadena a utilizar? ('Si' para una respuesta afirmativa)");
 								String res = scanner.next();
 								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto del AF2P es: " + af2p.getAlfabeto());
 									usarBanco = false;
 									String cadena = scanner.next();
 									System.out.println("Resultado: " + af2p.procesarCadenaConDetalles(cadena));
@@ -737,6 +749,7 @@ public class ProbarModulos {
 										"¿Desea escribir la cadena a utilizar? ('Si' para una respuesta afirmativa)");
 								String res = scanner.next();
 								if (res.equalsIgnoreCase("si")) {
+									System.out.println("Recuerde que el alfabeto del AF2P es: " + af2p.getAlfabeto());
 									usarBanco = false;
 									String cadena = scanner.next();
 									af2p.computarTodosLosProcesamientos(cadena, nombreArchivo);
@@ -763,6 +776,7 @@ public class ProbarModulos {
 								} catch (Exception e) {
 								}
 							}
+							System.out.println("Recuerde que el alfabeto del AF2P es: " + af2p.getAlfabeto());
 							ArrayList<String> listaCadenas = new ArrayList<String>();
 							for (int i = 0; i < num; ++i) {
 								System.out.println("Inserte cadena no." + (i+1));
