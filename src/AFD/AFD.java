@@ -240,7 +240,6 @@ public class AFD {
 	public Set<String> getEstadosAceptacion() {
 		return estadosAceptacion;
 	}
-
 	@Override
 	public String toString() {
 		String resultado = "";

@@ -537,7 +537,9 @@ public class AF2P {
 	public String getEstadoInicial() {
 		return estadoInicial;
 	}
-
+	public String getAlfabeto() {
+		return alfabetoCinta.toString();
+	}
 	@Override
 	public String toString() {
 		String resultado = "";
