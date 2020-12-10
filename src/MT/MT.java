@@ -173,9 +173,10 @@ public class MT {
 
 	}
 
-	private String procesarCadena(String cadena, boolean imprimirProcesamiento) {
+	private String procesarCadena(String cadena, boolean imprimirProcesamiento, boolean ultConfInicial) {
 		String procesamiento = "Cadena: " + cadena + "\n" + "Procesamiento: \n";
 		String estadoActual = estadoInicial;
+		String resUltConfInicial = "";
 		cinta = cadena;
 		int apuntador = 0;
 		long t= System.currentTimeMillis();
@@ -191,6 +192,7 @@ public class MT {
 
 			procesamiento += cinta.substring(0, apuntador) + "(" + estadoActual + ")" + cinta.substring(apuntador)
 					+ "->";
+			resUltConfInicial = cinta.substring(0, apuntador) + "(" + estadoActual + ")" + cinta.substring(apuntador);
 			//Ejecutar delta
 			try {
 				char ch = delta.getTransicion(estadoActual, cinta.charAt(apuntador)).simbolo;
@@ -208,6 +210,8 @@ public class MT {
 				procesamiento += "> no";
 				if (imprimirProcesamiento)
 					System.out.println(procesamiento);
+				if(ultConfInicial)
+					return resUltConfInicial;
 				return "abortada";
 			}
 			// SALE POR TIEMPO
@@ -215,28 +219,32 @@ public class MT {
 				procesamiento += "> TIME-STAMPED";
 				if (imprimirProcesamiento)
 					System.out.println(procesamiento);
+				if(ultConfInicial)
+					return resUltConfInicial;
 				return "abortada";
 			}
 		}
 		procesamiento += cinta.substring(0, apuntador) + "(" + estadoActual + ")" + cinta.substring(apuntador) + "->";
 		procesamiento += "> yes";
+		resUltConfInicial = cinta.substring(0, apuntador) + "(" + estadoActual + ")" + cinta.substring(apuntador);
 		if (imprimirProcesamiento)
 			System.out.println(procesamiento);
+		if(ultConfInicial)
+			return resUltConfInicial;
 		return "aceptada";
 	}
 
 	public boolean procesarCadena(String cadena) {
-		return procesarCadena(cadena, false).equals("aceptada");
+		return procesarCadena(cadena, false, false).equals("aceptada");
 	}
 
 	public boolean procesarCadenaConDetalles(String cadena) {
-		String aux = procesarCadena(cadena, true);
+		String aux = procesarCadena(cadena, true, false);
 		return aux.equals("aceptada");
 	}
 
 	public String procesarFuncion(String cadena) {
-		procesarCadena(cadena, false);
-		return cinta;
+		return procesarCadena(cadena, false, true);
 	}
 
 	public void procesarListaCadenas(List<String> listaCadenas, String nombreArchivo, boolean imprimirPantalla) {
